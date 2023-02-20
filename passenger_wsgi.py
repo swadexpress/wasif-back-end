@@ -1,0 +1,1 @@
+from  incomeexpensesapi.wsgi import application
