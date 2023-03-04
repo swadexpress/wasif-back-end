@@ -81,7 +81,10 @@ def register_phone_number_user(email, name,rider):
                 'email': registered_user.email,
                 
                 'personal_WS_ID': registered_user.personal_WS_ID,
-                'tokens': registered_user.tokens()}
+                'tokens': registered_user.tokens()
+                
+                
+                }
         else:
             raise AuthenticationFailed(
                 detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
@@ -101,7 +104,7 @@ def register_phone_number_user(email, name,rider):
         data = Profile()
         shipping_address_data = ShippingAddress()
         data.user_id = new_user.id
-        data.custom_id  = 2020+new_user.id
+        data.custom_id  = 2023 + new_user.id
         data.save()
         shipping_address_data.user_id = new_user.id
         shipping_address_data.save()
