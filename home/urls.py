@@ -12,6 +12,9 @@ urlpatterns = [
     path('AllPostSearch/', AllPostSearch.as_view(), name='AllPostSearch'),
     path('MyAllFriendListView/', MyAllFriendListView.as_view(), name='MyAllFriendListView'),
     path('RequestSendView/', RequestSendView.as_view(), name='RequestSendView'),
+    path('MyRoomAdminListView/', MyRoomAdminListView.as_view(), name='MyRoomAdminListView'),
+    path('MyBannedListView/', MyBannedListView.as_view(), name='MyBannedListView'),
+    path('MyRoomAdminListView/', MyRoomAdminListView.as_view(), name='MyRoomAdminListView'),
 
 
 

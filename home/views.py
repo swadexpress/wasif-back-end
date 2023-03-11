@@ -48,7 +48,7 @@ cloudinary.config(cloud_name='swadexpress',
             api_key='357258774133196',
             api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
 
-push_service = FCMNotification(api_key="AAAAE7z-Af4:APA91bHW9tBpU4835tbUqRiC9-tZh0LCq29UPwSFf3CxIJsXHY8r2airzRBU4y26gLOkgXBnEHf-6Lmgt9ao674yx7rs6LzHQkOOg3epYshxyud3GuQLv_bFn32foLIt0iNTyCcFKV1A")
+# push_service = FCMNotification(api_key="AAAAE7z-Af4:APA91bHW9tBpU4835tbUqRiC9-tZh0LCq29UPwSFf3CxIJsXHY8r2airzRBU4y26gLOkgXBnEHf-6Lmgt9ao674yx7rs6LzHQkOOg3epYshxyud3GuQLv_bFn32foLIt0iNTyCcFKV1A")
 
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
@@ -100,6 +100,74 @@ class RequestSendView(APIView):
 
 
 
+class MyBannedListView(APIView):
+    def post(self, request, *args, **kwargs):
+        bandedUserList = request.data['bandedUserList']
+
+
+        data = Profile.objects.filter(user__in = bandedUserList).order_by('-id').values(
+              "user",
+                "followers",
+                "following",
+                "custom_id",
+                "about_me",
+                "fast_name",
+                "last_name",
+                "gender",
+                "phone",
+                "address",
+                "district",
+                "division",
+                "zip_code",
+                "image",
+                "cover_image",
+
+            )
+
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData,status=HTTP_200_OK)
+
+
+
+class MyRoomAdminListView(APIView):
+    def post(self, request, *args, **kwargs):
+        bandedUserList = request.data['bandedUserList']
+
+
+        data = Profile.objects.filter(user__in = bandedUserList).order_by('-id').values(
+              "user",
+                "followers",
+                "following",
+                "custom_id",
+                "about_me",
+                "fast_name",
+                "last_name",
+                "gender",
+                "phone",
+                "address",
+                "district",
+                "division",
+                "zip_code",
+                "image",
+                "cover_image",
+
+            )
+
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData,status=HTTP_200_OK)
+
+
+
+
+
+
+
 class MyAllFriendListView(APIView):
     def post(self, request, *args, **kwargs):
         myUserId = request.data['myUserId']
@@ -123,15 +191,6 @@ class MyAllFriendListView(APIView):
                 "cover_image",
 
             )
-
-
-
-
-
-
-
-
-
 
 
         data = list(data)
