@@ -250,3 +250,4 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CSRF_TRUSTED_ORIGINS = ['https://peace-garden-django-back-end.herokuapp.com']
