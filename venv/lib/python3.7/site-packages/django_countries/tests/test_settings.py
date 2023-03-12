@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from django_countries import countries, data, base
+from django_countries import base, countries, data
 
 
 class TestSettings(TestCase):
@@ -25,7 +25,7 @@ class TestSettings(TestCase):
             self.assertEqual(countries.alpha3("XX"), "XXX")
             self.assertEqual(countries.numeric("XX"), 900)
             self.assertEqual(countries.name("YY"), "y")
-            self.assertEqual(countries.alpha3("YY"), None)
+            self.assertEqual(countries.alpha3("YY"), "")
             self.assertEqual(countries.numeric("YY"), 950)
 
     def test_override_replace(self):

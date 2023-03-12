@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import re_path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -37,21 +37,20 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    re_path('admin/', admin.site.urls),
     # path('admin/admin_order_pdf/<pk>/', admin_order_pdf, name='admin_order_pdf'),
-    path('home/' , include('home.urls')),
-
-    path('auth/', include('authentication.urls')),
-    path('shop/', include('shop.urls')),
-    path('social_auth/', include(('social_auth.urls', 'social_auth'),
+    re_path('home/' , include('home.urls')),
+    re_path('auth/', include('authentication.urls')),
+    re_path('shop/', include('shop.urls')),
+    re_path('social_auth/', include(('social_auth.urls', 'social_auth'),
                                  namespace="social_auth")),
-    path('expenses/', include('expenses.urls')),
-    path('income/', include('income.urls')),
-    path('', schema_view.with_ui('swagger',
+    re_path('', schema_view.with_ui('swagger',
                                  cache_timeout=0), name='schema-swagger-ui'),
+    re_path('api/api.json/', schema_view.without_ui(cache_timeout=0), name='schema-swagger-ui'),
+    re_path('redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
 
-    path('api/api.json/', schema_view.without_ui(cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
+
+    
 ]
 
 

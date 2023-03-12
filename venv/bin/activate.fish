@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/dulquer/LiveKit/orbitplug-back-end/venv"
+set -gx VIRTUAL_ENV "/home/dulquer/LiveKit/peace-garden-django-back-end/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

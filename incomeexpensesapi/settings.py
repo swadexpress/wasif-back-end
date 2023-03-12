@@ -19,6 +19,7 @@ import cloudinary.api
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -47,12 +48,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_yasg',
     'authentication',
-    'expenses',
     'mptt',
     'ckeditor',
     'django_filters',
@@ -62,7 +63,9 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'social_auth',
     'cloudinary',
-]
+
+    ]
+
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
@@ -88,15 +91,12 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'incomeexpensesapi.urls'
 
 
-
 # adding config
-cloudinary.config( 
-  cloud_name = "swadexpress", 
-  api_key = "357258774133196", 
-  api_secret = "DcCF1TZG2yXPOLlY0tr3Ok2yzug" 
+cloudinary.config(
+    cloud_name="swadexpress",
+    api_key="357258774133196",
+    api_secret="DcCF1TZG2yXPOLlY0tr3Ok2yzug"
 )
-
-
 
 
 TEMPLATES = [
@@ -202,6 +202,7 @@ USE_TZ = True
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
@@ -243,3 +244,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'muhammadkawsarkhan@gmail.com'
 EMAIL_HOST_PASSWORD = 'kawsarkhan01794910680prantokhan57706swadexpress'
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+
+
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

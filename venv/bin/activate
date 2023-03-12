@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/dulquer/LiveKit/orbitplug-back-end/venv"
+VIRTUAL_ENV="/home/dulquer/LiveKit/peace-garden-django-back-end/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

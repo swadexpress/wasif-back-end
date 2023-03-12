@@ -1,13 +1,14 @@
+import pytest
 from django.test import TestCase, override_settings
+from rest_framework import serializers, views
+from rest_framework.test import APIRequestFactory
 
 from django_countries import countries
+from django_countries.conf import settings
 from django_countries.fields import Country
-from django_countries.tests.models import Person, MultiCountry
-from django_countries.tests.custom_countries import FantasyCountries
 from django_countries.serializers import CountryFieldMixin
-
-from rest_framework.test import APIRequestFactory
-from rest_framework import serializers, views
+from django_countries.tests.custom_countries import FantasyCountries
+from django_countries.tests.models import MultiCountry, Person
 
 
 def countries_display(countries):
@@ -27,7 +28,10 @@ class PersonSerializer(CountryFieldMixin, serializers.ModelSerializer):
             "favourite_country",
             "fantasy_country",
         )
-        extra_kwargs = {"other_country": {"country_dict": True}}
+        extra_kwargs = {
+            "other_country": {"country_dict": True},
+            "favourite_country": {"name_only": True},
+        }
 
 
 class MultiCountrySerializer(CountryFieldMixin, serializers.ModelSerializer):
@@ -46,7 +50,7 @@ class TestDRF(TestCase):
                 "name": "Chris Beaven",
                 "country": "NZ",
                 "other_country": "",
-                "favourite_country": "NZ",
+                "favourite_country": "New Zealand",
                 "fantasy_country": "",
             },
         )
@@ -60,7 +64,7 @@ class TestDRF(TestCase):
                 "name": "Chris Beaven",
                 "country": "",
                 "other_country": {"code": "AU", "name": "Australia"},
-                "favourite_country": "NZ",
+                "favourite_country": "New Zealand",
                 "fantasy_country": "",
             },
         )
@@ -111,7 +115,7 @@ class TestDRF(TestCase):
     def test_multi_serialize(self):
         mc = MultiCountry(countries="NZ,AU")
         serializer = MultiCountrySerializer(mc)
-        self.assertEqual(serializer.data, {"countries": ["NZ", "AU"]})
+        self.assertEqual(serializer.data, {"countries": ["AU", "NZ"]})
 
     def test_multi_serialize_empty(self):
         mc = MultiCountry(countries="")
@@ -145,7 +149,7 @@ class TestDRF(TestCase):
         self.assertTrue(serializer.is_valid())
         saved = serializer.save()
         loaded = MultiCountry.objects.get(pk=saved.pk)
-        self.assertEqual(loaded.countries, [Country("NZ"), Country("AU")])
+        self.assertEqual(loaded.countries, [Country("AU"), Country("NZ")])
 
     def test_deserialize_blank_invalid(self):
         serializer = PersonSerializer(data={"name": "Chris", "country": ""})
@@ -158,12 +162,13 @@ class TestDRFMetadata(TestCase):
     Tests against the DRF OPTIONS API metadata endpoint.
     """
 
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
     def test_actions(self):
         class ExampleView(views.APIView):
             """Example view."""
 
             def post(self, request):
-                pass  # pragma: nocover
+                pass  # pragma: no cover
 
             def get_serializer(self):
                 return PersonSerializer()

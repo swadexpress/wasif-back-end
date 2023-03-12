@@ -1,9 +1,10 @@
+import pytest
 from django.test import TestCase
 from django.utils import translation
 
-from django_countries import countries, Countries, CountryTuple
+from django_countries import Countries, CountryTuple, countries
+from django_countries.conf import settings
 from django_countries.tests import custom_countries
-
 
 EXPECTED_COUNTRY_COUNT = 249
 FIRST_THREE_COUNTRIES = [
@@ -91,6 +92,16 @@ class TestCountriesObject(BaseTest):
 
         check_common_names()
 
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
+    def test_common_name_translation(self):
+        lang = translation.get_language()
+        translation.activate("de")
+        try:
+            self.assertEqual(countries.name("BO"), "Bolivien")
+            self.assertEqual(countries.name("VE"), "Venezuela")
+        finally:
+            translation.activate(lang)
+
     def test_alpha2(self):
         self.assertEqual(countries.alpha2("NZ"), "NZ")
         self.assertEqual(countries.alpha2("nZ"), "NZ")
@@ -133,13 +144,60 @@ class TestCountriesObject(BaseTest):
         with self.settings(COUNTRIES_OVERRIDE={"XX": "Neverland"}):
             self.assertEqual(countries.alpha2("XX"), "XX")
 
+    def test_ioc_code(self):
+        self.assertEqual(countries.ioc_code("BS"), "BAH")
+
+    def test_ioc_code_override(self):
+        with self.settings(
+            COUNTRIES_OVERRIDE={
+                "BS": "Bahamas in Pajamas",
+                "AU": None,
+                "NZ": {"ioc_code": ""},
+                "XX": "Neverland",
+                "US": {"ioc_code": "XXX"},
+                "XK": {"name": "Kosovo", "ioc_code": "KOS"},
+            }
+        ):
+            self.assertEqual(
+                countries.ioc_code("BS"),
+                "BAH",
+                "Should still use built-in code if only name changed",
+            )
+            self.assertEqual(
+                countries.ioc_code("AU"),
+                "",
+                "Should be empty since country was marked not present",
+            )
+            self.assertEqual(
+                countries.ioc_code("NZ"),
+                "",
+                "Should be empty since country exists but IOC code cleared",
+            )
+            self.assertEqual(
+                countries.ioc_code("XX"),
+                "",
+                "Should be empty for a custom country with no IOC code",
+            )
+            self.assertEqual(
+                countries.ioc_code("US"), "XXX", "Should use provided custom IOC code"
+            )
+            self.assertEqual(
+                countries.ioc_code("XK"),
+                "KOS",
+                "Should use IOC code for a custom country that provides a code",
+            )
+
     def test_fetch_by_name(self):
-        code = countries.by_name("United States of America")
-        self.assertEqual(code, "US")
+        code = countries.by_name("Brunei")
+        self.assertEqual(code, "BN")
+
+    def test_fetch_by_name_official(self):
+        code = countries.by_name("brunei darussalam")
+        self.assertEqual(code, "BN")
 
     def test_fetch_by_name_case_insensitive(self):
-        code = countries.by_name("United states of America")
-        self.assertEqual(code, "US")
+        code = countries.by_name("bRuNeI")
+        self.assertEqual(code, "BN")
 
     def test_fetch_by_name_old(self):
         code = countries.by_name("Czech Republic")
@@ -149,12 +207,29 @@ class TestCountriesObject(BaseTest):
         code = countries.by_name("Czech republic")
         self.assertEqual(code, "CZ")
 
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
     def test_fetch_by_name_i18n(self):
         code = countries.by_name("Estados Unidos", language="es")
         self.assertEqual(code, "US")
 
     def test_fetch_by_name_no_match(self):
         self.assertEqual(countries.by_name("Neverland"), "")
+
+    def test_fetch_by_name_custom(self):
+        with self.settings(
+            COUNTRIES_ONLY={
+                "AU": {"name": "Oz"},
+                "NZ": {"names": ["New Zealand", "Hobbiton"]},
+            }
+        ):
+            self.assertEqual(countries.by_name("Oz"), "AU")
+            self.assertEqual(countries.by_name("New Zealand"), "NZ")
+            self.assertEqual(countries.by_name("Hobbiton"), "NZ")
+
+    def test_fetch_by_name_regex(self):
+        codes = countries.by_name(r"([ao])\1", regex=True)
+        # Cook Islands, Cameroon, Sint Maarten
+        self.assertEqual(set(codes), {"CK", "CM", "SX"})
 
     def test_multiple_labels(self):
         with self.settings(
@@ -236,30 +311,100 @@ class CountriesFirstTest(BaseTest):
 
     def test_sorted_countries_first_english(self):
         with self.settings(
-            COUNTRIES_FIRST=["GB", "AF", "DK"], COUNTRIES_FIRST_SORT=True
+            COUNTRIES_FIRST=["NZ", "CA", "YE"], COUNTRIES_FIRST_SORT=True
         ):
             countries_list = list(countries)
             sorted_codes = [item[0] for item in countries_list[:3]]
-            self.assertEqual(["AF", "DK", "GB"], sorted_codes)
+            # Canada, New Zealand, Yemen
+            self.assertEqual(["CA", "NZ", "YE"], sorted_codes)
 
     def test_unsorted_countries_first_english(self):
         with self.settings(
-            COUNTRIES_FIRST=["GB", "AF", "DK"], COUNTRIES_FIRST_SORT=False
+            COUNTRIES_FIRST=["NZ", "CA", "YE"], COUNTRIES_FIRST_SORT=False
         ):
             countries_list = list(countries)
             unsorted_codes = [item[0] for item in countries_list[:3]]
-            self.assertEqual(["GB", "AF", "DK"], unsorted_codes)
+            self.assertEqual(["NZ", "CA", "YE"], unsorted_codes)
 
-    def test_sorted_countries_first_arabic(self):
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
+    def test_sorted_countries_first_translated(self):
         with self.settings(
-            COUNTRIES_FIRST=["GB", "AF", "DK"], COUNTRIES_FIRST_SORT=True
+            COUNTRIES_FIRST=["NZ", "CA", "YE"], COUNTRIES_FIRST_SORT=True
         ):
             lang = translation.get_language()
             translation.activate("eo")
             try:
                 countries_list = list(countries)
                 sorted_codes = [item[0] for item in countries_list[:3]]
-                self.assertEqual(["AF", "GB", "DK"], sorted_codes)
+                # Jemeno, Kanado, Nov-Zelando
+                self.assertEqual(["YE", "CA", "NZ"], sorted_codes)
+            finally:
+                translation.activate(lang)
+
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
+    def test_translation_fallback_from_common_name(self):
+        trans_fall_countries = custom_countries.TranslationFallbackCountries()
+        lang = translation.get_language()
+        try:
+            translation.activate("eo")
+            self.assertEqual(trans_fall_countries.name("NZ"), "Nov-Zelando")
+            translation.activate("en@test")
+            self.assertEqual(trans_fall_countries.name("NZ"), "Endor")
+        finally:
+            translation.activate(lang)
+
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
+    def test_translation_fallback_from_old_name(self):
+        trans_fall_countries = custom_countries.TranslationFallbackCountries()
+
+        lang = translation.get_language()
+        try:
+            translation.activate("eo")
+            self.assertEqual(trans_fall_countries.name("NZ"), "Nov-Zelando")
+            translation.activate("en@test")
+            self.assertEqual(trans_fall_countries.name("NZ"), "Endor")
+        finally:
+            translation.activate(lang)
+
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
+    def test_translation_fallback_override(self):
+        lang = translation.get_language()
+
+        try:
+            translation.activate("eo")
+            self.assertEqual(countries.name("NZ"), "Nov-Zelando")
+            translation.activate("en@test")
+            self.assertEqual(countries.name("NZ"), "New Zealand")
+
+            # Avoid this translation with makemessages
+            gtl = translation.gettext_lazy
+            with self.settings(COUNTRIES_OVERRIDE={"NZ": gtl("Middle Earth")}):
+                del countries.countries
+                self.assertEqual(countries.name("NZ"), "Endor")
+        finally:
+            translation.activate(lang)
+
+    @pytest.mark.skipif(not settings.USE_I18N, reason="No i18n")
+    def test_translation_fallback_override_names(self):
+        # Avoid this translation with makemessages
+        gtl = translation.gettext_lazy
+        with self.settings(
+            COUNTRIES_OVERRIDE={
+                "NZ": {
+                    "names": [
+                        gtl("Middle Earth"),
+                        translation.gettext_lazy("New Zealand"),
+                    ]
+                }
+            }
+        ):
+
+            lang = translation.get_language()
+            try:
+                translation.activate("eo")
+                self.assertEqual(countries.name("NZ"), "Nov-Zelando")
+                translation.activate("en@test")
+                self.assertEqual(countries.name("NZ"), "Endor")
             finally:
                 translation.activate(lang)
 

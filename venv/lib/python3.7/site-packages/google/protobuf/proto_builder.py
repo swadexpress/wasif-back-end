@@ -30,30 +30,29 @@
 
 """Dynamic Protobuf class creator."""
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  #PY26
+from collections import OrderedDict
 import hashlib
 import os
 
 from google.protobuf import descriptor_pb2
+from google.protobuf import descriptor
+from google.protobuf import descriptor_pool
 from google.protobuf import message_factory
 
 
-def _GetMessageFromFactory(factory, full_name):
+def _GetMessageFromFactory(pool, full_name):
   """Get a proto class from the MessageFactory by name.
 
   Args:
-    factory: a MessageFactory instance.
+    pool: a descriptor pool.
     full_name: str, the fully qualified name of the proto type.
   Returns:
     A class, for the type identified by full_name.
   Raises:
     KeyError, if the proto is not found in the factory's descriptor pool.
   """
-  proto_descriptor = factory.pool.FindMessageTypeByName(full_name)
-  proto_cls = factory.GetPrototype(proto_descriptor)
+  proto_descriptor = pool.FindMessageTypeByName(full_name)
+  proto_cls = message_factory.GetMessageClass(proto_descriptor)
   return proto_cls
 
 
@@ -71,11 +70,10 @@ def MakeSimpleProtoClass(fields, full_name=None, pool=None):
   Returns:
     a class, the new protobuf class with a FileDescriptor.
   """
-  factory = message_factory.MessageFactory(pool=pool)
-
+  pool_instance = pool or descriptor_pool.DescriptorPool()
   if full_name is not None:
     try:
-      proto_cls = _GetMessageFromFactory(factory, full_name)
+      proto_cls = _GetMessageFromFactory(pool_instance, full_name)
       return proto_cls
     except KeyError:
       # The factory's DescriptorPool doesn't know about this class yet.
@@ -101,16 +99,16 @@ def MakeSimpleProtoClass(fields, full_name=None, pool=None):
     full_name = ('net.proto2.python.public.proto_builder.AnonymousProto_' +
                  fields_hash.hexdigest())
     try:
-      proto_cls = _GetMessageFromFactory(factory, full_name)
+      proto_cls = _GetMessageFromFactory(pool_instance, full_name)
       return proto_cls
     except KeyError:
       # The factory's DescriptorPool doesn't know about this class yet.
       pass
 
   # This is the first time we see this proto: add a new descriptor to the pool.
-  factory.pool.Add(
+  pool_instance.Add(
       _MakeFileDescriptorProto(proto_file_name, full_name, field_items))
-  return _GetMessageFromFactory(factory, full_name)
+  return _GetMessageFromFactory(pool_instance, full_name)
 
 
 def _MakeFileDescriptorProto(proto_file_name, full_name, field_items):
@@ -124,6 +122,12 @@ def _MakeFileDescriptorProto(proto_file_name, full_name, field_items):
   for f_number, (f_name, f_type) in enumerate(field_items, 1):
     field_proto = desc_proto.field.add()
     field_proto.name = f_name
+    # # If the number falls in the reserved range, reassign it to the correct
+    # # number after the range.
+    if f_number >= descriptor.FieldDescriptor.FIRST_RESERVED_FIELD_NUMBER:
+      f_number += (
+          descriptor.FieldDescriptor.LAST_RESERVED_FIELD_NUMBER -
+          descriptor.FieldDescriptor.FIRST_RESERVED_FIELD_NUMBER + 1)
     field_proto.number = f_number
     field_proto.label = descriptor_pb2.FieldDescriptorProto.LABEL_OPTIONAL
     field_proto.type = f_type
