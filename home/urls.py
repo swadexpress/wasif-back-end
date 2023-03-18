@@ -15,6 +15,7 @@ urlpatterns = [
     path('MyRoomAdminListView/', MyRoomAdminListView.as_view(), name='MyRoomAdminListView'),
     path('MyBannedListView/', MyBannedListView.as_view(), name='MyBannedListView'),
     path('MyRoomAdminListView/', MyRoomAdminListView.as_view(), name='MyRoomAdminListView'),
+    path('MyPostDelete/', MyPostDelete.as_view(), name='MyPostDelete'),
 
 
 

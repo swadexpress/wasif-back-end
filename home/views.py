@@ -57,6 +57,29 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
 
 
 
+class MyPostDelete(ListAPIView):
+    def post(self, request, *args, **kwargs):
+
+ 
+        postId = request.data['postId']
+        data = Post.objects.filter(id=postId).delete()
+
+        responseData = {
+            'status': 'success',
+
+        }
+        return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
 class RequestSendView(APIView):
     def post(self, request, *args, **kwargs):
         # proxy_dict = {

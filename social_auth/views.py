@@ -7,7 +7,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.utils.crypto import get_random_string
 # from .models import User,OTPToken
 from authentication.models import *
-
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.views import APIView
 
 from .register import register_phone_number_user
 from random import randint
@@ -81,9 +82,9 @@ class CheckOTPAuthView(GenericAPIView):
 
 
 
-class PhoneNumberAuthView(GenericAPIView):
+class PhoneNumberAuthView(APIView):
 
-    serializer_class = PhoneNumberAuthSerializer
+    # serializer_class = PhoneNumberAuthSerializer
 
     def post(self, request):
 
@@ -91,12 +92,10 @@ class PhoneNumberAuthView(GenericAPIView):
         rider = request.data['rider']
         email =phone_number
         name ='kawsarkkhan'
+        provider ='Phone'
         token_number = random_with_N_digits(4)
-
-        print (phone_number,'.................')
         token_save = OTPToken.objects.create(token=token_number,token_number=phone_number,uidb64='')
-
-        data = (register_phone_number_user(email,name,rider))
+        data = (register_phone_number_user(email,name,provider))
         data = list(data.values())
 
         print (data)
@@ -118,7 +117,7 @@ class PhoneNumberAuthView(GenericAPIView):
 class GoogleSocialAuthView(GenericAPIView):
 
     serializer_class = GoogleSocialAuthSerializer
-
+    permission_classes = (AllowAny, )
     def post(self, request):
         """
 
@@ -133,6 +132,35 @@ class GoogleSocialAuthView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         data = ((serializer.validated_data)['auth_token'])
         return Response(data, status=status.HTTP_200_OK)
+
+
+class GoogleSocialAuthWithDetailsView(GenericAPIView):
+
+    # serializer_class = GoogleSocialAuthWithDetailsSerializer
+    # permission_classes = (AllowAny, )
+    def post(self, request):
+        auth_token = request.data['auth_token']
+
+
+        print(request.data)
+        print(auth_token)
+
+
+        provider = 'google'
+        email = request.data['email']
+        name = request.data['name']
+        name = name
+        data = (register_phone_number_user(email,name,provider))
+        data = list(data.values())
+
+        responseData = {'status': 'success', 'data': data}
+
+        return Response(responseData, status=status.HTTP_200_OK)
+
+
+
+
+
 
 
 class FacebookSocialAuthView(GenericAPIView):
