@@ -130,6 +130,7 @@ CORS_ORIGIN_WHITELIST = [
     "https://orbitplug.com",
     "https://orbitplug-admin.netlify.app",
     "https://shopping-cartsx.netlify.app",
+    "https://porichoy-admin-panel.netlify.app",
 
 
 
