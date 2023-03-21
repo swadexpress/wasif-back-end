@@ -13,6 +13,8 @@ admin.site.register(OTPToken)
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ['email' ]
+    list_filter = ['custom_id','user']
+    search_fields = ['custom_id','user']
 
 
 admin.site.register(Profile, ProfileAdmin)

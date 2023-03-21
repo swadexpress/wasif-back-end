@@ -16,6 +16,11 @@ urlpatterns = [
     path('MyBannedListView/', MyBannedListView.as_view(), name='MyBannedListView'),
     path('MyRoomAdminListView/', MyRoomAdminListView.as_view(), name='MyRoomAdminListView'),
     path('MyPostDelete/', MyPostDelete.as_view(), name='MyPostDelete'),
+    path('UserDetailsAdminView/', UserDetailsAdminView.as_view(), name='UserDetailsAdminView'),
+    path('AllUserListAdminView/', AllUserListAdminView.as_view(), name='AllUserListAdminView'),
+    path('UserDetailsUpdateAdminView/', UserDetailsUpdateAdminView.as_view(), name='UserDetailsUpdateAdminView'),
+    path('BannerImagesView/', BannerImagesView.as_view(), name='BannerImagesView'),
+    path('UploadBannerImagesAndVideosView/', UploadBannerImagesAndVideosView.as_view(), name='UploadBannerImagesAndVideosView'),
 
 
 

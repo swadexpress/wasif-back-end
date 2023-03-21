@@ -17,7 +17,18 @@ from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
 
 
-# Create your mo
+
+class BannerImages(models.Model):
+	name = models.CharField(max_length=200,default='')
+	image =  models.CharField(max_length=200,default='')
+	uploaded = models.DateTimeField(auto_now_add=True)
+
+
+
+
+
+
+
 def upload_post_to(instance,filename):
 	return f'post_picture/{instance.user.username}/{filename}'
 class Post(models.Model):

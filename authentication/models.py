@@ -129,7 +129,7 @@ class Profile(models.Model):
     zip_code = models.CharField(blank=True, max_length=20)
     image = models.CharField(blank=True, max_length=400)
     cover_image = models.CharField(blank=True, max_length=400)
-
+    is_blocked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.email

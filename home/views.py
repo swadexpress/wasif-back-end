@@ -45,8 +45,8 @@ from firebase_admin import credentials, messaging
 
 from rest_framework import filters
 cloudinary.config(cloud_name='swadexpress',
-            api_key='357258774133196',
-            api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
+                  api_key='357258774133196',
+                  api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
 
 # push_service = FCMNotification(api_key="AAAAE7z-Af4:APA91bHW9tBpU4835tbUqRiC9-tZh0LCq29UPwSFf3CxIJsXHY8r2airzRBU4y26gLOkgXBnEHf-6Lmgt9ao674yx7rs6LzHQkOOg3epYshxyud3GuQLv_bFn32foLIt0iNTyCcFKV1A")
 
@@ -55,12 +55,139 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
     return ''.join(random.choice(chars) for _ in range(size))
 
 
+class BannerImagesView(APIView):
+    def get(self, request, *args, **kwargs):
+
+        data = BannerImages.objects.all()
+
+        data = list(data.values("image",'name'))
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
+
+
+class UploadBannerImagesAndVideosView(APIView):
+    def post(self, request, *args, **kwargs):
+        # caption = request.data.get('caption', None)
+        images =  request.data['image']
+        name =  request.data['name']
+        print(request.data['image'],'.....')
+        data = []
+        image_url = cloudinary.uploader.upload(images)
+        BannerImages.objects.create(
+            name=name, image=image_url["secure_url"])
+        responseData = {'status': 'success', 'data': "data"}
+
+        return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
+
+
+class UserDetailsUpdateAdminView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        userId = request.data['userId']
+        fast_name = request.data['fastName']
+        last_name = request.data['lastName']
+
+        data = Profile.objects.filter(user_id=userId)
+        data.update(
+            fast_name=fast_name,
+            last_name=last_name,
+        )
+        data = Profile.objects.filter(user_id=userId).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
+            "user__email",
+            "user__username",
+
+
+        )
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class UserDetailsAdminView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        userId = request.data['userId']
+
+        data = Profile.objects.filter(user_id=userId).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
+            "user__email",
+            "user__username",
+
+
+        )
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class AllUserListAdminView(APIView):
+    def get(self, request, *args, **kwargs):
+
+        data = Profile.objects.filter().order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
+            "user__email",
+            "user__username",
+
+
+        )
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class MyPostDelete(ListAPIView):
     def post(self, request, *args, **kwargs):
 
- 
         postId = request.data['postId']
         data = Post.objects.filter(id=postId).delete()
 
@@ -71,15 +198,6 @@ class MyPostDelete(ListAPIView):
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
 
-
-
-
-
-
-
-
-
-
 class RequestSendView(APIView):
     def post(self, request, *args, **kwargs):
         # proxy_dict = {
@@ -88,23 +206,21 @@ class RequestSendView(APIView):
         #         }
         # push_service = FCMNotification(api_key="AAAAE7z-Af4:APA91bHW9tBpU4835tbUqRiC9-tZh0LCq29UPwSFf3CxIJsXHY8r2airzRBU4y26gLOkgXBnEHf-6Lmgt9ao674yx7rs6LzHQkOOg3epYshxyud3GuQLv_bFn32foLIt0iNTyCcFKV1A")
 
-
         # registration_ids = ["cfxlxaTXTUCQj39gcgHBVt:APA91bFBw4MwC1dwfIyozVXYXdKulH7dn8aO_N-KgZTnU1TM_yNPoz_d_sEIZIhSaD062j4l5gifVRuLGl0y5mKBlucr5_Uyffp03qC6Y94QJFADCPT8QqTdOYlDefVgBMgKc-_jwd4k", ]
         # message_title = "Uber update"
         # message_body = "Hope you're having fun this weekend, don't forget to check today's news"
         # result = push_service.notify_multiple_devices(
-            
+
         #     registration_ids=registration_ids,
         #       message_title=message_title,
         #         message_body=message_body,
         #         data ={"name":"kawsar khan"}
-                
-                
+
         #         )
 
         # cred = credentials.Certificate("/home/dulquer/LiveKit/orbitplug-back-end/home/peacegarden-ccbe4-firebase-adminsdk-q8oqd-a55b0951b4.json")
         # firebase_admin.initialize_app(cred)
-        
+
         # message = messaging.MulticastMessage(
         # notification=messaging.Notification(
         # title="Title",
@@ -113,137 +229,106 @@ class RequestSendView(APIView):
         # )
         # messaging.send_multicast(message)
 
-
         responseData = {'status': 'success', 'data': "data", }
 
-        return JsonResponse(responseData,status=HTTP_200_OK)
-
-  
-
-
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class MyBannedListView(APIView):
     def post(self, request, *args, **kwargs):
         bandedUserList = request.data['bandedUserList']
 
+        data = Profile.objects.filter(user__in=bandedUserList).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
 
-        data = Profile.objects.filter(user__in = bandedUserList).order_by('-id').values(
-              "user",
-                "followers",
-                "following",
-                "custom_id",
-                "about_me",
-                "fast_name",
-                "last_name",
-                "gender",
-                "phone",
-                "address",
-                "district",
-                "division",
-                "zip_code",
-                "image",
-                "cover_image",
-
-            )
-
+        )
 
         data = list(data)
         responseData = {'status': 'success', 'data': data, }
 
-        return JsonResponse(responseData,status=HTTP_200_OK)
-
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class MyRoomAdminListView(APIView):
     def post(self, request, *args, **kwargs):
         bandedUserList = request.data['bandedUserList']
 
+        data = Profile.objects.filter(user__in=bandedUserList).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
 
-        data = Profile.objects.filter(user__in = bandedUserList).order_by('-id').values(
-              "user",
-                "followers",
-                "following",
-                "custom_id",
-                "about_me",
-                "fast_name",
-                "last_name",
-                "gender",
-                "phone",
-                "address",
-                "district",
-                "division",
-                "zip_code",
-                "image",
-                "cover_image",
-
-            )
-
+        )
 
         data = list(data)
         responseData = {'status': 'success', 'data': data, }
 
-        return JsonResponse(responseData,status=HTTP_200_OK)
-
-
-
-
-
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class MyAllFriendListView(APIView):
     def post(self, request, *args, **kwargs):
         myUserId = request.data['myUserId']
 
-
         data = Profile.objects.all().order_by('-id').values(
-              "user",
-                "followers",
-                "following",
-                "custom_id",
-                "about_me",
-                "fast_name",
-                "last_name",
-                "gender",
-                "phone",
-                "address",
-                "district",
-                "division",
-                "zip_code",
-                "image",
-                "cover_image",
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
 
-            )
-
+        )
 
         data = list(data)
         responseData = {'status': 'success', 'data': data, }
 
-        return JsonResponse(responseData,status=HTTP_200_OK)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class AllPostSearch(ListAPIView):
     def post(self, request, *args, **kwargs):
 
-        print(request.data,'dddddddddd')
+        print(request.data, 'dddddddddd')
         query = request.data['query']
         data = Post.objects.filter(Q(text__icontains=query))
 
-        print (data)
+        print(data)
         # results = Post.objects.filter(Q(text__icontains=query) | Q(intro__icontains=query) | Q(content__icontains=query))
 
         # following_users = list(request.user.profile.following.all())
@@ -289,15 +374,11 @@ class AllPostSearch(ListAPIView):
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
 
-
 # class AllPostSearch(generics.ListAPIView):
 #     queryset = Post.objects.all()
 #     serializer_class = PostSerializer
 #     filter_backends = [filters.SearchFilter]
 #     search_fields = ['title', 'slug']
-
-
-
 
 
 class CropImagesUploadView(APIView):
@@ -323,29 +404,13 @@ class CropImagesUploadView(APIView):
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class P2PMessageUniqueIdView(APIView):
     def post(self, request, *args, **kwargs):
         myUserId = request.data['myUserId']
 
-
         isdata = P2PMessageUniqueId.objects.filter(
             user_id=myUserId,).values(
-              "user",
+            "user",
                 "other_user",
                 "uniqueId",
                 "other_user__email",
@@ -355,41 +420,37 @@ class P2PMessageUniqueIdView(APIView):
                 "user_profile__fast_name",
                 "user_profile__last_name",
                 "user_profile__image",
-            )
-        isdata2 = P2PMessageUniqueId.objects.filter( other_user_id=myUserId).values(
-                "user",
-                "other_user",
-                "uniqueId",
-                "other_user__email",
-                "other_user_profile__image",
-                "other_user_profile__fast_name",
-                "other_user_profile__last_name",
-                "user_profile__fast_name",
-                "user_profile__last_name",
-                "user_profile__image",
-            )
+        )
+        isdata2 = P2PMessageUniqueId.objects.filter(other_user_id=myUserId).values(
+            "user",
+            "other_user",
+            "uniqueId",
+            "other_user__email",
+            "other_user_profile__image",
+            "other_user_profile__fast_name",
+            "other_user_profile__last_name",
+            "user_profile__fast_name",
+            "user_profile__last_name",
+            "user_profile__image",
+        )
 
-        data =[]
+        data = []
         data.extend(isdata)
         data.extend(isdata2)
-        print (data,'otherUserIdotherUserIdotherUserIdotherUserId')
-
-
+        print(data, 'otherUserIdotherUserIdotherUserIdotherUserId')
 
         data = list(data)
         responseData = {'status': 'success', 'data': data, }
 
-        return JsonResponse(responseData,status=HTTP_200_OK)
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
 
 class CreateP2PMessageUniqueIdView(APIView):
     def post(self, request, *args, **kwargs):
         myUserId = request.data['myUserId']
         otherUserId = request.data['otherUserId']
         uniqueId = request.data['uniqueId']
-        print (myUserId,otherUserId,'otherUserIdotherUserIdotherUserIdotherUserId')
-
-
-
+        print(myUserId, otherUserId, 'otherUserIdotherUserIdotherUserIdotherUserId')
 
         isdata = P2PMessageUniqueId.objects.filter(
             user_id=myUserId, other_user_id=otherUserId).values()
@@ -397,18 +458,14 @@ class CreateP2PMessageUniqueIdView(APIView):
             user_id=otherUserId, other_user_id=myUserId).values()
         # data = []
 
-
-
         other_user_profile_id = Profile.objects.filter(
             user_id=otherUserId)
 
         user_profile_id = Profile.objects.filter(
             user_id=myUserId)
 
-
-        print(other_user_profile_id[0].id,user_profile_id[0].id,'user_profile_id')
-
-
+        print(other_user_profile_id[0].id,
+              user_profile_id[0].id, 'user_profile_id')
 
         if isdata or isdata2:
             if isdata:
@@ -417,11 +474,11 @@ class CreateP2PMessageUniqueIdView(APIView):
                 data = isdata2
         else:
             data = P2PMessageUniqueId.objects.create(
-                user_id= myUserId,
-                other_user_id= otherUserId,
-                user_profile_id= user_profile_id[0].id,
-                other_user_profile_id= other_user_profile_id[0].id,
-                uniqueId= uniqueId,
+                user_id=myUserId,
+                other_user_id=otherUserId,
+                user_profile_id=user_profile_id[0].id,
+                other_user_profile_id=other_user_profile_id[0].id,
+                uniqueId=uniqueId,
             )
 
             data = P2PMessageUniqueId.objects.filter(id=data.id).values()
@@ -429,7 +486,7 @@ class CreateP2PMessageUniqueIdView(APIView):
         data = list(data)
         responseData = {'status': 'success', 'data': data, }
 
-        return JsonResponse(responseData,status=HTTP_200_OK)
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class PostView(ListAPIView):
@@ -486,7 +543,8 @@ class AddPostView(APIView):
 
             for image in images:
                 image_url = cloudinary.uploader.upload(image)
-                PostImages.objects.create(post_id=creatPost.id, image=image_url["secure_url"])
+                PostImages.objects.create(
+                    post_id=creatPost.id, image=image_url["secure_url"])
 
         return Response(status=HTTP_200_OK)
 
@@ -824,8 +882,8 @@ class UpdateProfileCoverImagesView(APIView):
         MyUserId = request.data['MyUserId']
 
         cloudinary.config(cloud_name='swadexpress',
-                  api_key='357258774133196',
-                  api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
+                          api_key='357258774133196',
+                          api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
 
         if images:
             for image in images:
@@ -854,8 +912,8 @@ class UpdateProfileImagesView(APIView):
         MyUserId = request.data['MyUserId']
 
         cloudinary.config(cloud_name='swadexpress',
-                  api_key='357258774133196',
-                  api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
+                          api_key='357258774133196',
+                          api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
 
         if images:
             for image in images:
@@ -875,11 +933,6 @@ class UpdateProfileImagesView(APIView):
         responseData = {'status': 'success', }
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
-
-
-
-
 
         # return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
@@ -933,10 +986,9 @@ class UserProfileView(ListAPIView):
 
     def post(self, request,  *args, **kwargs):
         d = request.data
-        print(request.data, '.......asdfasdfsadfddddddddddddddddd..............')
         userId = request.data['userId']
 
-        data = Profile.objects.filter(user_id=userId).values(
+        data = Profile.objects.filter(user_id=userId ).values(
             'user_id',
             'user__email',
             'fast_name',
@@ -944,6 +996,7 @@ class UserProfileView(ListAPIView):
             'image',
             'cover_image',
             'custom_id',
+            'is_blocked',
 
         )
 
