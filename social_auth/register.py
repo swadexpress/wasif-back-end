@@ -61,8 +61,9 @@ def register_social_user_with_details(provider, user_id, email, name):
             'id': new_user.id,
             'email': new_user.email,
             'username': new_user.username,
-            'tokens': new_user.tokens(),
+            
             'personal_WS_ID': new_user.personal_WS_ID,
+            'tokens': new_user.tokens(),
         }
 
 
@@ -108,8 +109,9 @@ def register_social_user(provider, user_id, email, name):
             'id': new_user.id,
             'email': new_user.email,
             'username': new_user.username,
-            'tokens': new_user.tokens(),
+           
             'personal_WS_ID': new_user.personal_WS_ID,
+             'tokens': new_user.tokens(),
         }
 
 
@@ -124,11 +126,8 @@ def register_phone_number_user(email, name, provider):
                 'id': registered_user.id,
                 'username': registered_user.username,
                 'email': registered_user.email,
-
                 'personal_WS_ID': registered_user.personal_WS_ID,
                 'tokens': registered_user.tokens()
-
-
             }
         else:
             raise AuthenticationFailed(
@@ -159,6 +158,6 @@ def register_phone_number_user(email, name, provider):
             'id': new_user.id,
             'email': new_user.email,
             'username': new_user.username,
-            'tokens': new_user.tokens(),
             'personal_WS_ID': new_user.personal_WS_ID,
+            'tokens': new_user.tokens(),
         }

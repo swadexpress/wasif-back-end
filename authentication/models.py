@@ -121,7 +121,11 @@ class Profile(models.Model):
     about_me = models.CharField(max_length=250, null=True,blank=True)
     fast_name = models.CharField(blank=True, max_length=50)
     last_name = models.CharField(blank=True, max_length=50)
-    gender = models.CharField( max_length=6, null=True,blank=True)
+    gender = models.CharField( max_length=10, null=True,blank=True)
+    date_of_birth = models.CharField( max_length=300, null=True,blank=True)
+    country = models.CharField( max_length=300, null=True,blank=True)
+    language = models.CharField( max_length=300, null=True,blank=True)
+    profile_email = models.CharField( max_length=300, null=True,blank=True)
     phone = models.CharField(blank=True, max_length=11)
     address = models.CharField(blank=True, max_length=300)
     district = models.CharField(blank=True, max_length=120)
@@ -130,6 +134,7 @@ class Profile(models.Model):
     image = models.CharField(blank=True, max_length=400)
     cover_image = models.CharField(blank=True, max_length=400)
     is_blocked = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.user.email

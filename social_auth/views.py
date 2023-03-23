@@ -82,6 +82,32 @@ class CheckOTPAuthView(GenericAPIView):
 
 
 
+class PhoneNumberAuthLogInView(APIView):
+
+    # serializer_class = PhoneNumberAuthSerializer
+
+    def post(self, request):
+
+        phone_number = request.data['number']
+        rider = request.data['rider']
+        email =phone_number
+        name ='kawsarkkhan'
+        provider ='Phone'
+
+        isUser =  User.objects.filter(email =email)
+        if isUser :
+            token_number = random_with_N_digits(4)
+            token_save = OTPToken.objects.create(token=token_number,token_number=phone_number,uidb64='')
+            data = (register_phone_number_user(email,name,provider))
+            data = list(data.values())
+
+        else:
+             return Response({'error': 'Please Create an Account'}, status=status.HTTP_200_OK)
+
+        responseData = {'status': 'success', 'data': data}
+
+        return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
+
 class PhoneNumberAuthView(APIView):
 
     # serializer_class = PhoneNumberAuthSerializer
@@ -134,17 +160,37 @@ class GoogleSocialAuthView(GenericAPIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
+class GoogleSocialAuthWithDetailsLogInView(GenericAPIView):
+
+    def post(self, request):
+        auth_token = request.data['auth_token']
+        print(request.data)
+        print(auth_token)
+
+
+        provider = 'google'
+        email = request.data['email']
+        name = request.data['name']
+        name = name
+        isUser =  User.objects.filter(email =email)
+        if isUser :
+            data = (register_phone_number_user(email,name,provider))
+            data = list(data.values())
+        else:
+             return Response({'error': 'Please Create an Account'}, status=status.HTTP_200_OK)
+
+        responseData = {'status': 'success', 'data': data}
+
+        return Response(responseData, status=status.HTTP_200_OK)
+
+
+
 class GoogleSocialAuthWithDetailsView(GenericAPIView):
 
     # serializer_class = GoogleSocialAuthWithDetailsSerializer
     # permission_classes = (AllowAny, )
     def post(self, request):
         auth_token = request.data['auth_token']
-
-
-        print(request.data)
-        print(auth_token)
-
 
         provider = 'google'
         email = request.data['email']

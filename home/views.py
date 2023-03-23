@@ -908,8 +908,10 @@ class UpdateProfileCoverImagesView(APIView):
 class UpdateProfileImagesView(APIView):
     def post(self, request, *args, **kwargs):
         images = request.data.getlist('image', None)
-        # MyUserId = request.data.getlist('MyUserId', None)
+        
         MyUserId = request.data['MyUserId']
+
+        print(MyUserId,'asdfjaskldfjal')
 
         cloudinary.config(cloud_name='swadexpress',
                           api_key='357258774133196',
@@ -934,7 +936,6 @@ class UpdateProfileImagesView(APIView):
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
-        # return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
 
 class UploadImagesAndVideosView(APIView):
@@ -966,12 +967,24 @@ class UserProfileUpdateView(ListAPIView):
         d = request.data
 
         userId = request.data['userId']
-        fastName = request.data['fast_name']
-        lastName = request.data['last_name']
+        fastName = request.data['fastName']
+        lastName = request.data['lastName']
+        email = request.data['email']
+        gender = request.data['gender']
+        dateOfBirth = request.data['dateOfBirth']
+        country = request.data['country']
+        language = request.data['language']
+
+
         data = Profile.objects.filter(user_id=userId)
         data = data.update(
             fast_name=fastName,
             last_name=lastName,
+            gender=gender,
+            date_of_birth=dateOfBirth,
+            country=country,
+            language=language,
+            profile_email=email,
         )
         data = Profile.objects.filter(user_id=userId)
 
