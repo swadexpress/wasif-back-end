@@ -135,8 +135,6 @@ class Item(models.Model):
     stock_status = models.CharField(max_length=100, default='In Stock')
     cost_price = models.CharField(max_length=100, default='0')
     sell_price = models.CharField(max_length=100, default='0')
-
-
     product_status = models.CharField(max_length=100, default='This product available, Happy shopping :)')
     note = models.CharField(max_length=100, default='This product available, Happy shopping :)')
     status = models.CharField(max_length=10, choices=STATUS)

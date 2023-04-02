@@ -53,17 +53,15 @@ class AdminDashBoardView(APIView):
 
         last_month = datetime.today() - timedelta(days=30)
 
-
         in_stock_products = Item.objects.filter(
             stock_status="In Stock").order_by('-id')
         pre_order_products = Item.objects.filter(
             stock_status="Pre-Orders Products").order_by('-id')
 
         up_coming_products = Item.objects.filter(
-            stock_status="Up Coming Products").order_by('-id')        
+            stock_status="Up Coming Products").order_by('-id')
         out_of_stock_products = Item.objects.filter(
             stock_status="Out of Stock").order_by('-id')
-
 
         in_stock_products = len(in_stock_products)
         pre_order_products = len(pre_order_products)
@@ -72,36 +70,26 @@ class AdminDashBoardView(APIView):
 
         last_month = datetime.today() - timedelta(days=30)
 
+        total_sell = OderProduct.objects.filter(created_at__gte=last_month)
+        total_return = OderProduct.objects.filter(
+            created_at__gte=last_month, status='Return')
+        total_cencelled = OderProduct.objects.filter(
+            created_at__gte=last_month, status='Cencelled')
 
-        total_sell = OderProduct.objects.filter(created_at__gte=last_month )
-        total_return = OderProduct.objects.filter(created_at__gte=last_month ,status='Return')
-        total_cencelled = OderProduct.objects.filter(created_at__gte=last_month ,status='Cencelled')
-
-
-
-
-        total_sell_prices =[]
+        total_sell_prices = []
         for i in total_sell:
-            total_sell_prices.append(i.price *i.quantity)
+            total_sell_prices.append(i.price * i.quantity)
         total_sell_prices = sum(total_sell_prices)
 
-
-        total_return_prices =[]
-        for i in total_return :
-            total_return_prices.append(i.price *i.quantity)
+        total_return_prices = []
+        for i in total_return:
+            total_return_prices.append(i.price * i.quantity)
         total_return_prices = sum(total_return_prices)
 
-        total_cencelled_prices =[]
-        for i in total_cencelled :
-            total_cencelled_prices.append(i.price *i.quantity)
+        total_cencelled_prices = []
+        for i in total_cencelled:
+            total_cencelled_prices.append(i.price * i.quantity)
         total_cencelled_prices = sum(total_cencelled_prices)
-
-
-
-
-
-
-
 
         responseData = {
             'status': 'success',
@@ -117,33 +105,31 @@ class AdminDashBoardView(APIView):
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
+
 class AdminInstockProductsListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
-    queryset = Item.objects.filter(stock_status = "In Stock").order_by('-id')
-
+    queryset = Item.objects.filter(stock_status="In Stock").order_by('-id')
 
 
 class AdminOutOfSockProductsListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
-    queryset = Item.objects.filter(stock_status = "Out of Stock").order_by('-id')
-
-
+    queryset = Item.objects.filter(stock_status="Out of Stock").order_by('-id')
 
 
 class AdminPreOrderProductsListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
-    queryset = Item.objects.filter(stock_status = "Pre-Orders Products").order_by('-id')
-
+    queryset = Item.objects.filter(
+        stock_status="Pre-Orders Products").order_by('-id')
 
 
 class AdminUpComingProductsListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
-    queryset = Item.objects.filter(stock_status = "Up Coming Products").order_by('-id')
-
+    queryset = Item.objects.filter(
+        stock_status="Up Coming Products").order_by('-id')
 
 
 class AdminSingleOrderDetailUpdateView(APIView):
@@ -159,9 +145,9 @@ class AdminSingleOrderDetailUpdateView(APIView):
         status = request.data['status']
         other_status = request.data['other_status']
 
-        oder_product_update =OderProduct.objects.filter(id = orderId)
+        oder_product_update = OderProduct.objects.filter(id=orderId)
         oder_product_update.update(
-              returns_status =returns_status,
+              returns_status=returns_status,
               returns_reason_sms=returns_reason_sms,
               cancelled_status=cancelled_status,
               cancelled_reason_sms=cancelled_reason_sms,
@@ -169,9 +155,7 @@ class AdminSingleOrderDetailUpdateView(APIView):
               other_status=other_status,
         )
 
-
-
-        oder_product = OderProduct.objects.filter(id = orderId).values(
+        oder_product = OderProduct.objects.filter(id=orderId).values(
             'id',
             'order',
             'user',
@@ -200,11 +184,9 @@ class AdminSingleOrderDetailUpdateView(APIView):
         )
         oder_product = list(oder_product)
 
- 
-        responseData = {'status': 'success',"oder_product":oder_product }
+        responseData = {'status': 'success', "oder_product": oder_product}
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
 
 
 class AdminSingleOrderDetailView(APIView):
@@ -214,9 +196,7 @@ class AdminSingleOrderDetailView(APIView):
     def post(self, request, *args, **kwargs):
         orderId = request.data['orderId']
 
-
-
-        oder_product = OderProduct.objects.filter(id = orderId).values(
+        oder_product = OderProduct.objects.filter(id=orderId).values(
             'id',
             'order',
             'user',
@@ -268,18 +248,11 @@ class AdminSingleOrderDetailView(APIView):
         )
         data = list(data)
         oder_product = list(oder_product)
- 
-        responseData = {'status': 'success', 'data': data ,"oder_product":oder_product }
+
+        responseData = {'status': 'success',
+            'data': data, "oder_product": oder_product}
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
-
-
-
-
-
-
-
 
 
 class AdminOrderDetailView(APIView):
@@ -289,9 +262,7 @@ class AdminOrderDetailView(APIView):
     def post(self, request, *args, **kwargs):
         orderId = request.data['orderId']
 
-
-
-        oder_product = OderProduct.objects.filter(order_id = orderId).values(
+        oder_product = OderProduct.objects.filter(order_id=orderId).values(
             'id',
             'order',
             'user',
@@ -343,13 +314,11 @@ class AdminOrderDetailView(APIView):
         ).order_by('-id')
         data = list(data)
         oder_product = list(oder_product)
- 
-        responseData = {'status': 'success', 'data': data ,"oder_product":oder_product }
+
+        responseData = {'status': 'success',
+            'data': data, "oder_product": oder_product}
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
-
-
 
 
 class AdminAllOrderView(APIView):
@@ -381,12 +350,10 @@ class AdminAllOrderView(APIView):
 
         ).order_by('-id')
         data = list(data)
- 
-        responseData = {'status': 'success', 'data': data , }
+
+        responseData = {'status': 'success', 'data': data, }
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
-
 
 
 class AdminAllReturnsOrderProductsListView(ListAPIView):
@@ -394,10 +361,7 @@ class AdminAllReturnsOrderProductsListView(ListAPIView):
     serializer_class = UserOrderDetailSerializer
 
     def get_queryset(self):
-        return OderProduct.objects.filter( status='Return').order_by('-id')
-
-
-
+        return OderProduct.objects.filter(status='Return').order_by('-id')
 
 
 class AdminAllCompletesOrderProductsListView(ListAPIView):
@@ -405,10 +369,7 @@ class AdminAllCompletesOrderProductsListView(ListAPIView):
     serializer_class = UserOrderDetailSerializer
 
     def get_queryset(self):
-        return OderProduct.objects.filter( status='Completed').order_by('-id')
-
-
-
+        return OderProduct.objects.filter(status='Completed').order_by('-id')
 
 
 class AdminAllCencelledOrderProductsListView(ListAPIView):
@@ -418,16 +379,13 @@ class AdminAllCencelledOrderProductsListView(ListAPIView):
     def get_queryset(self):
         return OderProduct.objects.filter(status='Cencelled').order_by('-id')
 
+
 class AdminAllNewOrderProductsListView(ListAPIView):
     # permission_classes = (IsAuthenticated, )
     serializer_class = UserOrderDetailSerializer
 
     def get_queryset(self):
         return OderProduct.objects.filter(status='New').order_by('-id')
-
-
-
-
 
 
 class UploadImagesAndVideosView(APIView):
@@ -438,7 +396,7 @@ class UploadImagesAndVideosView(APIView):
         # type = request.data.getlist('type', None)
         # print(request.data['_parts'][0],'.....')
         print(request.data, '.....')
-        print(request.data['image'],'.....')
+        print(request.data['image'], '.....')
         # dd= json.loads(request.data['image'])
         # print (dd,',,,,,,,,,,,,,,,,,,ddd')
         data = []
@@ -454,6 +412,7 @@ class UploadImagesAndVideosView(APIView):
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
+
 class UploadProductMainImagesAndVideosView(APIView):
     def post(self, request, *args, **kwargs):
         # caption = request.data.get('caption', None)
@@ -462,7 +421,7 @@ class UploadProductMainImagesAndVideosView(APIView):
         # type = request.data.getlist('type', None)
         # print(request.data['_parts'][0],'.....')
         print(request.data, '.....')
-        print(request.data['image'],'.....')
+        print(request.data['image'], '.....')
         # dd= json.loads(request.data['image'])
         # print (dd,',,,,,,,,,,,,,,,,,,ddd')
         data = []
@@ -477,15 +436,6 @@ class UploadProductMainImagesAndVideosView(APIView):
         responseData = {'status': 'success', 'data': data}
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
-
-
-
-
-
-
-
-
 
 
 class UplodedProductUpdates(ListAPIView):
@@ -513,13 +463,21 @@ class UplodedProductUpdates(ListAPIView):
         stockStatus = request.data['stockStatus']
         # slug = request.data['slug']
         # print (slug,'slugslugslug')
+
+        # print (images,'imagesimagesimages')
+        updateImage = ''
+        if (type(image) == str):
+            updateImage = image
+        else:
+            updateImage = image[0]["images"]
+
         searching_product = Item.objects.filter(id=productId)
 
         create_item = searching_product.update(
             # category=category,
             title=productName,
             description=shortDescription,
-            # image=image[0]["images"],
+            image=updateImage,
             price=price,
             discount_price=discountPrice,
             amount=quantity,
@@ -535,23 +493,29 @@ class UplodedProductUpdates(ListAPIView):
             stock_status=stockStatus,
             cost_price=constPrice,
             sell_price=sellPrice,
-            
+
             )
-            
+
         # if searching_product:
         #     if category:
         #         for i in category:
         #             create_item.category.add(i)
 
-
-        # for i in images:
-        #     ProductImages.objects.create(product_id =create_item.id,image=i["images"])
-
-
-
-
-
-        # print (detail)
+        for i in images:
+            updateImage = ''
+            if (i['images']):
+                updateImage = i['images']
+            else:
+                updateImage = i["image"]
+        is_product_images= ProductImages.objects.filter(product_id =productId)
+        is_product_images.delete()
+        for i in images:
+            updateImage = ''
+            if (i['images']):
+                updateImage = i['images']
+            else:
+                updateImage = i["image"]
+            ProductImages.objects.create(product_id =productId,image=updateImage)
 
         responseData = {'status': 'success', }
 

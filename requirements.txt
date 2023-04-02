@@ -86,7 +86,5 @@ tqdm
 uritemplate
 urllib3
 webencodings
-
-
-
-
+dj-database-url
+psycopg2

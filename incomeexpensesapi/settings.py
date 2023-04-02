@@ -16,6 +16,8 @@ import datetime
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import dj_database_url
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,7 +59,6 @@ INSTALLED_APPS = [
     'mptt',
     'ckeditor',
     'django_filters',
-    'income',
     'shop',
     'home',
     'sorl.thumbnail',
@@ -144,12 +145,22 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
+
 }
+
+
+
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
