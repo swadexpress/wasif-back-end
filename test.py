@@ -1,20 +1,15 @@
+from twilio.rest import Client
 
 
-import firebase_admin
-from firebase_admin import credentials, messaging
-cred = credentials.Certificate("/home/dulquer/LiveKit/orbitplug-back-end/home/peacegarden-ccbe4-firebase-adminsdk-q8oqd-a55b0951b4.json")
-firebase_admin.initialize_app(cred)
-message = messaging.MulticastMessage(
-data={"name":'kna'},
-notification=messaging.Notification(
-title="Title",
-body="body line1\nbody line2"),
+account_sid = "ACdc15b7264843df0ca7888b9f4ecb4c3d"
+auth_token = "9eca87f5a36ccf0f05683f3c15b442bc"
+client = Client(account_sid, auth_token)
 
-tokens=['e1X93H2WReGBZKBqr8_9L_:APA91bE4zCdyRkW5R1of3OjrlDVrTq5TiIcTOVehKdlNW56UsHR1hNExbzbPlWXIwlqk3VUNffrWfDCgPLQ3qUNoP_6NTVwHVepE5HGIhUHwdhfUQtz_Qm5foh8Qxp0UIUz2Gj2enmVy']
-)
-messaging.send_multicast(message)
-
-
+message = client.messages.create(
+                body="Join Earth's mightiest heroes. Like Kevin Bacon.",
+                from_='+15075756050',
+                to='+8801568393974'
+            )
 
 
 

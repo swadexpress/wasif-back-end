@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 
 from .register import register_phone_number_user
 from random import randint
+from twilio.rest import Client
 
 
 def random_with_N_digits(n):
@@ -84,8 +85,6 @@ class CheckOTPAuthView(GenericAPIView):
 
 class PhoneNumberAuthLogInView(APIView):
 
-    # serializer_class = PhoneNumberAuthSerializer
-
     def post(self, request):
 
         phone_number = request.data['number']
@@ -94,15 +93,23 @@ class PhoneNumberAuthLogInView(APIView):
         name ='kawsarkkhan'
         provider ='Phone'
 
-        isUser =  User.objects.filter(email =email)
-        if isUser :
-            token_number = random_with_N_digits(4)
-            token_save = OTPToken.objects.create(token=token_number,token_number=phone_number,uidb64='')
-            data = (register_phone_number_user(email,name,provider))
-            data = list(data.values())
+        # account_sid = "ACdc15b7264843df0ca7888b9f4ecb4c3d"
+        # auth_token = "9eca87f5a36ccf0f05683f3c15b442bc"
+        # client = Client(account_sid, auth_token)
 
-        else:
-             return Response({'error': 'Please Create an Account'}, status=status.HTTP_200_OK)
+        # message = client.messages.create(
+        #                     body="Join Earth's mightiest heroes. Like Kevin Bacon.",
+        #                     from_='+15075756050',
+        #                     to='+8801568393974'
+        #                 )
+
+
+
+        token_number = random_with_N_digits(4)
+        token_save = OTPToken.objects.create(token=token_number,token_number=phone_number,uidb64='')
+        data = (register_phone_number_user(email,name,provider))
+        data = list(data.values())
+
 
         responseData = {'status': 'success', 'data': data}
 
@@ -172,12 +179,9 @@ class GoogleSocialAuthWithDetailsLogInView(GenericAPIView):
         email = request.data['email']
         name = request.data['name']
         name = name
-        isUser =  User.objects.filter(email =email)
-        if isUser :
-            data = (register_phone_number_user(email,name,provider))
-            data = list(data.values())
-        else:
-             return Response({'error': 'Please Create an Account'}, status=status.HTTP_200_OK)
+        data = (register_phone_number_user(email,name,provider))
+        data = list(data.values())
+
 
         responseData = {'status': 'success', 'data': data}
 

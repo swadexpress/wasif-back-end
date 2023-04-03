@@ -1001,17 +1001,7 @@ class UserProfileView(ListAPIView):
         d = request.data
         userId = request.data['userId']
 
-        data = Profile.objects.filter(user_id=userId ).values(
-            'user_id',
-            'user__email',
-            'fast_name',
-            'last_name',
-            'image',
-            'cover_image',
-            'custom_id',
-            'is_blocked',
-
-        )
+        data = Profile.objects.filter(user_id=userId ).values()
 
         data = list(data)
 

@@ -88,3 +88,4 @@ urllib3
 webencodings
 dj-database-url
 psycopg2
+twilio
