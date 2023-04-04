@@ -133,7 +133,15 @@ class Profile(models.Model):
     zip_code = models.CharField(blank=True, max_length=20)
     image = models.CharField(blank=True, max_length=400)
     cover_image = models.CharField(blank=True, max_length=400)
+    # ======================================================
+    coin = models.IntegerField(blank=True,default=0)
+    total_coin = models.IntegerField(blank=True,default=0)
+    diamond = models.IntegerField(blank=True,default=0)
+    total_diamond = models.IntegerField(blank=True,default=0)
+    # ======================================================
     is_blocked = models.BooleanField(default=False)
+
+
 
 
     def __str__(self):
