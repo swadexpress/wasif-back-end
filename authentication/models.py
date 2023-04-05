@@ -140,6 +140,7 @@ class Profile(models.Model):
     total_diamond = models.IntegerField(blank=True,default=0)
     # ======================================================
     is_blocked = models.BooleanField(default=False)
+    is_host_agent = models.BooleanField(default=False)
 
 
 

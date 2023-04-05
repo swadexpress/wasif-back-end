@@ -55,12 +55,191 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
     return ''.join(random.choice(chars) for _ in range(size))
 
 
+# ======================================Host Agent===========================================================
+
+class MyRechargeView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        data = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "country",
+            "cover_image",
+            "user__email",
+            "user__username",
+        )
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+
+
+
+
+
+class HostDataView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        hostDataPending = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "country",
+            "cover_image",
+            "user__email",
+            "user__username",
+        )
+        hostDataAccepted = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "country",
+            "cover_image",
+            "user__email",
+            "user__username",
+        )
+
+        hostDataCancel = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "country",
+            "cover_image",
+            "user__email",
+            "user__username",
+        )
+
+        hostDataPending = list(hostDataPending)
+        hostDataAccepted = list(hostDataAccepted)
+        hostDataCancel = list(hostDataCancel)
+
+        responseData = {'status': 'success',
+
+                        'hostDataPending': hostDataPending,
+                        'hostDataAccepted': hostDataAccepted,
+                        'hostDataCancel': hostDataCancel,
+
+                        }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class RechargeAgentView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        data = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "country",
+            "cover_image",
+            "user__email",
+            "user__username",
+        )
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class HostAgentsView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        data = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
+            "user__email",
+            "user__username",
+        )
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+# =================================================================================================
+
 class BannerImagesView(APIView):
     def get(self, request, *args, **kwargs):
 
         data = BannerImages.objects.all()
 
-        data = list(data.values("image",'name'))
+        data = list(data.values("image", 'name'))
         responseData = {'status': 'success', 'data': data, }
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
@@ -69,9 +248,9 @@ class BannerImagesView(APIView):
 class UploadBannerImagesAndVideosView(APIView):
     def post(self, request, *args, **kwargs):
         # caption = request.data.get('caption', None)
-        images =  request.data['image']
-        name =  request.data['name']
-        print(request.data['image'],'.....')
+        images = request.data['image']
+        name = request.data['name']
+        print(request.data['image'], '.....')
         data = []
         image_url = cloudinary.uploader.upload(images)
         BannerImages.objects.create(
@@ -908,10 +1087,10 @@ class UpdateProfileCoverImagesView(APIView):
 class UpdateProfileImagesView(APIView):
     def post(self, request, *args, **kwargs):
         images = request.data.getlist('image', None)
-        
+
         MyUserId = request.data['MyUserId']
 
-        print(MyUserId,'asdfjaskldfjal')
+        print(MyUserId, 'asdfjaskldfjal')
 
         cloudinary.config(cloud_name='swadexpress',
                           api_key='357258774133196',
@@ -935,7 +1114,6 @@ class UpdateProfileImagesView(APIView):
         responseData = {'status': 'success', }
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
 
 
 class UploadImagesAndVideosView(APIView):
@@ -975,7 +1153,6 @@ class UserProfileUpdateView(ListAPIView):
         country = request.data['country']
         language = request.data['language']
 
-
         data = Profile.objects.filter(user_id=userId)
         data = data.update(
             fast_name=fastName,
@@ -1001,7 +1178,7 @@ class UserProfileView(ListAPIView):
         d = request.data
         userId = request.data['userId']
 
-        data = Profile.objects.filter(user_id=userId ).values()
+        data = Profile.objects.filter(user_id=userId).values()
 
         data = list(data)
 
