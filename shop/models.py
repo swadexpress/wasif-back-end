@@ -48,6 +48,7 @@ ADDRESS_CHOICES = (
 )
 
 
+
 class Category(MPTTModel):
     STATUS = (
         ('True', 'True'),

@@ -38,6 +38,8 @@ import cloudinary.api
 import json
 from rest_framework import generics
 from pyfcm import FCMNotification
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework import status
 
 
 import firebase_admin
@@ -55,107 +57,215 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-# ======================================Host Agent===========================================================
-
-class MyRechargeView(APIView):
+class HostAgentsUpdateView(APIView):
     def post(self, request, *args, **kwargs):
+        Id = request.data['id']
         userId = request.data['userId']
-        data = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
-            "user",
-            "followers",
-            "following",
-            "custom_id",
-            "about_me",
-            "fast_name",
-            "last_name",
-            "gender",
-            "phone",
-            "address",
-            "district",
-            "division",
-            "zip_code",
-            "image",
-            "country",
-            "cover_image",
-            "user__email",
-            "user__username",
+        joinUserId = request.data['joinUserId']
+        status = request.data['status']
+
+        # print(buyerUserId,'buyerUserId')
+
+        buy_coin_from_agents_update = HostAgents.objects.filter(
+            id=Id
+        )
+        buy_coin_from_agents_update.update(
+            status=status
         )
 
-        data = list(data)
-        responseData = {'status': 'success', 'data': data, }
+        responseData = {'status': 'success'}
 
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
+class HostAgentsCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        userProfileId = request.data['userProfileId']
+        agentUserId = request.data['agentUserId']
+        agentProfileId = request.data['agentProfileId']
+        status = ''
+        isHostAgents = HostAgents.objects.filter(
+            agent_user_id=agentUserId, join_user_id=userId)
+        if (isHostAgents):
+            status = 'errors'
+            pass
+
+        else:
+            HostAgents.objects.create(
+                agent_user_id=agentUserId,
+                agent_user_profile_id=agentProfileId,
+                join_user_id=userId,
+                join_user_profile_id=userProfileId,
+            )
+            status = 'success'
+
+        responseData = {'status': status}
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
+class BuyCoinFromAgentsCreateUpdateView(APIView):
+    def post(self, request, *args, **kwargs):
+        Id = request.data['id']
+        userId = request.data['userId']
+        buyerUserId = request.data['buyerUserId']
+        status = request.data['status']
 
+        # print(buyerUserId,'buyerUserId')
+
+        buy_coin_from_agents_update = BuyCoinFromAgents.objects.filter(
+            id=Id
+        )
+        buy_coin_from_agents_update.update(
+            status=status
+        )
+
+        responseData = {'status': 'success'}
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class BuyCoinFromAgentsCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        buyer_user = request.data['userId']
+        buyer_user_profile = request.data['userProfileId']
+        agent_user = request.data['agentUserId']
+        agent_user_profile = request.data['agentProfileId']
+        amount = request.data['amount']
+
+        BuyCoinFromAgents.objects.create(
+            buyer_user_id=buyer_user,
+            buyer_user_profile_id=buyer_user_profile,
+            agent_user_id=agent_user,
+            agent_user_profile_id=agent_user_profile,
+            amount=amount,
+
+
+        )
+
+        responseData = {'status': 'success'}
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class MyRechargeView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        hostDataPending = BuyCoinFromAgents.objects.filter(
+            agent_user_id=userId,
+            status="Pending"
+        ).order_by('-id').values(
+            "id",
+            "amount",
+            "buyer_user_profile__id",
+            "buyer_user_profile__fast_name",
+            "buyer_user_profile__last_name",
+            "buyer_user_profile__cover_image",
+            "buyer_user_profile__image",
+            "buyer_user_profile__custom_id",
+            "buyer_user__id",
+            "buyer_user__email",
+            "buyer_user__username",
+        )
+        hostDataAccepted = BuyCoinFromAgents.objects.filter(
+            agent_user_id=userId,
+            status="Accepted"
+        ).order_by('-id').values(
+            "id",
+            "amount",
+            "buyer_user_profile__id",
+            "buyer_user_profile__fast_name",
+            "buyer_user_profile__last_name",
+            "buyer_user_profile__cover_image",
+            "buyer_user_profile__image",
+            "buyer_user_profile__custom_id",
+            "buyer_user__id",
+            "buyer_user__email",
+            "buyer_user__username",
+        )
+        hostDataCancel = BuyCoinFromAgents.objects.filter(
+            agent_user_id=userId,
+            status="Cancel"
+        ).order_by('-id').values(
+            "id",
+            "amount",
+            "buyer_user_profile__id",
+            "buyer_user_profile__fast_name",
+            "buyer_user_profile__last_name",
+            "buyer_user_profile__cover_image",
+            "buyer_user_profile__image",
+            "buyer_user_profile__custom_id",
+            "buyer_user__id",
+            "buyer_user__email",
+            "buyer_user__username",
+        )
+
+        hostDataPending = list(hostDataPending)
+        hostDataAccepted = list(hostDataAccepted)
+        hostDataCancel = list(hostDataCancel)
+
+        responseData = {'status': 'success',
+
+                        'hostDataPending': hostDataPending,
+                        'hostDataAccepted': hostDataAccepted,
+                        'hostDataCancel': hostDataCancel,
+
+                        }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class HostDataView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
-        hostDataPending = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
-            "user",
-            "followers",
-            "following",
-            "custom_id",
-            "about_me",
-            "fast_name",
-            "last_name",
-            "gender",
-            "phone",
-            "address",
-            "district",
-            "division",
-            "zip_code",
-            "image",
-            "country",
-            "cover_image",
-            "user__email",
-            "user__username",
-        )
-        hostDataAccepted = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
 
-            "user",
-            "followers",
-            "following",
-            "custom_id",
-            "about_me",
-            "fast_name",
-            "last_name",
-            "gender",
-            "phone",
-            "address",
-            "district",
-            "division",
-            "zip_code",
-            "image",
-            "country",
-            "cover_image",
-            "user__email",
-            "user__username",
+        hostDataPending = HostAgents.objects.filter(
+            agent_user_id=userId,
+            status="Pending"
+        ).order_by('-id').values(
+            "id",
+            "join_user_profile__id",
+            "join_user_profile__fast_name",
+            "join_user_profile__last_name",
+            "join_user_profile__cover_image",
+            "join_user_profile__image",
+            "join_user_profile__custom_id",
+            "join_user__id",
+            "join_user__email",
+            "join_user__username",
         )
 
-        hostDataCancel = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
-            "user",
-            "followers",
-            "following",
-            "custom_id",
-            "about_me",
-            "fast_name",
-            "last_name",
-            "gender",
-            "phone",
-            "address",
-            "district",
-            "division",
-            "zip_code",
-            "image",
-            "country",
-            "cover_image",
-            "user__email",
-            "user__username",
+        hostDataAccepted = HostAgents.objects.filter(
+            agent_user_id=userId,
+            status="Accepted"
+        ).order_by('-id').values(
+            "id",
+            "join_user_profile__id",
+            "join_user_profile__fast_name",
+            "join_user_profile__last_name",
+            "join_user_profile__cover_image",
+            "join_user_profile__image",
+            "join_user_profile__custom_id",
+            "join_user__id",
+            "join_user__email",
+            "join_user__username",
+        )
+
+        hostDataCancel = HostAgents.objects.filter(
+            agent_user_id=userId,
+            status="Cancel"
+        ).order_by('-id').values(
+            "id",
+            "join_user_profile__id",
+            "join_user_profile__fast_name",
+            "join_user_profile__last_name",
+            "join_user_profile__cover_image",
+            "join_user_profile__image",
+            "join_user_profile__custom_id",
+            "join_user__id",
+            "join_user__email",
+            "join_user__username",
         )
 
         hostDataPending = list(hostDataPending)
@@ -177,6 +287,7 @@ class RechargeAgentView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
         data = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+            "id",
             "user",
             "followers",
             "following",
@@ -207,6 +318,7 @@ class HostAgentsView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
         data = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+            "id",
             "user",
             "followers",
             "following",
@@ -273,6 +385,7 @@ class UserDetailsUpdateAdminView(APIView):
             last_name=last_name,
         )
         data = Profile.objects.filter(user_id=userId).order_by('-id').values(
+            "id",
             "user",
             "followers",
             "following",
@@ -306,6 +419,7 @@ class UserDetailsAdminView(APIView):
         userId = request.data['userId']
 
         data = Profile.objects.filter(user_id=userId).order_by('-id').values(
+            "id",
             "user",
             "followers",
             "following",
@@ -337,6 +451,7 @@ class AllUserListAdminView(APIView):
     def get(self, request, *args, **kwargs):
 
         data = Profile.objects.filter().order_by('-id').values(
+            "id",
             "user",
             "followers",
             "following",
@@ -418,6 +533,7 @@ class MyBannedListView(APIView):
         bandedUserList = request.data['bandedUserList']
 
         data = Profile.objects.filter(user__in=bandedUserList).order_by('-id').values(
+            "id",
             "user",
             "followers",
             "following",
@@ -447,6 +563,7 @@ class MyRoomAdminListView(APIView):
         bandedUserList = request.data['bandedUserList']
 
         data = Profile.objects.filter(user__in=bandedUserList).order_by('-id').values(
+            "id",
             "user",
             "followers",
             "following",
