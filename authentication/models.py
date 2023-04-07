@@ -141,7 +141,7 @@ class Profile(models.Model):
     # ======================================================
     is_blocked = models.BooleanField(default=False)
     is_host_agent = models.BooleanField(default=False)
-
+    is_recharge_agent = models.BooleanField(default=False)
 
 
 
