@@ -44,6 +44,7 @@ urlpatterns = [
     path('UserProfileUpdateView/', UserProfileUpdateView.as_view(),
          name='UserProfileUpdateView'),
 
+    path('HostDetailsDataView/', HostDetailsDataView.as_view(), name='HostDetailsDataView'),
     path('UserProfileView/', UserProfileView.as_view(), name='UserProfileView'),
 
     path('UpdateProfileImagesView/', UpdateProfileImagesView.as_view(),

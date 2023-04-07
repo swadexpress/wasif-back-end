@@ -1,3 +1,4 @@
+import datetime
 from authentication.models import *
 from django.shortcuts import render, redirect
 from .models import *
@@ -216,6 +217,129 @@ class MyRechargeView(APIView):
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
+class HostDetailsDataView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        import datetime
+         
+        this_month = datetime.datetime.now().month
+        pre_month = datetime.datetime.now().month - 1
+
+        this_month_data = []
+        is_this_month_host_agents = HostAgents.objects.filter(agent_user_id=userId)
+        for i in is_this_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.join_user_profile.id,time__month=this_month)
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            host_salary = 0
+            agent_salary = 0
+            if (sum(total_daimon_amount) >= 5000):
+                host_salary = sum(total_daimon_amount)/250
+                agent_salary = sum(total_daimon_amount)/1000
+            if(sum(total_daimon_amount)):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "host_salary": host_salary,
+                    "agent_salary": agent_salary,
+                    "fast_name": i.join_user_profile.fast_name,
+                    "last_name": i.join_user_profile.last_name,
+                    "image": i.join_user_profile.image,
+                    "custom_id": i.join_user_profile.custom_id,
+                }
+
+                this_month_data.append(new_data)
+# =====================================================
+        pre_month_data = []
+        is_pre_month_host_agents = HostAgents.objects.filter(agent_user_id=userId)
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.join_user_profile.id,time__month=pre_month)
+            
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            host_salary = 0
+            agent_salary = 0
+            if (sum(total_daimon_amount) >= 5000):
+                host_salary = sum(total_daimon_amount)/250
+                agent_salary = sum(total_daimon_amount)/1000
+            if(sum(total_daimon_amount)):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "host_salary": host_salary,
+                    "agent_salary": agent_salary,
+                    "fast_name": i.join_user_profile.fast_name,
+                    "last_name": i.join_user_profile.last_name,
+                    "image": i.join_user_profile.image,
+                    "custom_id": i.join_user_profile.custom_id,
+                }
+
+                pre_month_data.append(new_data)
+
+
+# =====================================================
+        today_data = []
+        is_pre_month_host_agents = HostAgents.objects.filter(agent_user_id=userId)
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.join_user_profile.id,time__day=datetime.datetime.now().strftime('%d'))
+            
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            host_salary = 0
+            agent_salary = 0
+            if (sum(total_daimon_amount) >= 5000):
+                host_salary = sum(total_daimon_amount)/250
+                agent_salary = sum(total_daimon_amount)/1000
+           
+            if(sum(total_daimon_amount)):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "host_salary": host_salary,
+                    "agent_salary": agent_salary,
+                    "fast_name": i.join_user_profile.fast_name,
+                    "last_name": i.join_user_profile.last_name,
+                    "image": i.join_user_profile.image,
+                    "custom_id": i.join_user_profile.custom_id,
+                }
+
+                today_data.append(new_data)
+
+
+
+
+
+
+
+        # print (isHostAgents,'isHostAgents')
+
+
+        # print(hostDataPending, 'pa')
+
+        # this_month_data = list(hostDataPending)
+        # hostDataAccepted = list(hostDataAccepted)
+        # hostDataCancel = list(hostDataCancel)
+
+        responseData = {'status': 'success',
+                        'this_month_data': this_month_data,
+                        'pre_month_data': pre_month_data,
+                        'today_data': today_data,
+                        # 'hostDataAccepted': hostDataAccepted,
+                        # 'hostDataCancel': hostDataCancel,
+
+                        }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
 class HostDataView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
@@ -317,7 +441,7 @@ class RechargeAgentView(APIView):
 class HostAgentsView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
-        data = Profile.objects.filter(user_id=userId, is_host_agent=True).order_by('-id').values(
+        data = Profile.objects.filter(is_host_agent=True).order_by('-id').values(
             "id",
             "user",
             "followers",

@@ -78,7 +78,7 @@ class SentGifts(models.Model):
         max_length=200, blank=True, default=None, null=True)
     amount = models.CharField(
         max_length=200, blank=True, default=None, null=True)
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField(auto_now_add=True,editable=True, )
 
 
 class BannerImages(models.Model):
