@@ -63,23 +63,25 @@ class CompetitionQualifiersDataView(APIView):
         userId = request.data['userId']
         # this_month = datetime.datetime.now().month
         this_year = datetime.datetime.now().year
+        today = datetime.datetime.now().day
+        is_date_time = CompetitionTimeLine.objects.all().order_by(
+            '-id')[0:1].values()
 
-        this_month = '04'
-        day_1 = "01"
-        day_2 = "02"
-        day_3 = "03"
-        day_4 = "04"
-        day_5 = "05"
-        day_6 = "06"
-        day_7 = "07"
-        day_8 = "08"
-        round_1 = "09"
-        round_2 = "10"
-        round_3 = "11"
-        round_4 = "12"
-        round_5 = "13"
-        round_6 = "14"
-
+        this_month = is_date_time[0]['month']
+        day_1 = is_date_time[0]['day_1']
+        day_2 = is_date_time[0]['day_2']
+        day_3 = is_date_time[0]['day_3']
+        day_4 = is_date_time[0]['day_4']
+        day_5 = is_date_time[0]['day_5']
+        day_6 = is_date_time[0]['day_6']
+        day_7 = is_date_time[0]['day_7']
+        day_8 = is_date_time[0]['day_8']
+        round_1 = is_date_time[0]['round_1']
+        round_2 = is_date_time[0]['round_2']
+        round_3 = is_date_time[0]['round_3']
+        quarter_final = is_date_time[0]['quarter_final']
+        semi_final = is_date_time[0]['semi_final']
+        final = is_date_time[0]['final']
 
         date_time_1 = str(day_1)+"-" + str(this_month)+"-" + str(this_year)
         date_time_2 = str(day_2)+"-" + str(this_month)+"-" + str(this_year)
@@ -90,10 +92,24 @@ class CompetitionQualifiersDataView(APIView):
         date_time_7 = str(day_7)+"-" + str(this_month)+"-" + str(this_year)
         date_time_8 = str(day_8)+"-" + str(this_month)+"-" + str(this_year)
 
-        print(date_time_1, 'oay')
+        date_time_round_1 = str(round_1)+"-" + \
+            str(this_month)+"-" + str(this_year)
+        date_time_round_2 = str(round_2)+"-" + \
+            str(this_month)+"-" + str(this_year)
+        date_time_round_3 = str(round_3)+"-" + \
+            str(this_month)+"-" + str(this_year)
 
-        # print(this_month, 'this_month')
-        # print(day_1, 'this_day')
+        date_time_quarter_final = str(
+            quarter_final)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_semi_final = str(semi_final)+"-" + \
+            str(this_month)+"-" + str(this_year)
+        date_time_final = str(final)+"-" + str(this_month)+"-" + str(this_year)
+
+        # if datetime.datetime.now() >= datetime.datetime(int(this_year),int(this_month),int(round_3)):
+        #     print('oali............')
+
+        # print(today, 'today')
+        # print(round_3, 'round_3')
 
 
 # =========================== day_1_data==========================
@@ -321,81 +337,236 @@ class CompetitionQualifiersDataView(APIView):
 
 # ===================================Rounds=============================================
 
-    #   ================Rounds -1===========
-        round_1_data = day_1_data[::-1][0:8]
-        round_1_data.extend(day_2_data[::-1][0:8] +
-                            day_3_data[::-1][0:8] +
-                            day_4_data[::-1][0:8] +
-                            day_5_data[::-1][0:8] +
-                            day_6_data[::-1][0:8] +
-                            day_7_data[::-1][0:8] +
-                            day_8_data[::-1][0:8]
-                            )
-        
         round_1_filter_data = []
-        for i in list({v['profile_id']: v for v in round_1_data}.values()):
-            isSentGifts = SentGifts.objects.filter(
-                receive_user_profile=i['profile_id'],
-                time__day__gte=day_1,
-                time__day__lt=day_8,
-            )
-            total_daimon_amount = []
-            for j in isSentGifts:
-                total_daimon_amount.append(int(j.amount))
+        if datetime.datetime.now() >= datetime.datetime(int(this_year), int(this_month), int(round_1)):
 
-            if (sum(total_daimon_amount) > 0):
-                new_data = {
-                    "total_daimon_amount": sum(total_daimon_amount),
-                    "profile_id": i['profile_id'],
-                    "user_id": i["user_id"],
-                    "fast_name": i["fast_name"],
-                    "last_name": i["last_name"],
-                    "image": i["image"],
-                    "custom_id": i["custom_id"],
-                }
-                round_1_filter_data.append(new_data)
+            #   ================Rounds -1===========
+            round_1_data = day_1_data[::-1][0:8]
+            round_1_data.extend(day_2_data[::-1][0:8] +
+                                day_3_data[::-1][0:8] +
+                                day_4_data[::-1][0:8] +
+                                day_5_data[::-1][0:8] +
+                                day_6_data[::-1][0:8] +
+                                day_7_data[::-1][0:8] +
+                                day_8_data[::-1][0:8]
+                                )
 
-        round_1_filter_data = sorted(
-            round_1_filter_data, key=lambda k: k['total_daimon_amount'])
-        round_1_filter_data = round_1_filter_data[::-1][0:63]
-        # print(round_1_filter_data, 'round')
+            for i in list({v['profile_id']: v for v in round_1_data}.values()):
+                isSentGifts = SentGifts.objects.filter(
+                    receive_user_profile=i['profile_id'],
+                    time__day__gte=day_1,
+                    time__day__lt=round_1,
+                )
+                total_daimon_amount = []
+                for j in isSentGifts:
+                    total_daimon_amount.append(int(j.amount))
+
+                if (sum(total_daimon_amount) > 0):
+                    new_data = {
+                        "total_daimon_amount": sum(total_daimon_amount),
+                        "profile_id": i['profile_id'],
+                        "user_id": i["user_id"],
+                        "fast_name": i["fast_name"],
+                        "last_name": i["last_name"],
+                        "image": i["image"],
+                        "custom_id": i["custom_id"],
+                    }
+                    round_1_filter_data.append(new_data)
+
+            round_1_filter_data = sorted(
+                round_1_filter_data, key=lambda k: k['total_daimon_amount'])
+            round_1_filter_data = round_1_filter_data[::-1][0:8]
+            # print(round_1_filter_data, 'round')
 
 
-# ================================Rounds -1=======================================
+# ================================Rounds -2=======================================
 
         round_2_filter_data = []
-        for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
-            print(i["total_daimon_amount"],
-                  'total_daimon_amount', i["profile_id"])
-            isSentGifts = SentGifts.objects.filter(
-                receive_user_profile=i['profile_id'],
-                time__day__gte=day_1,
-                time__day__lt=day_8,
+        if datetime.datetime.now() >= datetime.datetime(int(this_year), int(this_month), int(round_2)):
+
+            for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
+                print(i["total_daimon_amount"],
+                      'total_daimon_amount', i["profile_id"])
+                isSentGifts = SentGifts.objects.filter(
+                    receive_user_profile=i['profile_id'],
+                    time__day__gte=day_1,
+                    time__day__lt=round_2,
+
+                )
+                total_daimon_amount = []
+                for j in isSentGifts:
+                    total_daimon_amount.append(int(j.amount))
+
+                if (sum(total_daimon_amount) > 0):
+                    new_data = {
+                        "total_daimon_amount": sum(total_daimon_amount),
+                        "profile_id": i['profile_id'],
+                        "user_id": i["user_id"],
+                        "fast_name": i["fast_name"],
+                        "last_name": i["last_name"],
+                        "image": i["image"],
+                        "custom_id": i["custom_id"],
+                    }
+                    round_2_filter_data.append(new_data)
+
+                # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+
+            round_2_filter_data = sorted(
+                round_2_filter_data, key=lambda k: k['total_daimon_amount'])
+            round_2_filter_data = round_2_filter_data[::-1][0:32]
 
 
-            )
-            total_daimon_amount = []
-            for j in isSentGifts:
-                total_daimon_amount.append(int(j.amount))
+# ================================Rounds -3=======================================
 
-            if (sum(total_daimon_amount) > 0):
-                new_data = {
-                    "total_daimon_amount": sum(total_daimon_amount),
-                    "profile_id": i['profile_id'],
-                    "user_id": i["user_id"],
-                    "fast_name": i["fast_name"],
-                    "last_name": i["last_name"],
-                    "image": i["image"],
-                    "custom_id": i["custom_id"],
-                }
-                round_2_filter_data.append(new_data)
+        round_3_filter_data = []
+        if datetime.datetime.now() >= datetime.datetime(int(this_year), int(this_month), int(round_3)):
 
-            # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+            for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
+                print(i["total_daimon_amount"],
+                      'total_daimon_amount', i["profile_id"])
+                isSentGifts = SentGifts.objects.filter(
+                    receive_user_profile=i['profile_id'],
+                    time__day__gte=day_1,
+                    time__day__lt=round_3,
 
-        round_2_filter_data = sorted(
-            round_2_filter_data, key=lambda k: k['total_daimon_amount'])
-        round_2_filter_data = round_2_filter_data[::-1][0:63]
-# =============================================================================
+                )
+                total_daimon_amount = []
+                for j in isSentGifts:
+                    total_daimon_amount.append(int(j.amount))
+
+                if (sum(total_daimon_amount) > 0):
+                    new_data = {
+                        "total_daimon_amount": sum(total_daimon_amount),
+                        "profile_id": i['profile_id'],
+                        "user_id": i["user_id"],
+                        "fast_name": i["fast_name"],
+                        "last_name": i["last_name"],
+                        "image": i["image"],
+                        "custom_id": i["custom_id"],
+                    }
+                    round_3_filter_data.append(new_data)
+
+                # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+
+            round_3_filter_data = sorted(
+                round_3_filter_data, key=lambda k: k['total_daimon_amount'])
+            round_3_filter_data = round_3_filter_data[::-1][0:16]
+
+
+# ================================quarter_final_filter_data -3=======================================
+
+        quarter_final_filter_data = []
+        if datetime.datetime.now() >= datetime.datetime(int(this_year), int(this_month), int(quarter_final)):
+
+            for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
+                print(i["total_daimon_amount"],
+                      'total_daimon_amount', i["profile_id"])
+                isSentGifts = SentGifts.objects.filter(
+                    receive_user_profile=i['profile_id'],
+                    time__day__gte=day_1,
+                    time__day__lt=quarter_final,
+
+                )
+                total_daimon_amount = []
+                for j in isSentGifts:
+                    total_daimon_amount.append(int(j.amount))
+
+                if (sum(total_daimon_amount) > 0):
+                    new_data = {
+                        "total_daimon_amount": sum(total_daimon_amount),
+                        "profile_id": i['profile_id'],
+                        "user_id": i["user_id"],
+                        "fast_name": i["fast_name"],
+                        "last_name": i["last_name"],
+                        "image": i["image"],
+                        "custom_id": i["custom_id"],
+                    }
+                    quarter_final_filter_data.append(new_data)
+
+                # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+
+            quarter_final_filter_data = sorted(
+                quarter_final_filter_data, key=lambda k: k['total_daimon_amount'])
+            quarter_final_filter_data = quarter_final_filter_data[::-1][0:8]
+
+
+# ================================semi_final_filter_data -3=======================================
+
+        semi_final_filter_data = []
+        if datetime.datetime.now() >= datetime.datetime(int(this_year), int(this_month), int(semi_final)):
+
+            for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
+                print(i["total_daimon_amount"],
+                      'total_daimon_amount', i["profile_id"])
+                isSentGifts = SentGifts.objects.filter(
+                    receive_user_profile=i['profile_id'],
+                    time__day__gte=day_1,
+                    time__day__lt=semi_final,
+
+                )
+                total_daimon_amount = []
+                for j in isSentGifts:
+                    total_daimon_amount.append(int(j.amount))
+
+                if (sum(total_daimon_amount) > 0):
+                    new_data = {
+                        "total_daimon_amount": sum(total_daimon_amount),
+                        "profile_id": i['profile_id'],
+                        "user_id": i["user_id"],
+                        "fast_name": i["fast_name"],
+                        "last_name": i["last_name"],
+                        "image": i["image"],
+                        "custom_id": i["custom_id"],
+                    }
+                    semi_final_filter_data.append(new_data)
+
+                # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+
+            semi_final_filter_data = sorted(
+                semi_final_filter_data, key=lambda k: k['total_daimon_amount'])
+            semi_final_filter_data = semi_final_filter_data[::-1][0:4]
+
+
+# ================================semi_final_filter_data -3=======================================
+
+        final_filter_data = []
+        if datetime.datetime.now() >= datetime.datetime(int(this_year), int(this_month), int(final)):
+
+            for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
+                print(i["total_daimon_amount"],
+                      'total_daimon_amount', i["profile_id"])
+                isSentGifts = SentGifts.objects.filter(
+                    receive_user_profile=i['profile_id'],
+                    time__day__gte=day_1,
+                    time__day__lt=final,
+
+                )
+                total_daimon_amount = []
+                for j in isSentGifts:
+                    total_daimon_amount.append(int(j.amount))
+
+                if (sum(total_daimon_amount) > 0):
+                    new_data = {
+                        "total_daimon_amount": sum(total_daimon_amount),
+                        "profile_id": i['profile_id'],
+                        "user_id": i["user_id"],
+                        "fast_name": i["fast_name"],
+                        "last_name": i["last_name"],
+                        "image": i["image"],
+                        "custom_id": i["custom_id"],
+                    }
+                    final_filter_data.append(new_data)
+
+                # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+
+            final_filter_data = sorted(
+                final_filter_data, key=lambda k: k['total_daimon_amount'])
+            final_filter_data = final_filter_data[::-1][0:2]
+
+
+# =========================================================================================
+
+        # =================round_1_filter_update_data========================
         round_1_filter_update_data = []
         for i, j in zip(round_1_filter_data[0::2], round_1_filter_data[1::2]):
             tow_user_data_customize = {
@@ -404,16 +575,59 @@ class CompetitionQualifiersDataView(APIView):
             }
             round_1_filter_update_data.append(tow_user_data_customize)
 
-            # print(str(i) + " / " + str(j))
+        # =================round_1_filter_update_data========================
+        round_2_filter_update_data = []
+        for i, j in zip(round_2_filter_data[0::2], round_2_filter_data[1::2]):
+            tow_user_data_customize = {
+                'user_1': i,
+                "user_2": j
+            }
+            round_2_filter_update_data.append(tow_user_data_customize)
 
-        print(round_1_filter_update_data, 'round')
+        # =================round_1_filter_update_data========================
+        round_3_filter_update_data = []
+        for i, j in zip(round_3_filter_data[0::2], round_3_filter_data[1::2]):
+            tow_user_data_customize = {
+                'user_1': i,
+                "user_2": j
+            }
+            round_3_filter_update_data.append(tow_user_data_customize)
+
+        # =================round_1_filter_update_data========================
+        quarter_final_filter_update_data = []
+        for i, j in zip(quarter_final_filter_data[0::2], quarter_final_filter_data[1::2]):
+            tow_user_data_customize = {
+                'user_1': i,
+                "user_2": j
+            }
+            quarter_final_filter_update_data.append(tow_user_data_customize)
+
+        # =================semi_final_filter_data========================
+        semi_final_filter_update_data = []
+        for i, j in zip(semi_final_filter_data[0::2], semi_final_filter_data[1::2]):
+            tow_user_data_customize = {
+                'user_1': i,
+                "user_2": j
+            }
+            semi_final_filter_update_data.append(tow_user_data_customize)
+
+        # =================semi_final_filter_data========================
+        final_filter_update_data = []
+        for i, j in zip(final_filter_data[0::2], final_filter_data[1::2]):
+            tow_user_data_customize = {
+                'user_1': i,
+                "user_2": j
+            }
+            final_filter_update_data.append(tow_user_data_customize)
 
         responseData = {
             'status': 'success',
             "round_1_filter_update_data": round_1_filter_update_data,
-
-
-
+            "round_2_filter_update_data": round_2_filter_update_data,
+            "round_3_filter_update_data": round_3_filter_update_data,
+            "quarter_final_filter_update_data": quarter_final_filter_update_data,
+            "semi_final_filter_update_data": semi_final_filter_update_data,
+            "final_filter_update_data": final_filter_update_data,
 
 
             #  ========================================================================

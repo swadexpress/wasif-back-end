@@ -19,6 +19,29 @@ from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
 
 
+class CompetitionTimeLine(models.Model):
+    STATUS = (
+        ('Active', 'Active'),
+        ('Off', 'Off'),
+    )
+    month = models.CharField(max_length=2,default=None)
+    day_1 = models.CharField(max_length=2,default=None)
+    day_2 = models.CharField(max_length=2,default=None)
+    day_3 = models.CharField(max_length=2,default=None)
+    day_4 = models.CharField(max_length=2,default=None)
+    day_5 = models.CharField(max_length=2,default=None)
+    day_6 = models.CharField(max_length=2,default=None)
+    day_7 = models.CharField(max_length=2,default=None)
+    day_8 = models.CharField(max_length=2,default=None)
+    round_1 = models.CharField(max_length=2,default=None)
+    round_2 = models.CharField(max_length=2,default=None)
+    round_3 = models.CharField(max_length=2,default=None)
+    quarter_final = models.CharField(max_length=2,default=None)
+    semi_final = models.CharField(max_length=2,default=None)
+    final = models.CharField(max_length=2,default=None)
+    status = models.CharField(max_length=10, choices=STATUS,default="Active")
+    time = models.DateTimeField(auto_now_add=True)
+    
 class HostAgents(models.Model):
     STATUS = (
         ('Pending', 'Pending'),

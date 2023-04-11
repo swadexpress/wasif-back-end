@@ -13,6 +13,7 @@ class SentGiftsAdmin(admin.ModelAdmin):
                     'time',]
 
 
+admin.site.register(CompetitionTimeLine)
 admin.site.register(HostAgents)
 admin.site.register(BuyCoinFromAgents)
 admin.site.register(SentGifts, SentGiftsAdmin)
