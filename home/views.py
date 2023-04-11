@@ -1015,7 +1015,7 @@ class HostDataView(APIView):
 class RechargeAgentView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
-        data = Profile.objects.filter(user_id=userId, is_recharge_agent=True).order_by('-id').values(
+        data = Profile.objects.filter(is_recharge_agent=True).order_by('-id').values(
             "id",
             "user",
             "followers",
