@@ -41,7 +41,7 @@ from rest_framework import generics
 from pyfcm import FCMNotification
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework import status
-
+import datetime
 
 import firebase_admin
 from firebase_admin import credentials, messaging
@@ -56,6 +56,398 @@ cloudinary.config(cloud_name='swadexpress',
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+
+class CompetitionQualifiersDataView(APIView):
+    def post(self, request, *args, **kwargs):
+        userId = request.data['userId']
+        # this_month = datetime.datetime.now().month
+        this_year = datetime.datetime.now().year
+
+        this_month = '04'
+        day_1 = "01"
+        day_2 = "02"
+        day_3 = "03"
+        day_4 = "04"
+        day_5 = "05"
+        day_6 = "06"
+        day_7 = "07"
+        day_8 = "08"
+        date_time_1 = str(day_1)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_2 = str(day_2)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_3 = str(day_3)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_4 = str(day_4)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_5 = str(day_5)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_6 = str(day_6)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_7 = str(day_7)+"-" + str(this_month)+"-" + str(this_year)
+        date_time_8 = str(day_8)+"-" + str(this_month)+"-" + str(this_year)
+
+        print(date_time_1, 'oay')
+
+        # print(this_month, 'this_month')
+        # print(day_1, 'this_day')
+
+
+# =========================== day_1_data==========================
+        day_1_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_1, time__month=this_month)
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_1_data.append(new_data)
+        day_1_data = sorted(day_1_data, key=lambda k: k['total_daimon_amount'])
+        day_1_qualified_data = day_1_data[::-1][0:8]  # top 1-8 user data
+        day_1_not_qualified_data = day_1_data[::-1][8:14]  # top 9-15 user data
+        # print(day_1_data)
+
+# =========================== day_2_data==========================
+        day_2_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_2, time__month=this_month)
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_2_data.append(new_data)
+        day_2_data = sorted(day_2_data, key=lambda k: k['total_daimon_amount'])
+        day_2_qualified_data = day_2_data[::-1][0:8]  # top 1-8 user data
+        day_2_not_qualified_data = day_2_data[::-1][8:14]  # top 9-15 user data
+        # print(day_1_data)
+
+# =========================== day_3_data==========================
+        day_3_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_3, time__month=this_month)
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_3_data.append(new_data)
+        day_3_data = sorted(day_3_data, key=lambda k: k['total_daimon_amount'])
+        day_3_qualified_data = day_3_data[::-1][0:8]  # top 1-8 user data
+        day_3_not_qualified_data = day_3_data[::-1][8:14]  # top 9-15 user data
+        # print(day_1_data)
+
+# =========================== day_4_data==========================
+        day_4_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_4, time__month=this_month)
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_4_data.append(new_data)
+        day_4_data = sorted(day_4_data, key=lambda k: k['total_daimon_amount'])
+        day_4_qualified_data = day_4_data[::-1][0:8]  # top 1-8 user data
+        day_4_not_qualified_data = day_4_data[::-1][8:14]  # top 9-15 user data
+        # print(day_1_data)
+
+# =========================== day_5_data==========================
+        day_5_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_5, time__month=this_month)
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_5_data.append(new_data)
+        day_5_data = sorted(day_5_data, key=lambda k: k['total_daimon_amount'])
+        day_5_qualified_data = day_5_data[::-1][0:8]  # top 1-8 user data
+        day_5_not_qualified_data = day_5_data[::-1][8:14]  # top 9-15 user data
+        # print(day_1_data)
+
+# =========================== day_6_data==========================
+        day_6_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_6, time__month=this_month)
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_6_data.append(new_data)
+        day_6_data = sorted(day_6_data, key=lambda k: k['total_daimon_amount'])
+        day_6_qualified_data = day_6_data[::-1][0:8]  # top 1-8 user data
+        day_6_not_qualified_data = day_6_data[::-1][8:14]  # top 9-15 user data
+        # print(day_1_data)
+
+# =========================== day_7_data==========================
+        day_7_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_7, time__month=this_month)
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_7_data.append(new_data)
+        day_7_data = sorted(day_7_data, key=lambda k: k['total_daimon_amount'])
+        day_7_qualified_data = day_7_data[::-1][0:14]  # top 1-8 user data
+        day_7_not_qualified_data = day_7_data[::-1][8:14]  # top 9-15 user data
+        # print(day_1_data)
+
+# =========================== day_8_data==========================
+        day_8_data = []
+        is_pre_month_host_agents = Profile.objects.all()
+        for i in is_pre_month_host_agents:
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i.id, time__day=day_8, time__month=this_month)
+
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i.id,
+                    "user_id": i.user_id,
+                    "fast_name": i.fast_name,
+                    "last_name": i.last_name,
+                    "image": i.image,
+                    "custom_id": i.custom_id,
+                }
+
+                day_8_data.append(new_data)
+        day_8_data = sorted(day_8_data, key=lambda k: k['total_daimon_amount'])
+        day_8_qualified_data = day_8_data[::-1][0:8]  # top 1-8 user data
+        day_8_not_qualified_data = day_8_data[::-1][8:14]  # top 9-15 user data
+
+
+# ===================================Rounds=============================================
+
+    #   ================Rounds -1===========
+        round_1_data = day_1_data[::-1][0:8]
+        round_1_data.extend(day_2_data[::-1][0:8] +
+                            day_3_data[::-1][0:8] +
+                            day_4_data[::-1][0:8] +
+                            day_5_data[::-1][0:8] +
+                            day_6_data[::-1][0:8] +
+                            day_7_data[::-1][0:8] +
+                            day_8_data[::-1][0:8]
+
+                            )
+        round_1_filter_data = []
+        for i in list({v['profile_id']: v for v in round_1_data}.values()):
+            print(i["total_daimon_amount"],
+                  'total_daimon_amount', i["profile_id"])
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i['profile_id'], time__month=this_month)
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i['profile_id'],
+                    "user_id": i["user_id"],
+                    "fast_name": i["fast_name"],
+                    "last_name": i["last_name"],
+                    "image": i["image"],
+                    "custom_id": i["custom_id"],
+                }
+                round_1_filter_data.append(new_data)
+
+            # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+
+        round_1_filter_data = sorted(
+            round_1_filter_data, key=lambda k: k['total_daimon_amount'])
+        round_1_filter_data = round_1_filter_data[::-1][0:63]
+        # print(round_1_filter_data, 'round')
+
+
+# ================================Rounds -1=======================================
+
+        round_2_filter_data = []
+        for i in list({v['profile_id']: v for v in round_2_filter_data}.values()):
+            print(i["total_daimon_amount"],
+                  'total_daimon_amount', i["profile_id"])
+            isSentGifts = SentGifts.objects.filter(
+                receive_user_profile=i['profile_id'], time__month=this_month)
+            total_daimon_amount = []
+            for j in isSentGifts:
+                total_daimon_amount.append(int(j.amount))
+
+            if (sum(total_daimon_amount) > 0):
+                new_data = {
+                    "total_daimon_amount": sum(total_daimon_amount),
+                    "profile_id": i['profile_id'],
+                    "user_id": i["user_id"],
+                    "fast_name": i["fast_name"],
+                    "last_name": i["last_name"],
+                    "image": i["image"],
+                    "custom_id": i["custom_id"],
+                }
+                round_2_filter_data.append(new_data)
+
+            # print(sum(total_daimon_amount), 'total_daimon_amount----2')
+
+        round_2_filter_data = sorted(
+            round_2_filter_data, key=lambda k: k['total_daimon_amount'])
+        round_2_filter_data = round_2_filter_data[::-1][0:63]
+        
+        # x = [1, 2, 3,4,5,6,7,8,9,10]
+        # y = [1, 2, 3,4,5,6,7,8,9,10]
+        round_1_filter_update_data=[]
+        for i, j in zip(round_1_filter_data[0::2], round_1_filter_data[1::2]):
+            tow_user_data_customize ={
+                'user_1':i,
+                "user_2":j
+            }
+            round_1_filter_update_data.append(tow_user_data_customize)
+
+
+            # print(str(i) + " / " + str(j))
+
+
+        print(round_1_filter_update_data, 'round')
+
+
+
+
+
+
+
+
+        responseData = {
+            'status': 'success',
+            "round_1_filter_update_data":round_1_filter_update_data,
+
+
+
+
+
+            #  ========================================================================
+            'day_1_qualified_data': day_1_qualified_data,
+            'day_1_not_qualified_data': day_1_not_qualified_data,
+            'day_2_qualified_data': day_2_qualified_data,
+            'day_2_not_qualified_data': day_2_not_qualified_data,
+            'day_3_qualified_data': day_3_qualified_data,
+            'day_3_not_qualified_data': day_3_not_qualified_data,
+            'day_4_qualified_data': day_4_qualified_data,
+            'day_4_not_qualified_data': day_4_not_qualified_data,
+            'day_5_qualified_data': day_5_qualified_data,
+            'day_5_not_qualified_data': day_5_not_qualified_data,
+            'day_6_qualified_data': day_6_qualified_data,
+            'day_6_not_qualified_data': day_6_not_qualified_data,
+            'day_7_qualified_data': day_7_qualified_data,
+            'day_7_not_qualified_data': day_7_not_qualified_data,
+            'day_8_qualified_data': day_8_qualified_data,
+            'day_8_not_qualified_data': day_8_not_qualified_data,
+
+            # ==================================================
+            "date_time_1": date_time_1,
+            "date_time_2": date_time_2,
+            "date_time_3": date_time_3,
+            "date_time_4": date_time_4,
+            "date_time_5": date_time_5,
+            "date_time_6": date_time_6,
+            "date_time_7": date_time_7,
+            "date_time_8": date_time_8,
+
+
+
+        }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class HostAgentsUpdateView(APIView):
@@ -221,15 +613,16 @@ class HostDetailsDataView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
         import datetime
-         
+
         this_month = datetime.datetime.now().month
         pre_month = datetime.datetime.now().month - 1
 
         this_month_data = []
-        is_this_month_host_agents = HostAgents.objects.filter(agent_user_id=userId)
+        is_this_month_host_agents = HostAgents.objects.filter(
+            agent_user_id=userId)
         for i in is_this_month_host_agents:
             isSentGifts = SentGifts.objects.filter(
-                receive_user_profile=i.join_user_profile.id,time__month=this_month)
+                receive_user_profile=i.join_user_profile.id, time__month=this_month)
             total_daimon_amount = []
             for j in isSentGifts:
                 total_daimon_amount.append(int(j.amount))
@@ -239,7 +632,7 @@ class HostDetailsDataView(APIView):
             if (sum(total_daimon_amount) >= 5000):
                 host_salary = sum(total_daimon_amount)/250
                 agent_salary = sum(total_daimon_amount)/1000
-            if(sum(total_daimon_amount)):
+            if (sum(total_daimon_amount)):
                 new_data = {
                     "total_daimon_amount": sum(total_daimon_amount),
                     "host_salary": host_salary,
@@ -253,11 +646,11 @@ class HostDetailsDataView(APIView):
                 this_month_data.append(new_data)
 # =====================================================
         pre_month_data = []
-        is_pre_month_host_agents = HostAgents.objects.filter(agent_user_id=userId)
+        is_pre_month_host_agents = HostAgents.objects.filter(
+            agent_user_id=userId)
         for i in is_pre_month_host_agents:
             isSentGifts = SentGifts.objects.filter(
-                receive_user_profile=i.join_user_profile.id,time__month=pre_month)
-            
+                receive_user_profile=i.join_user_profile.id, time__month=pre_month)
 
             total_daimon_amount = []
             for j in isSentGifts:
@@ -268,7 +661,7 @@ class HostDetailsDataView(APIView):
             if (sum(total_daimon_amount) >= 5000):
                 host_salary = sum(total_daimon_amount)/250
                 agent_salary = sum(total_daimon_amount)/1000
-            if(sum(total_daimon_amount)):
+            if (sum(total_daimon_amount)):
                 new_data = {
                     "total_daimon_amount": sum(total_daimon_amount),
                     "host_salary": host_salary,
@@ -284,11 +677,11 @@ class HostDetailsDataView(APIView):
 
 # =====================================================
         today_data = []
-        is_pre_month_host_agents = HostAgents.objects.filter(agent_user_id=userId)
+        is_pre_month_host_agents = HostAgents.objects.filter(
+            agent_user_id=userId)
         for i in is_pre_month_host_agents:
             isSentGifts = SentGifts.objects.filter(
-                receive_user_profile=i.join_user_profile.id,time__day=datetime.datetime.now().strftime('%d'))
-            
+                receive_user_profile=i.join_user_profile.id, time__day=datetime.datetime.now().strftime('%d'))
 
             total_daimon_amount = []
             for j in isSentGifts:
@@ -299,8 +692,8 @@ class HostDetailsDataView(APIView):
             if (sum(total_daimon_amount) >= 5000):
                 host_salary = sum(total_daimon_amount)/250
                 agent_salary = sum(total_daimon_amount)/1000
-           
-            if(sum(total_daimon_amount)):
+
+            if (sum(total_daimon_amount)):
                 new_data = {
                     "total_daimon_amount": sum(total_daimon_amount),
                     "host_salary": host_salary,
@@ -313,14 +706,7 @@ class HostDetailsDataView(APIView):
 
                 today_data.append(new_data)
 
-
-
-
-
-
-
         # print (isHostAgents,'isHostAgents')
-
 
         # print(hostDataPending, 'pa')
 

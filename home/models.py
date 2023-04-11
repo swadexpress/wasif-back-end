@@ -1,3 +1,5 @@
+import datetime
+import django
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
@@ -78,7 +80,8 @@ class SentGifts(models.Model):
         max_length=200, blank=True, default=None, null=True)
     amount = models.CharField(
         max_length=200, blank=True, default=None, null=True)
-    time = models.DateTimeField(auto_now_add=True,editable=True, )
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+    # date = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 
 class BannerImages(models.Model):

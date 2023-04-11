@@ -16,7 +16,11 @@ urlpatterns = [
     path('HostAgentsCreateView/', HostAgentsCreateView.as_view(), name='HostAgentsCreateView'),
     path('MyRechargeView/', MyRechargeView.as_view(), name='MyRechargeView'),
     path('HostAgentsView/', HostAgentsView.as_view(), name='HostAgentsView'),
+    path('CompetitionQualifiersDataView/', CompetitionQualifiersDataView.as_view(), name='CompetitionQualifiersDataView'),
     path('HostDataView/', HostDataView.as_view(), name='HostDataView'),
+
+
+
     path('RechargeAgentView/', RechargeAgentView.as_view(),
          name='RechargeAgentView'),
     path('AllPostSearch/', AllPostSearch.as_view(), name='AllPostSearch'),

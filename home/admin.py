@@ -9,8 +9,8 @@ class SentGiftsAdmin(admin.ModelAdmin):
     list_display = ['room_admin_user_profile',
                     'sent_user_user_profile',
                     'receive_user_profile',
+                    'amount',
                     'time',]
-    readonly_fields = ('time',)
 
 
 admin.site.register(HostAgents)
