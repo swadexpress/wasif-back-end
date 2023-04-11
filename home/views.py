@@ -73,6 +73,14 @@ class CompetitionQualifiersDataView(APIView):
         day_6 = "06"
         day_7 = "07"
         day_8 = "08"
+        round_1 = "09"
+        round_2 = "10"
+        round_3 = "11"
+        round_4 = "12"
+        round_5 = "13"
+        round_6 = "14"
+
+
         date_time_1 = str(day_1)+"-" + str(this_month)+"-" + str(this_year)
         date_time_2 = str(day_2)+"-" + str(this_month)+"-" + str(this_year)
         date_time_3 = str(day_3)+"-" + str(this_month)+"-" + str(this_year)
@@ -322,14 +330,15 @@ class CompetitionQualifiersDataView(APIView):
                             day_6_data[::-1][0:8] +
                             day_7_data[::-1][0:8] +
                             day_8_data[::-1][0:8]
-
                             )
+        
         round_1_filter_data = []
         for i in list({v['profile_id']: v for v in round_1_data}.values()):
-            print(i["total_daimon_amount"],
-                  'total_daimon_amount', i["profile_id"])
             isSentGifts = SentGifts.objects.filter(
-                receive_user_profile=i['profile_id'], time__month=this_month)
+                receive_user_profile=i['profile_id'],
+                time__day__gte=day_1,
+                time__day__lt=day_8,
+            )
             total_daimon_amount = []
             for j in isSentGifts:
                 total_daimon_amount.append(int(j.amount))
@@ -346,8 +355,6 @@ class CompetitionQualifiersDataView(APIView):
                 }
                 round_1_filter_data.append(new_data)
 
-            # print(sum(total_daimon_amount), 'total_daimon_amount----2')
-
         round_1_filter_data = sorted(
             round_1_filter_data, key=lambda k: k['total_daimon_amount'])
         round_1_filter_data = round_1_filter_data[::-1][0:63]
@@ -357,11 +364,16 @@ class CompetitionQualifiersDataView(APIView):
 # ================================Rounds -1=======================================
 
         round_2_filter_data = []
-        for i in list({v['profile_id']: v for v in round_2_filter_data}.values()):
+        for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
             print(i["total_daimon_amount"],
                   'total_daimon_amount', i["profile_id"])
             isSentGifts = SentGifts.objects.filter(
-                receive_user_profile=i['profile_id'], time__month=this_month)
+                receive_user_profile=i['profile_id'],
+                time__day__gte=day_1,
+                time__day__lt=day_8,
+
+
+            )
             total_daimon_amount = []
             for j in isSentGifts:
                 total_daimon_amount.append(int(j.amount))
@@ -383,33 +395,22 @@ class CompetitionQualifiersDataView(APIView):
         round_2_filter_data = sorted(
             round_2_filter_data, key=lambda k: k['total_daimon_amount'])
         round_2_filter_data = round_2_filter_data[::-1][0:63]
-        
-        # x = [1, 2, 3,4,5,6,7,8,9,10]
-        # y = [1, 2, 3,4,5,6,7,8,9,10]
-        round_1_filter_update_data=[]
+# =============================================================================
+        round_1_filter_update_data = []
         for i, j in zip(round_1_filter_data[0::2], round_1_filter_data[1::2]):
-            tow_user_data_customize ={
-                'user_1':i,
-                "user_2":j
+            tow_user_data_customize = {
+                'user_1': i,
+                "user_2": j
             }
             round_1_filter_update_data.append(tow_user_data_customize)
 
-
             # print(str(i) + " / " + str(j))
-
 
         print(round_1_filter_update_data, 'round')
 
-
-
-
-
-
-
-
         responseData = {
             'status': 'success',
-            "round_1_filter_update_data":round_1_filter_update_data,
+            "round_1_filter_update_data": round_1_filter_update_data,
 
 
 
