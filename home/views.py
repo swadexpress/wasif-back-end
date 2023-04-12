@@ -1,3 +1,4 @@
+from django.core import serializers
 import datetime
 from authentication.models import *
 from django.shortcuts import render, redirect
@@ -66,7 +67,7 @@ class CompetitionQualifiersDataView(APIView):
         today = datetime.datetime.now().day
         is_date_time = CompetitionTimeLine.objects.filter(status="Active").order_by(
             '-id')[0:1].values()
-        if(is_date_time):
+        if (is_date_time):
             this_month = is_date_time[0]['month']
             day_1 = is_date_time[0]['day_1']
             day_2 = is_date_time[0]['day_2']
@@ -103,14 +104,14 @@ class CompetitionQualifiersDataView(APIView):
                 quarter_final)+"-" + str(this_month)+"-" + str(this_year)
             date_time_semi_final = str(semi_final)+"-" + \
                 str(this_month)+"-" + str(this_year)
-            date_time_final = str(final)+"-" + str(this_month)+"-" + str(this_year)
+            date_time_final = str(final)+"-" + \
+                str(this_month)+"-" + str(this_year)
 
             # if datetime.datetime.now() >= datetime.datetime(int(this_year),int(this_month),int(round_3)):
             #     print('oali............')
 
             # print(today, 'today')
             # print(round_3, 'round_3')
-
 
     # =========================== day_1_data==========================
             day_1_data = []
@@ -134,9 +135,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_1_data.append(new_data)
-            day_1_data = sorted(day_1_data, key=lambda k: k['total_daimon_amount'])
+            day_1_data = sorted(
+                day_1_data, key=lambda k: k['total_daimon_amount'])
             day_1_qualified_data = day_1_data[::-1][0:8]  # top 1-8 user data
-            day_1_not_qualified_data = day_1_data[::-1][8:14]  # top 9-15 user data
+            # top 9-15 user data
+            day_1_not_qualified_data = day_1_data[::-1][8:14]
             # print(day_1_data)
 
     # =========================== day_2_data==========================
@@ -162,9 +165,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_2_data.append(new_data)
-            day_2_data = sorted(day_2_data, key=lambda k: k['total_daimon_amount'])
+            day_2_data = sorted(
+                day_2_data, key=lambda k: k['total_daimon_amount'])
             day_2_qualified_data = day_2_data[::-1][0:8]  # top 1-8 user data
-            day_2_not_qualified_data = day_2_data[::-1][8:14]  # top 9-15 user data
+            # top 9-15 user data
+            day_2_not_qualified_data = day_2_data[::-1][8:14]
             # print(day_1_data)
 
     # =========================== day_3_data==========================
@@ -190,9 +195,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_3_data.append(new_data)
-            day_3_data = sorted(day_3_data, key=lambda k: k['total_daimon_amount'])
+            day_3_data = sorted(
+                day_3_data, key=lambda k: k['total_daimon_amount'])
             day_3_qualified_data = day_3_data[::-1][0:8]  # top 1-8 user data
-            day_3_not_qualified_data = day_3_data[::-1][8:14]  # top 9-15 user data
+            # top 9-15 user data
+            day_3_not_qualified_data = day_3_data[::-1][8:14]
             # print(day_1_data)
 
     # =========================== day_4_data==========================
@@ -218,9 +225,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_4_data.append(new_data)
-            day_4_data = sorted(day_4_data, key=lambda k: k['total_daimon_amount'])
+            day_4_data = sorted(
+                day_4_data, key=lambda k: k['total_daimon_amount'])
             day_4_qualified_data = day_4_data[::-1][0:8]  # top 1-8 user data
-            day_4_not_qualified_data = day_4_data[::-1][8:14]  # top 9-15 user data
+            # top 9-15 user data
+            day_4_not_qualified_data = day_4_data[::-1][8:14]
             # print(day_1_data)
 
     # =========================== day_5_data==========================
@@ -246,9 +255,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_5_data.append(new_data)
-            day_5_data = sorted(day_5_data, key=lambda k: k['total_daimon_amount'])
+            day_5_data = sorted(
+                day_5_data, key=lambda k: k['total_daimon_amount'])
             day_5_qualified_data = day_5_data[::-1][0:8]  # top 1-8 user data
-            day_5_not_qualified_data = day_5_data[::-1][8:14]  # top 9-15 user data
+            # top 9-15 user data
+            day_5_not_qualified_data = day_5_data[::-1][8:14]
             # print(day_1_data)
 
     # =========================== day_6_data==========================
@@ -274,9 +285,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_6_data.append(new_data)
-            day_6_data = sorted(day_6_data, key=lambda k: k['total_daimon_amount'])
+            day_6_data = sorted(
+                day_6_data, key=lambda k: k['total_daimon_amount'])
             day_6_qualified_data = day_6_data[::-1][0:8]  # top 1-8 user data
-            day_6_not_qualified_data = day_6_data[::-1][8:14]  # top 9-15 user data
+            # top 9-15 user data
+            day_6_not_qualified_data = day_6_data[::-1][8:14]
             # print(day_1_data)
 
     # =========================== day_7_data==========================
@@ -302,9 +315,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_7_data.append(new_data)
-            day_7_data = sorted(day_7_data, key=lambda k: k['total_daimon_amount'])
+            day_7_data = sorted(
+                day_7_data, key=lambda k: k['total_daimon_amount'])
             day_7_qualified_data = day_7_data[::-1][0:14]  # top 1-8 user data
-            day_7_not_qualified_data = day_7_data[::-1][8:14]  # top 9-15 user data
+            # top 9-15 user data
+            day_7_not_qualified_data = day_7_data[::-1][8:14]
             # print(day_1_data)
 
     # =========================== day_8_data==========================
@@ -330,10 +345,11 @@ class CompetitionQualifiersDataView(APIView):
                     }
 
                     day_8_data.append(new_data)
-            day_8_data = sorted(day_8_data, key=lambda k: k['total_daimon_amount'])
+            day_8_data = sorted(
+                day_8_data, key=lambda k: k['total_daimon_amount'])
             day_8_qualified_data = day_8_data[::-1][0:8]  # top 1-8 user data
-            day_8_not_qualified_data = day_8_data[::-1][8:14]  # top 9-15 user data
-
+            # top 9-15 user data
+            day_8_not_qualified_data = day_8_data[::-1][8:14]
 
     # ===================================Rounds=============================================
 
@@ -378,7 +394,6 @@ class CompetitionQualifiersDataView(APIView):
                 round_1_filter_data = round_1_filter_data[::-1][0:8]
                 # print(round_1_filter_data, 'round')
 
-
     # ================================Rounds -2=======================================
 
             round_2_filter_data = []
@@ -386,7 +401,7 @@ class CompetitionQualifiersDataView(APIView):
 
                 for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
                     print(i["total_daimon_amount"],
-                        'total_daimon_amount', i["profile_id"])
+                          'total_daimon_amount', i["profile_id"])
                     isSentGifts = SentGifts.objects.filter(
                         receive_user_profile=i['profile_id'],
                         time__day__gte=day_1,
@@ -415,7 +430,6 @@ class CompetitionQualifiersDataView(APIView):
                     round_2_filter_data, key=lambda k: k['total_daimon_amount'])
                 round_2_filter_data = round_2_filter_data[::-1][0:32]
 
-
     # ================================Rounds -3=======================================
 
             round_3_filter_data = []
@@ -423,7 +437,7 @@ class CompetitionQualifiersDataView(APIView):
 
                 for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
                     print(i["total_daimon_amount"],
-                        'total_daimon_amount', i["profile_id"])
+                          'total_daimon_amount', i["profile_id"])
                     isSentGifts = SentGifts.objects.filter(
                         receive_user_profile=i['profile_id'],
                         time__day__gte=day_1,
@@ -452,7 +466,6 @@ class CompetitionQualifiersDataView(APIView):
                     round_3_filter_data, key=lambda k: k['total_daimon_amount'])
                 round_3_filter_data = round_3_filter_data[::-1][0:16]
 
-
     # ================================quarter_final_filter_data -3=======================================
 
             quarter_final_filter_data = []
@@ -460,7 +473,7 @@ class CompetitionQualifiersDataView(APIView):
 
                 for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
                     print(i["total_daimon_amount"],
-                        'total_daimon_amount', i["profile_id"])
+                          'total_daimon_amount', i["profile_id"])
                     isSentGifts = SentGifts.objects.filter(
                         receive_user_profile=i['profile_id'],
                         time__day__gte=day_1,
@@ -489,7 +502,6 @@ class CompetitionQualifiersDataView(APIView):
                     quarter_final_filter_data, key=lambda k: k['total_daimon_amount'])
                 quarter_final_filter_data = quarter_final_filter_data[::-1][0:8]
 
-
     # ================================semi_final_filter_data -3=======================================
 
             semi_final_filter_data = []
@@ -497,7 +509,7 @@ class CompetitionQualifiersDataView(APIView):
 
                 for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
                     print(i["total_daimon_amount"],
-                        'total_daimon_amount', i["profile_id"])
+                          'total_daimon_amount', i["profile_id"])
                     isSentGifts = SentGifts.objects.filter(
                         receive_user_profile=i['profile_id'],
                         time__day__gte=day_1,
@@ -526,7 +538,6 @@ class CompetitionQualifiersDataView(APIView):
                     semi_final_filter_data, key=lambda k: k['total_daimon_amount'])
                 semi_final_filter_data = semi_final_filter_data[::-1][0:4]
 
-
     # ================================semi_final_filter_data -3=======================================
 
             final_filter_data = []
@@ -534,7 +545,7 @@ class CompetitionQualifiersDataView(APIView):
 
                 for i in list({v['profile_id']: v for v in round_1_filter_data}.values()):
                     print(i["total_daimon_amount"],
-                        'total_daimon_amount', i["profile_id"])
+                          'total_daimon_amount', i["profile_id"])
                     isSentGifts = SentGifts.objects.filter(
                         receive_user_profile=i['profile_id'],
                         time__day__gte=day_1,
@@ -562,7 +573,6 @@ class CompetitionQualifiersDataView(APIView):
                 final_filter_data = sorted(
                     final_filter_data, key=lambda k: k['total_daimon_amount'])
                 final_filter_data = final_filter_data[::-1][0:2]
-
 
     # =========================================================================================
 
@@ -600,7 +610,8 @@ class CompetitionQualifiersDataView(APIView):
                     'user_1': i,
                     "user_2": j
                 }
-                quarter_final_filter_update_data.append(tow_user_data_customize)
+                quarter_final_filter_update_data.append(
+                    tow_user_data_customize)
 
             # =================semi_final_filter_data========================
             semi_final_filter_update_data = []
@@ -666,7 +677,6 @@ class CompetitionQualifiersDataView(APIView):
         else:
             responseData = {'status': 'off'}
             return JsonResponse(responseData, status=HTTP_200_OK)
-
 
 
 class HostAgentsUpdateView(APIView):
@@ -838,7 +848,7 @@ class HostDetailsDataView(APIView):
 
         this_month_data = []
         is_this_month_host_agents = HostAgents.objects.filter(
-            agent_user_id=userId)
+            agent_user_id=userId, status="Accepted")
         for i in is_this_month_host_agents:
             isSentGifts = SentGifts.objects.filter(
                 receive_user_profile=i.join_user_profile.id, time__month=this_month)
@@ -2016,15 +2026,20 @@ class UserProfileUpdateView(ListAPIView):
         responseData = {'status': 'success', 'data': data}
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
+from django.core import serializers
 
 class UserProfileView(ListAPIView):
-    permission_classes = (AllowAny, )
+    # permission_classes = (AllowAny,)
+    # serializer_class = ProfileSerializer
+    # queryset = Profile.objects.all()
 
     def post(self, request,  *args, **kwargs):
-        d = request.data
         userId = request.data['userId']
-
-        data = Profile.objects.filter(user_id=userId).values()
+        json_data = serializers.serialize("json", Profile.objects.filter(user_id=userId))
+        profile_id = [i['pk'] for i in json.loads(json_data)]
+        data = [i['fields'] for i in json.loads(json_data)]
+        # add profile  id 
+        data[0]['id']=profile_id[0]
 
         data = list(data)
 
