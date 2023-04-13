@@ -5,6 +5,9 @@ from .views import *
 
 urlpatterns = [
     # path('s' ,home, name='home' ),
+    path('FollowersListView/', FollowersListView.as_view(),
+         name='FollowersListView'),
+         
     path('P2PMessageUniqueIdView/', P2PMessageUniqueIdView.as_view(),
          name='P2PMessageUniqueIdView'),
     path('CreateP2PMessageUniqueIdView/', CreateP2PMessageUniqueIdView.as_view(),
@@ -13,10 +16,12 @@ urlpatterns = [
          name='BuyCoinFromAgentsCreateView'),
     path('BuyCoinFromAgentsCreateUpdateView/',
          BuyCoinFromAgentsCreateUpdateView.as_view(), name='BuyCoinFromAgentsCreateUpdateView'),
-    path('HostAgentsCreateView/', HostAgentsCreateView.as_view(), name='HostAgentsCreateView'),
+    path('HostAgentsCreateView/', HostAgentsCreateView.as_view(),
+         name='HostAgentsCreateView'),
     path('MyRechargeView/', MyRechargeView.as_view(), name='MyRechargeView'),
     path('HostAgentsView/', HostAgentsView.as_view(), name='HostAgentsView'),
-    path('CompetitionQualifiersDataView/', CompetitionQualifiersDataView.as_view(), name='CompetitionQualifiersDataView'),
+    path('CompetitionQualifiersDataView/', CompetitionQualifiersDataView.as_view(),
+         name='CompetitionQualifiersDataView'),
     path('HostDataView/', HostDataView.as_view(), name='HostDataView'),
 
 
@@ -48,7 +53,8 @@ urlpatterns = [
     path('UserProfileUpdateView/', UserProfileUpdateView.as_view(),
          name='UserProfileUpdateView'),
 
-    path('HostDetailsDataView/', HostDetailsDataView.as_view(), name='HostDetailsDataView'),
+    path('HostDetailsDataView/', HostDetailsDataView.as_view(),
+         name='HostDetailsDataView'),
     path('UserProfileView/', UserProfileView.as_view(), name='UserProfileView'),
 
     path('UpdateProfileImagesView/', UpdateProfileImagesView.as_view(),

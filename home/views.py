@@ -59,6 +59,50 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
     return ''.join(random.choice(chars) for _ in range(size))
 
 
+
+
+
+class FollowersListView(APIView):
+    def post(self, request, *args, **kwargs):
+        usersId = request.data['usersId']
+        data = Profile.objects.filter(user_id__in=usersId).order_by('-id').values(
+            "id",
+            "user",
+            "followers",
+            "following",
+            "custom_id",
+            "about_me",
+            "fast_name",
+            "last_name",
+            "gender",
+            "phone",
+            "address",
+            "district",
+            "division",
+            "zip_code",
+            "image",
+            "cover_image",
+            "user__email",
+            "user__username",
+        )
+
+        data = list(data)
+        responseData = {'status': 'success', 'data': data, }
+
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+# =================================================================================================
+
+
+
+
+
+
+
+
+
+
 class CompetitionQualifiersDataView(APIView):
     def post(self, request, *args, **kwargs):
         userId = request.data['userId']
