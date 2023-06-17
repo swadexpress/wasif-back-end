@@ -16,24 +16,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import re_path, include
 from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+# from drf_yasg.views import get_schema_view
+# from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 # from shop.views import admin_order_pdf
 
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Orbitplug",
-        default_version='v1',
-        description="Test description",
-        terms_of_service="https://www.ourapp.com/policies/terms/",
-        contact=openapi.Contact(email="contact@expenses.local"),
-        license=openapi.License(name="Test License"),
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-)
+# schema_view = get_schema_view(
+#     openapi.Info(
+#         title="Orbitplug",
+#         default_version='v1',
+#         description="Test description",
+#         terms_of_service="https://www.ourapp.com/policies/terms/",
+#         contact=openapi.Contact(email="contact@expenses.local"),
+#         license=openapi.License(name="Test License"),
+#     ),
+#     public=True,
+#     permission_classes=(permissions.AllowAny,),
+# )
 
 
 urlpatterns = [
@@ -44,10 +44,10 @@ urlpatterns = [
     re_path('shop/', include('shop.urls')),
     re_path('social_auth/', include(('social_auth.urls', 'social_auth'),
                                  namespace="social_auth")),
-    re_path('', schema_view.with_ui('swagger',
-                                 cache_timeout=0), name='schema-swagger-ui'),
-    re_path('api/api.json/', schema_view.without_ui(cache_timeout=0), name='schema-swagger-ui'),
-    re_path('redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
+    # re_path('', schema_view.with_ui('swagger',
+    #                              cache_timeout=0), name='schema-swagger-ui'),
+    # re_path('api/api.json/', schema_view.without_ui(cache_timeout=0), name='schema-swagger-ui'),
+    # re_path('redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
 
 
     

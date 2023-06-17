@@ -1,15 +1,28 @@
-from twilio.rest import Client
-
-
-account_sid = "ACdc15b7264843df0ca7888b9f4ecb4c3d"
-auth_token = "9eca87f5a36ccf0f05683f3c15b442bc"
-client = Client(account_sid, auth_token)
-
-message = client.messages.create(
-                body="Join Earth's mightiest heroes. Like Kevin Bacon.",
-                from_='+15075756050',
-                to='+8801568393974'
-            )
-
-
-
+<VirtualHost *:80>
+    ServerName www.porichoy.live
+    ServerAdmin contact@porichoy.live
+    #Document Root is not required
+    #DocumentRoot /var/www/project_folder_name
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    
+    Alias /static /var/www/django/static
+    <Directory /var/www/django/static>
+        Require all granted
+    </Directory>
+    
+    Alias /media /var/www/django/media
+    <Directory /var/www/django/media>
+        Require all granted
+    </Directory>
+    
+    <Directory /var/www/django/incomeexpensesapi>
+        <Files wsgi.py>
+            Require all granted
+        </Files>
+    </Directory>
+    
+    WSGIDaemonProcess django python-home=/var/www/django/env python-path=/var/www/django
+    WSGIProcessGroup django
+    WSGIScriptAlias /  /var/www/django/incomeexpensesapi/wsgi.py
+</VirtualHost>

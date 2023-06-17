@@ -60,8 +60,6 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
 
 
 
-
-
 class FollowersListView(APIView):
     def post(self, request, *args, **kwargs):
         usersId = request.data['usersId']
@@ -93,15 +91,6 @@ class FollowersListView(APIView):
 
 
 # =================================================================================================
-
-
-
-
-
-
-
-
-
 
 class CompetitionQualifiersDataView(APIView):
     def post(self, request, *args, **kwargs):

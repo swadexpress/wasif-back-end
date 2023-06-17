@@ -1,4 +1,4 @@
-arabic-reshaper
+
 asgiref
 autopep8
 CacheControl
@@ -25,7 +25,6 @@ django-resized
 djangorestframework
 djangorestframework-recursive
 djangorestframework-simplejwt
-drf-yasg
 facebook-sdk
 Faker
 firebase-admin
@@ -73,8 +72,6 @@ pytz
 requests
 requests-oauthlib
 rsa
-ruamel.yaml
-ruamel.yaml.clib
 six
 sorl-thumbnail
 sqlparse
@@ -89,3 +86,6 @@ webencodings
 dj-database-url
 psycopg2
 twilio
+
+
+
