@@ -143,19 +143,28 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 
 
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 DATABASES = {
-    'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'peacegarden',
+        'USER': 'postgres',
+        'PASSWORD': 'kawsarkhan12345',
+        'HOST': '192.168.0.214',
+        'PORT': '5432',
 
+
+    }
 }
+
+
+
+
+# DATABASES = {
+#     'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
+
+# }
 
 
 
