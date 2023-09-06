@@ -1121,12 +1121,16 @@ class HostAgentsView(APIView):
 class BannerImagesView(APIView):
     def get(self, request, *args, **kwargs):
 
-        data = BannerImages.objects.all()
+        # Id = request.data['id']
+        # data = Questions.objects.filter(exam_name=Id).values()
+        json_data = serializers.serialize("json", BannerImages.objects.all())
+        data = [i['fields'] for i in json.loads(json_data)]
+        data = list(data)
 
-        data = list(data.values("image", 'name'))
         responseData = {'status': 'success', 'data': data, }
 
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
+
 
 
 class UploadBannerImagesAndVideosView(APIView):

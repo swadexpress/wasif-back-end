@@ -13,6 +13,7 @@ from rest_framework.views import APIView
 from .register import register_phone_number_user
 from random import randint
 from twilio.rest import Client
+import requests
 
 
 def random_with_N_digits(n):
@@ -134,18 +135,16 @@ class PhoneNumberAuthView(APIView):
         data = (register_phone_number_user(email,name,provider))
         data = list(data.values())
 
-        print (data)
+        url = "https://tpsms.xyz/sms/api?action=send-sms&api_key=TUd1QUlxb2ltdG93RXhneU9Ia3Q=&to="+'880'+str(email)+"&from=8809617610021&sms="+'Porichoy Live, Dear Your OTP:' + str(token_number)
+        response = requests.request("GET", url,)
 
-
+        token_save = OTPToken.objects.create(
+            token=token_number, token_number=phone_number, uidb64='')
+        data = (register_phone_number_user(email, name, provider))
+        data = list(data.values())
+        # print (data)
         responseData = {'status': 'success', 'data': data}
-
-
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
-
-
-
-
-
 
 
 

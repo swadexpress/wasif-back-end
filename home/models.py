@@ -109,9 +109,8 @@ class SentGifts(models.Model):
 
 class BannerImages(models.Model):
     name = models.CharField(max_length=200, default='')
-    image = models.CharField(max_length=200, default='')
+    image =CloudinaryField(resource_type='raw', default=None, blank=True,null=True)
     uploaded = models.DateTimeField(auto_now_add=True)
-
 
 def upload_post_to(instance, filename):
     return f'post_picture/{instance.user.username}/{filename}'
