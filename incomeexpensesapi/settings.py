@@ -43,7 +43,7 @@ AUTH_USER_MODEL = 'authentication.User'
 # Application definition
 
 INSTALLED_APPS = [
-
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'chat',
     # 'drf_yasg',
     'authentication',
     'mptt',
@@ -65,7 +66,7 @@ INSTALLED_APPS = [
     'social_auth',
     'cloudinary',
 
-    ]
+]
 
 
 SWAGGER_SETTINGS = {
@@ -117,6 +118,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'incomeexpensesapi.wsgi.application'
+ASGI_APPLICATION = "incomeexpensesapi.asgi.application"
+# mysite/settings.py
+# Channels
+# ASGI_APPLICATION = "mysite.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # CORS WHITELIST
 CORS_ORIGIN_WHITELIST = [
@@ -160,15 +173,10 @@ DATABASES = {
 }
 
 
-
 # DATABASES = {
 #     'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
 
 # }
-
-
-
-
 
 
 REST_FRAMEWORK = {
@@ -267,8 +275,6 @@ EMAIL_HOST_PASSWORD = 'kawsarkhan01794910680prantokhan57706swadexpress'
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 
-
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CSRF_TRUSTED_ORIGINS = ['https://peace-garden-django-back-end-98e187645cb6.herokuapp.com']
+CSRF_TRUSTED_ORIGINS = [
+    'https://peace-garden-django-back-end-98e187645cb6.herokuapp.com']
