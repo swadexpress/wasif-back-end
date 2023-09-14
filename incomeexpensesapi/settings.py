@@ -119,17 +119,79 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'incomeexpensesapi.wsgi.application'
 ASGI_APPLICATION = "incomeexpensesapi.asgi.application"
-# mysite/settings.py
-# Channels
-# ASGI_APPLICATION = "mysite.asgi.application"
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
+
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": os.environ.get('REDIS_URL'),
+#         },
+#     },
+# }
+
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            # "hosts": ["redis://:kawsarkhan12345@127.0.0.1:6379/0"],
+              "hosts": ["redis://:kawsarkhan12345@192.168.0.135:6379"],
+            #   "hosts": [("redis://:kawsarkhan12345@"+str( os.environ.get('REDIS_URL')))],
+            #   "hosts": ["redis://:kawsarkhan12345@1430-160-238-0-240.ngrok-free.app"],
+            "symmetric_encryption_keys": ["sys_admin_config_836"],
         },
     },
 }
+
+
+
+
+# Database
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'peacegarden',
+#         'USER': 'postgres',
+#         'PASSWORD': 'kawsarkhan12345',
+#         # 'HOST': '192.168.0.214',
+#         # 'HOST': '172.20.10.14',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+
+
+#     }
+# }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+
+
+
+
+
+# DATABASES = {
+#     'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
+
+# }
+
 
 # CORS WHITELIST
 CORS_ORIGIN_WHITELIST = [
@@ -144,7 +206,7 @@ CORS_ORIGIN_WHITELIST = [
     "https://orbitplug.com",
     "https://orbitplug-admin.netlify.app",
     "https://shopping-cartsx.netlify.app",
-    "https://porichoy-admin-panel.netlify.app",
+    "https://6f3f-37-111-245-59.ngrok-free.app",
 
 
 
@@ -153,31 +215,6 @@ CORS_ORIGIN_WHITELIST = [
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https://\w+\.netlify\.app$",
 ]
-
-
-# Database
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'peacegarden',
-        'USER': 'postgres',
-        'PASSWORD': 'kawsarkhan12345',
-        'HOST': '192.168.0.214',
-        # 'HOST': '172.20.10.14',
-        'PORT': '5432',
-
-
-    }
-}
-
-
-# DATABASES = {
-#     'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
-
-# }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -277,4 +314,4 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
-    'https://peace-garden-django-back-end-98e187645cb6.herokuapp.com']
+    'https://8ea7-160-238-0-240.ngrok-free.app']

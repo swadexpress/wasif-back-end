@@ -12,6 +12,7 @@
     {{ room_name|json_script:"room-name" }}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+//  this is for http
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -20,6 +21,25 @@
             + roomName
             + '/'
         );
+//  this is for https
+        // const chatSocket = new WebSocket(
+        //     'wss://'
+        //     + window.location.host
+        //     + '/ws/chat/'
+        //     + roomName
+        //     + '/'
+        // );
+
+        chatSocket.onopen = function() {
+            // const data = JSON.parse(e.data);
+            console.log('open')
+            // document.querySelector('#chat-log').value += (data.message + '\n');
+        };
+        chatSocket.onerror = function(e) {
+            // const data = JSON.parse(e.data);
+            console.log(e,'errr')
+            // document.querySelector('#chat-log').value += (data.message + '\n');
+        };
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);

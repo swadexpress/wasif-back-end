@@ -37,9 +37,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    re_path("chat/", include("chat.urls")),
+    
     re_path('admin/', admin.site.urls),
     # path('admin/admin_order_pdf/<pk>/', admin_order_pdf, name='admin_order_pdf'),
+    re_path("chat/", include("chat.urls")),
     re_path('home/' , include('home.urls')),
     re_path('auth/', include('authentication.urls')),
     re_path('shop/', include('shop.urls')),

@@ -1079,10 +1079,8 @@ class RechargeAgentView(APIView):
             "user__email",
             "user__username",
         )
-
         data = list(data)
         responseData = {'status': 'success', 'data': data, }
-
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
