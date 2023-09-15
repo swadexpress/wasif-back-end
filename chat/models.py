@@ -19,17 +19,13 @@ from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
 
 
-
-
-
 class AllRooms(models.Model):
     room_admin_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='room_admin_user')
-   
+
     room_admin_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='room_admin_profile')
-   
-   
+
     room_name = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     room_coustom_id = models.CharField(
@@ -46,7 +42,8 @@ class AllRooms(models.Model):
         max_length=200, blank=True, default=None, null=True)
 
     time = models.DateTimeField(auto_now_add=True)
-    
+
+
 class IsJoinRoomsUsers(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='room_is_join_user')
@@ -56,5 +53,51 @@ class IsJoinRoomsUsers(models.Model):
         max_length=200, blank=True, default=None, null=True)
     room_join_sit_position = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    room_join_join_uniq_id = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
     # time = models.DateTimeField(auto_now_add=True)
+
+
+class AllSentedGifts(models.Model):
+    gift_sent_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='gift_sent_user')
+    gift_receive_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='gift_receive_user')
+    gift_sent_user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='gift_sent_user_profile')
+    gift_receive_user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='gift_receive_user_profile')
+    room_coustom_unique_id = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    gift_name = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    gift_amount = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+
+class AllPK(models.Model):
+    pk_request_sent_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='pk_request_sent_user')
+    pk_request_receive_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='pk_request_receive_user')
     
+    pk_request_sent_user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='pk_request_sent_user_profile',)
+    pk_request_receive_user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='pk_request_receive_user_profile')
+
+    pk_request_sent_user_balance = models.CharField(
+        max_length=200, blank=True, default=0, null=True)
+    pk_request_receive_user_balance = models.CharField(
+        max_length=200, blank=True, default=0, null=True)
+
+    pk_unique_id = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_coustom_unique_id = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    pk_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    pk_start_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    pk_end_time =models.CharField(
+        max_length=200, blank=True, default=None, null=True)

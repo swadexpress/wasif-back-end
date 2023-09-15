@@ -134,8 +134,6 @@ class CreateRoomTokenView(APIView):
 
         }
 
-        print (data,data)
-
         responseData = {'status': 'success', 'data': data, }
         return JsonResponse(responseData, status=HTTP_200_OK)
 

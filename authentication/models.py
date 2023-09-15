@@ -134,10 +134,10 @@ class Profile(models.Model):
     image = models.CharField(blank=True, max_length=400)
     cover_image = models.CharField(blank=True, max_length=400)
     # ======================================================
-    coin = models.IntegerField(blank=True,default=0)
-    total_coin = models.IntegerField(blank=True,default=0)
-    diamond = models.IntegerField(blank=True,default=0)
-    total_diamond = models.IntegerField(blank=True,default=0)
+    coin = models.CharField(blank=True, max_length=400,default=0)
+    total_coin = models.CharField(blank=True, max_length=400,default=0)
+    diamond = models.CharField(blank=True, max_length=400,default=0)
+    total_diamond = models.CharField(blank=True, max_length=400,default=0)
     # ======================================================
     is_blocked = models.BooleanField(default=False)
     is_host_agent = models.BooleanField(default=False)
