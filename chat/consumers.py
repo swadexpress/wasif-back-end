@@ -390,10 +390,24 @@ class ChatConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
+
                     "type": "chat.message",
                     "status": status,
                     "pk_request_data": text_data_json,
                     "pk_request_receive_user_id": pk_request_receive_user_id,
+
+
+
+
+                }
+            )
+        elif (status == 'PKRequestCancel'):
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "pk_request_data": text_data_json,
 
                 }
             )
@@ -503,6 +517,63 @@ class ChatConsumer(WebsocketConsumer):
                     "type": "chat.message",
                     "status": status,
                     "pk_data": pk_data,
+                }
+            )
+
+        elif (status == 'RoomLockAndUnLock'):
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_lock_password = text_data_json["room_lock_password"]
+            room_lock = text_data_json["room_lock"]
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            all_room_update.update(
+                room_password=room_lock_password,
+                room_lock=room_lock
+            )
+
+            all_room_update = all_room_update.values()
+            all_room_update = list(all_room_update)
+            print(all_room_update, '...........')
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_data": all_room_update,
+                }
+            )
+
+        elif (status == 'RoomSitLock'):
+            
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_sit_lock_position = text_data_json["room_sit_lock_position"]
+            room_sit_password = text_data_json["room_sit_password"]
+            room_sit_lock_position
+            room_sit_lock_position_update = "room_sit_" + \
+                str(room_sit_lock_position)+"_lock_position"
+            room_sit_password_update = "room_sit_" + \
+                str(room_sit_lock_position)+"_password"
+            room_update_data = {
+                room_sit_lock_position_update: room_sit_lock_position,
+                room_sit_password_update: room_sit_password,
+            }
+
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            all_room_update.update(
+                **room_update_data
+
+            )
+
+            all_room_update = all_room_update.values()
+            all_room_update = list(all_room_update)
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_data": all_room_update,
                 }
             )
 

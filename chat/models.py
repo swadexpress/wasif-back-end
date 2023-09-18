@@ -40,8 +40,68 @@ class AllRooms(models.Model):
         max_length=200, blank=True, default=None, null=True)
     room_user_can_join = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    room_lock = models.BooleanField( blank=True, default=False, null=True)
+    room_password = models.CharField(
+        max_length=200, blank=True, default='57706', null=True)
+    # ==============================================
 
-    time = models.DateTimeField(auto_now_add=True)
+    room_sit_1_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_1_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_1_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    room_sit_2_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_2_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_2_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    room_sit_3_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_3_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_3_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    room_sit_4_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_4_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_4_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    room_sit_5_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_5_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_5_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    room_sit_6_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_6_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_6_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    room_sit_7_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_7_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_7_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    room_sit_8_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_8_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_8_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    # time = models.DateTimeField(auto_now_add=True)
 
 
 class IsJoinRoomsUsers(models.Model):
@@ -80,7 +140,7 @@ class AllPK(models.Model):
         User, on_delete=models.CASCADE, related_name='pk_request_sent_user')
     pk_request_receive_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='pk_request_receive_user')
-    
+
     pk_request_sent_user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='pk_request_sent_user_profile',)
     pk_request_receive_user_profile = models.ForeignKey(
@@ -99,5 +159,5 @@ class AllPK(models.Model):
         max_length=200, blank=True, default=None, null=True)
     pk_start_time = models.CharField(
         max_length=200, blank=True, default=None, null=True)
-    pk_end_time =models.CharField(
+    pk_end_time = models.CharField(
         max_length=200, blank=True, default=None, null=True)
