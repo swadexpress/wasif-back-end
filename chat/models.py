@@ -21,15 +21,37 @@ from cloudinary.models import CloudinaryField
 
 class AllRooms(models.Model):
     room_admin_user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='room_admin_user')
-
+        User,
+        on_delete=models.CASCADE,
+        related_name='room_admin_user'
+    )
     room_admin_profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name='room_admin_profile')
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='room_admin_profile'
+    )
+    
+    room_sup_admin_profile= models.ManyToManyField(
+        Profile,
+        related_name="room_sup_admin_profile",
+        blank=True
+    )
 
+    room_mute_mic_user_profile_list = models.ManyToManyField(
+        Profile,
+        related_name="room_mute_mic_user_profile_list",
+        blank=True
+    )
+
+    room_mute_mic_user_profile_banded_list = models.ManyToManyField(
+        Profile,
+        related_name="room_mute_mic_user_profile_banded_list",
+        blank=True)
     room_name = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     room_coustom_id = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+
     room_welcome_message = models.CharField(
         max_length=200, blank=True, default="Welcome", null=True)
     room_tag = models.CharField(
@@ -40,7 +62,7 @@ class AllRooms(models.Model):
         max_length=200, blank=True, default=None, null=True)
     room_user_can_join = models.CharField(
         max_length=200, blank=True, default=None, null=True)
-    room_lock = models.BooleanField( blank=True, default=False, null=True)
+    room_lock = models.BooleanField(blank=True, default=False, null=True)
     room_password = models.CharField(
         max_length=200, blank=True, default='57706', null=True)
     # ==============================================

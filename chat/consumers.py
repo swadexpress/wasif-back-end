@@ -531,21 +531,25 @@ class ChatConsumer(WebsocketConsumer):
                 room_lock=room_lock
             )
 
-            all_room_update = all_room_update.values()
-            all_room_update = list(all_room_update)
-            print(all_room_update, '...........')
+            json_data = serializers.serialize("json", all_room_update)
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id 
+            data[0]['id']=profile_id[0]
+            room_details = list(data)
+
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
                     "type": "chat.message",
                     "status": status,
-                    "room_data": all_room_update,
+                    "room_data": room_details,
                 }
             )
 
         elif (status == 'RoomSitLock'):
-            
+
             room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
             room_sit_lock_position = text_data_json["room_sit_lock_position"]
             room_sit_password = text_data_json["room_sit_password"]
@@ -566,14 +570,71 @@ class ChatConsumer(WebsocketConsumer):
 
             )
 
-            all_room_update = all_room_update.values()
-            all_room_update = list(all_room_update)
+            json_data = serializers.serialize("json", all_room_update)
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id 
+            data[0]['id']=profile_id[0]
+            room_details = list(data)
+
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
                     "type": "chat.message",
                     "status": status,
-                    "room_data": all_room_update,
+                    "room_data": room_details,
+                }
+            )
+        elif (status == 'KickOut'):
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "kick_out_data": text_data_json,
+                }
+            )
+        elif (status == 'RoomUserMuteMic'):
+
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_mute_mic_user_profile_id = text_data_json["room_mute_mic_user_profile_id"]
+            muteMicStatus = text_data_json["muteMicStatus"]
+
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            print(muteMicStatus, 'muteMicStatus')
+            print(all_room_update, 'all_room_update')
+            if muteMicStatus:
+                # print('oka')
+                for i in all_room_update:
+                    i.room_mute_mic_user_profile_list.remove(
+                        room_mute_mic_user_profile_id)
+            else:
+                # print('no')
+                for i in all_room_update:
+                    i.room_mute_mic_user_profile_list.add(
+                        room_mute_mic_user_profile_id)
+                    
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            
+            json_data = serializers.serialize("json", AllRooms.objects.filter(
+            room_coustom_id=room_coustom_unique_id))
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id 
+            data[0]['id']=profile_id[0]
+            room_details = list(data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_mute_mic_user_profile_id": room_mute_mic_user_profile_id,
+                    "room_data": room_details,
+                    "muteMicStatus": muteMicStatus,
                 }
             )
 

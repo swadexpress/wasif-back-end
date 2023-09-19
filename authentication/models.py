@@ -117,6 +117,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE ,related_name='profile')
     followers = models.ManyToManyField(User, related_name='followers', blank=True)
     following = models.ManyToManyField(User, related_name="following", blank=True)
+    
     custom_id = models.CharField(max_length=10, null=True,blank=True)
     about_me = models.CharField(max_length=250, null=True,blank=True)
     fast_name = models.CharField(blank=True, max_length=50)

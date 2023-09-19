@@ -108,29 +108,58 @@ def test_update_room_metadata():
 # #         muted=True,
 # #     )
 
+# grant = livekit.VideoGrant(room_join=True, room="user89872856088867554772")
+# access_token = livekit.AccessToken(
+#     live_kit_key, live_kit_secret,
+#     grant=grant,
+#     identity="bob",
+#     name="metaData",
+#     metadata="metaData"
+# )
+# token = access_token.to_jwt()
+
 
 class CreateRoomTokenView(APIView):
     def post(self, request, *args, **kwargs):
         roomName = request.data['roomName']
         roomUniqueId = request.data['roomId']
         metaData = request.data['metaData']
-        grant = livekit.VideoGrant(room_join=True, room=roomUniqueId)
+        identity = request.data['identity']
+        print(roomUniqueId, 'roomUniqueId')
+        grant = livekit.VideoGrant(
+            room_join=True,
+            can_publish=True,
+            room=roomUniqueId,
+        )
         access_token = livekit.AccessToken(
             live_kit_key, live_kit_secret,
             grant=grant,
-            identity="bob",
+            identity=identity,
             name=metaData,
             metadata=metaData
+
         )
         token = access_token.to_jwt()
 
-        room_details = AllRooms.objects.filter(
-            room_coustom_id=roomUniqueId).values()
-        room_details = list(room_details)
+        json_data = serializers.serialize("json", AllRooms.objects.filter(
+            room_coustom_id=roomUniqueId))
+
+        profile_id = [i['pk'] for i in json.loads(json_data)]
+        data = [i['fields'] for i in json.loads(json_data)]
+        # add profile  id
+        data[0]['id'] = profile_id[0]
+
+        is_join_rooms_users_data = IsJoinRoomsUsers.objects.filter(
+                room_coustom_unique_id=roomUniqueId).values()
+        is_join_rooms_users_data = list(is_join_rooms_users_data)
+
+        room_details = list(data)
+
         #  =====Create user room token for join Livekit server room=====
         data = {
             "token": token,
             "room_details": room_details,
+            "is_join_rooms_users_data": is_join_rooms_users_data,
 
         }
 
@@ -192,7 +221,6 @@ class CreateRoomView(APIView):
             room_user_can_join=roomPercipientTotalJoin,
         )
 
-        print(request.user.id)
         responseData = {'status': 'success', 'data': "data", }
         return JsonResponse(responseData, status=HTTP_200_OK)
 

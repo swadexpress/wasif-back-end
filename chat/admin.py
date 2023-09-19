@@ -4,3 +4,4 @@ from .models import *
 admin.site.register(AllRooms)
 admin.site.register(AllSentedGifts)
 admin.site.register(AllPK)
+admin.site.register(IsJoinRoomsUsers)

@@ -87,9 +87,6 @@ class BuyCoinFromAgents(models.Model):
     
 
 
-
-
-
 class SentGifts(models.Model):
     room_admin_user_profile = models.CharField(
         max_length=200, blank=True, default=None, null=True)
