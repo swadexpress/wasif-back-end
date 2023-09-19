@@ -637,6 +637,46 @@ class ChatConsumer(WebsocketConsumer):
                     "muteMicStatus": muteMicStatus,
                 }
             )
+        elif (status == 'RoomSitLockForJoinRequestSent'):
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_sit_lock_for_join_data": text_data_json,
+                }
+            )
+        elif (status == 'RoomSitLockForJoinRequestReceive'):
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_sit_lock_for_join_data": text_data_json,
+                }
+            )
+        elif (status == 'RoomSitJoinSentRequest'):
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_sit_join_data": text_data_json,
+                }
+            )
+        elif (status == 'RoomSitJoinReceiveRequest'):
+            
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_sit_join_data": text_data_json,
+                }
+            )
 
     # Receive message from room group
 

@@ -150,7 +150,7 @@ class CreateRoomTokenView(APIView):
         data[0]['id'] = profile_id[0]
 
         is_join_rooms_users_data = IsJoinRoomsUsers.objects.filter(
-                room_coustom_unique_id=roomUniqueId).values()
+            room_coustom_unique_id=roomUniqueId).values()
         is_join_rooms_users_data = list(is_join_rooms_users_data)
 
         room_details = list(data)
@@ -187,14 +187,6 @@ class AllRoomsView(APIView):
             update_data = (all_rooms_data[i], {"numParticipants": 'test'})
             data.append(update_data)
 
-        print(data)
-
-        # for i in all_rooms_data:
-        #     print (i['id'])
-        #     for j all_livekit_server_rooms :
-
-        # all_livekit_server_rooms
-
         all_rooms_data = list(data)
         responseData = {'status': 'success', 'data': all_rooms_data, }
         return JsonResponse(responseData, status=HTTP_200_OK)
@@ -210,7 +202,12 @@ class CreateRoomView(APIView):
         adminProfileId = request.data['adminProfileId']
         roomVideoAndAudioStatus = request.data['roomVideoAndAudioStatus']
         #  =====Create Livekit server room=====
-        client.create_room(roomUniqueId)
+        client.create_room(
+            name=roomUniqueId,
+            empty_timeout=20 * 60,
+            max_participants=100000,
+
+        )
         AllRooms.objects.create(
             room_admin_user_id=request.user.id,
             room_admin_profile_id=adminProfileId,
