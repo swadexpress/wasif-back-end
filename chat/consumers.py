@@ -76,6 +76,32 @@ class ChatConsumer(WebsocketConsumer):
 
                 }
             )
+        if (status == 'CancelCallRoomJoin'):
+            print(status, 'status')
+
+            # ==== get data from app====
+            my_user_id = text_data_json["my_user_id"]
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_name = text_data_json["room_name"]
+            room_join_sit_position = text_data_json["room_join_sit_position"]
+            room_join_join_uniq_id = text_data_json["room_join_join_uniq_id"]
+            # ====IsJoinRoomsUsers model react in database=====
+            IsJoinRoomsUsers.objects.filter(
+                room_coustom_unique_id=room_coustom_unique_id
+            ).delete()
+            is_join_rooms_users_data = IsJoinRoomsUsers.objects.filter(
+                room_coustom_unique_id=room_coustom_unique_id).values()
+            is_join_rooms_users_data = list(is_join_rooms_users_data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": "IsJoinRoomsUsers",
+                    "is_join_rooms_users_data": is_join_rooms_users_data,
+
+                }
+            )
 
         # ====Group Messages Send Handelilng ====
         elif (status == 'GroupMessageSend'):
@@ -748,6 +774,48 @@ class ChatConsumer(WebsocketConsumer):
                     "muteMicStatus": muteMicStatus,
                 }
             )
+
+        elif (status == 'RoomAddAdmin'):
+
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_sup_admin_profile_id = text_data_json["room_sup_admin_profile_id"]
+            join_status = text_data_json["join_status"]
+
+            print(join_status, 'join_status')
+
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            if join_status:
+                print('oka')
+                for i in all_room_update:
+                    i.room_sup_admin_profile.remove(
+                        room_sup_admin_profile_id)
+            else:
+                print('no')
+                for i in all_room_update:
+                    i.room_sup_admin_profile.add(
+                        room_sup_admin_profile_id)
+
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+
+            json_data = serializers.serialize("json", AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id))
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
+            room_details = list(data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_data": room_details,
+                }
+            )
+
         elif (status == 'RoomSitLockForJoinRequestSent'):
 
             async_to_sync(self.channel_layer.group_send)(
