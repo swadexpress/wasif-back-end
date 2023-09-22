@@ -534,10 +534,9 @@ class ChatConsumer(WebsocketConsumer):
             json_data = serializers.serialize("json", all_room_update)
             profile_id = [i['pk'] for i in json.loads(json_data)]
             data = [i['fields'] for i in json.loads(json_data)]
-            # add profile  id 
-            data[0]['id']=profile_id[0]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
             room_details = list(data)
-
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -573,8 +572,8 @@ class ChatConsumer(WebsocketConsumer):
             json_data = serializers.serialize("json", all_room_update)
             profile_id = [i['pk'] for i in json.loads(json_data)]
             data = [i['fields'] for i in json.loads(json_data)]
-            # add profile  id 
-            data[0]['id']=profile_id[0]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
             room_details = list(data)
 
             async_to_sync(self.channel_layer.group_send)(
@@ -585,6 +584,118 @@ class ChatConsumer(WebsocketConsumer):
                     "room_data": room_details,
                 }
             )
+
+        elif (status == 'ChangeRoomSetNumber'):
+
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_set_number = text_data_json["room_set_number"]
+
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            all_room_update.update(
+                room_user_can_join=room_set_number
+            )
+
+            json_data = serializers.serialize("json", all_room_update)
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
+            room_details = list(data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_data": room_details,
+                }
+            )
+        elif (status == 'RoomMoveToAudioAndAudioToVideo'):
+
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_media_status = text_data_json["room_media_status"]
+
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            all_room_update.update(
+                room_media_status=room_media_status
+            )
+
+            json_data = serializers.serialize("json", all_room_update)
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
+            room_details = list(data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_data": room_details,
+                }
+            )
+
+        elif (status == 'RoomMoveToAudioAndAudioToVideo'):
+
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_media_status = text_data_json["room_media_status"]
+
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            all_room_update.update(
+                room_media_status=room_media_status
+            )
+
+            json_data = serializers.serialize("json", all_room_update)
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
+            room_details = list(data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_data": room_details,
+                }
+            )
+
+        elif (status == 'UpdateWelcomeMassageAndTitleAndRoomTag'):
+
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
+            room_name_update = text_data_json["room_name_update"]
+            room_name_values = text_data_json["room_name_values"]
+            room_update_data = {
+                room_name_update: room_name_values,
+
+            }
+            all_room_update = AllRooms.objects.filter(
+                room_coustom_id=room_coustom_unique_id)
+            all_room_update.update(
+                **room_update_data
+            )
+
+            json_data = serializers.serialize("json", all_room_update)
+            profile_id = [i['pk'] for i in json.loads(json_data)]
+            data = [i['fields'] for i in json.loads(json_data)]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
+            room_details = list(data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_data": room_details,
+                }
+            )
+
         elif (status == 'KickOut'):
 
             async_to_sync(self.channel_layer.group_send)(
@@ -615,16 +726,16 @@ class ChatConsumer(WebsocketConsumer):
                 for i in all_room_update:
                     i.room_mute_mic_user_profile_list.add(
                         room_mute_mic_user_profile_id)
-                    
+
             all_room_update = AllRooms.objects.filter(
                 room_coustom_id=room_coustom_unique_id)
-            
+
             json_data = serializers.serialize("json", AllRooms.objects.filter(
-            room_coustom_id=room_coustom_unique_id))
+                room_coustom_id=room_coustom_unique_id))
             profile_id = [i['pk'] for i in json.loads(json_data)]
             data = [i['fields'] for i in json.loads(json_data)]
-            # add profile  id 
-            data[0]['id']=profile_id[0]
+            # add profile  id
+            data[0]['id'] = profile_id[0]
             room_details = list(data)
 
             async_to_sync(self.channel_layer.group_send)(
@@ -668,7 +779,7 @@ class ChatConsumer(WebsocketConsumer):
                 }
             )
         elif (status == 'RoomSitJoinReceiveRequest'):
-            
+
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
