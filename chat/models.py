@@ -155,6 +155,22 @@ class AllSentedGifts(models.Model):
         max_length=200, blank=True, default=None, null=True)
     gift_amount = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+class FruitInvestment(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_investment_user_profile')
+    
+    investment = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+    
+    profile_data = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+class FruitInvestmentTimeline(models.Model):
+    start_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    end_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    
 
 
 class AllPK(models.Model):

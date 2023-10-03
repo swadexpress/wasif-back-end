@@ -13,6 +13,191 @@ from django.core import serializers
 import datetime
 from django.utils.dateparse import parse_datetime
 from django.utils import dateparse
+from datastorage import DataStorage
+import threading
+
+fh="{'name': 'apple', 'image': 246, 'id': 1}"
+# some JSON:
+x =  '[{"name": "apple", "image": 246, "id": 1, "selected": true, "amount": 10}, {"name": "avocado", "image": 247, "id": 2, "selected": true, "amount": 10}, {"name": "grape", "image": 248, "id": 3, "selected": true, "amount": 10}]'
+
+data = [
+    {"name": "apple", "image": 246, "id": 1, "selected": True, "amount": 46},
+    {"name": "avocado", "image": 247, "id": 2, "selected": True, "amount": 60},
+    {"name": "grape", "image": 248, "id": 3, "selected": True, "amount": 5}
+]
+
+filtered_data = [item for item in data if item["amount"] < 10]
+
+print(filtered_data)
+
+class FruitgameConsumer(WebsocketConsumer):
+    def connect(self):
+        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_group_name = f"chat_{self.room_name}"
+
+        # Join room group
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name, self.channel_name
+        )
+
+        self.accept()
+
+    def disconnect(self, close_code):
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name, self.channel_name
+        )
+
+    # Receive message from WebSocket
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        status = text_data_json["status"]
+        if (status == 'InvestAddAndRemove'):
+            investment_data = text_data_json["investment_data"]
+            user_profile_data = text_data_json["user_profile_data"]
+           
+            if (user_profile_data):
+                FruitInvestment.objects.filter(
+                    user_profile_id=user_profile_data['id'],
+                ).delete()
+                FruitInvestment.objects.create(
+                    user_profile_id=user_profile_data['id'],
+                    investment=json.dumps(investment_data),
+                    profile_data=json.dumps(user_profile_data),
+                )
+            else:
+                FruitInvestment.objects.filter(
+                    user_profile_id=user_profile_data['id'],
+                ).delete()
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_sit_join_data": text_data_json,
+                }
+            )
+        elif (status == 'FruitInvestmentTimeline'):
+            def mytimer():
+                        print("Demo Python Program\n")
+                        fruit_investment_data = FruitInvestment.objects.all()
+                        apple_amount =[]
+                        avocado_amount =[]
+                        grape_amount =[]
+                        fruit_investment_data_update =[]
+
+                        for i in fruit_investment_data:
+                            for j in json.loads(i.investment):
+                                if (j['name']=='apple'):
+                                    apple_amount.append(int(j['amount']))
+                                    print(j['name'],'apple')
+                                elif (j['name']=='avocado'):
+                                    avocado_amount.append(int(j['amount']))
+                                    print(j['name'],'avocado')
+                                elif (j['name']=='grape'):
+                                    grape_amount.append(int(j['amount']))
+                                    print(j['name'],'grape')
+                            investment_data =json.loads(i.investment)
+                            profile_data =json.loads(i.profile_data)
+                            fruit_investment_data_update.append({**investment_data[0],**profile_data})
+                            
+                        win_amount= sum(apple_amount)
+                        win_name ='apple'
+                        win_investment_data_1 =[]
+                        win_investment_data_2 =[]
+                        win_investment_data_3 =[]
+ 
+                        apple_amount_first_win =sorted(apple_amount)
+
+
+                        for item in fruit_investment_data_update:
+                            if item["name"] == win_name:
+                                
+                                if len(apple_amount_first_win)>-1:
+                                    print ('llll',apple_amount_first_win)
+                                    win_investment_data_1.append(item)
+
+                                elif  len(apple_amount_first_win)>=2:
+                                
+                                   win_investment_data_2.append(item)
+
+                                elif  len(apple_amount_first_win)>=3:
+                                    win_investment_data_3.append(item)
+                                    print ('llll2',apple_amount_first_win)
+
+
+
+ 
+
+                        async_to_sync(self.channel_layer.group_send)(
+                        self.room_group_name,
+                        {
+                            "type": "chat.message",
+                            "status": "FruitInvestmentWiner",
+                            "server_current_time": str(server_current_time),
+                            "win_investment_data_1": win_investment_data_1,
+                            "win_investment_data_2": win_investment_data_2,
+                            "win_investment_data_3": win_investment_data_3,
+
+
+                        }
+                    )
+            start_time = datetime.datetime.now()
+            server_current_time = datetime.datetime.now()
+            end_time = datetime.datetime.now() + datetime.timedelta(minutes=1)
+            is_fruit_investment_timeline_fruit_investment_timeline = FruitInvestmentTimeline.objects.all(
+            ).order_by('-id')[0:1].values()
+            if (is_fruit_investment_timeline_fruit_investment_timeline):
+                if server_current_time > datetime.datetime.fromisoformat(is_fruit_investment_timeline_fruit_investment_timeline[0]['end_time']):
+                    FruitInvestmentTimeline.objects.all().delete()
+                    FruitInvestmentTimeline.objects.create(
+                        start_time=start_time,
+                        end_time=end_time,
+                    )
+
+                    my_timer = threading.Timer(10.0, mytimer)
+                    my_timer.start()
+                    my_timer = threading.Timer(25.0, mytimer)
+                    my_timer.start()
+                    my_timer = threading.Timer(35.0, mytimer)
+                    my_timer.start()
+                    my_timer = threading.Timer(45.0, mytimer)
+                    my_timer.start()
+            else:
+                FruitInvestmentTimeline.objects.create(
+                    start_time=start_time,
+                    end_time=end_time,
+                )
+                
+                my_timer = threading.Timer(30.0, mytimer)
+                my_timer.start()
+
+            is_fruit_investment_timeline_fruit_investment_timeline = FruitInvestmentTimeline.objects.all(
+            ).order_by('-id')[0:1].values()
+            fruit_investment_timeline_fruit_investment_timeline_data = list(
+                is_fruit_investment_timeline_fruit_investment_timeline)
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "server_current_time": str(server_current_time),
+                    "fruit_investment_timeline_fruit_investment_timeline_data": fruit_investment_timeline_fruit_investment_timeline_data,
+                    "end_time": is_fruit_investment_timeline_fruit_investment_timeline[0]['end_time'],
+                }
+            )
+
+
+
+    # Receive message from room group
+
+    def chat_message(self, event):
+        message = event
+        # print(event)
+
+        # Send message to WebSocket
+        self.send(text_data=json.dumps(event))
 
 
 class ChatConsumer(WebsocketConsumer):
