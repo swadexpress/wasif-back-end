@@ -30,8 +30,8 @@ class AllRooms(models.Model):
         on_delete=models.CASCADE,
         related_name='room_admin_profile'
     )
-    
-    room_sup_admin_profile= models.ManyToManyField(
+
+    room_sup_admin_profile = models.ManyToManyField(
         Profile,
         related_name="room_sup_admin_profile",
         blank=True
@@ -140,6 +140,19 @@ class IsJoinRoomsUsers(models.Model):
     # time = models.DateTimeField(auto_now_add=True)
 
 
+class AllP2PMessage(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='p2p_messages_user_profile')
+    other_user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='p2p_messages_other_user_profile')
+    messages = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    unique_id = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+
 class AllSentedGifts(models.Model):
     gift_sent_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='gift_sent_user')
@@ -155,22 +168,25 @@ class AllSentedGifts(models.Model):
         max_length=200, blank=True, default=None, null=True)
     gift_amount = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+
+
 class FruitInvestment(models.Model):
 
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_investment_user_profile')
-    
+
     investment = models.CharField(
         max_length=20000, blank=True, default=None, null=True)
-    
+
     profile_data = models.CharField(
         max_length=20000, blank=True, default=None, null=True)
+
+
 class FruitInvestmentTimeline(models.Model):
     start_time = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     end_time = models.CharField(
         max_length=200, blank=True, default=None, null=True)
-    
 
 
 class AllPK(models.Model):

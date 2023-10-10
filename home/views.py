@@ -1483,6 +1483,8 @@ class P2PMessageUniqueIdView(APIView):
             "user",
                 "other_user",
                 "uniqueId",
+                "other_user_profile",
+               
                 "other_user__email",
                 "other_user_profile__image",
                 "other_user_profile__fast_name",

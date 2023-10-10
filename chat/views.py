@@ -169,26 +169,36 @@ class CreateRoomTokenView(APIView):
 
 class AllRoomsView(APIView):
     def get(self, request, *args, **kwargs):
-
         all_rooms_data = AllRooms.objects.all().values()
         all_livekit_server_rooms = client.list_rooms()
         data = []
-
+        server_filter_data = []
         for i in range(len(all_rooms_data)):
-
-            # print(all_rooms_data[i]['room_coustom_id'],'.....')
-            server_filter_data = []
+            
 
             for j in range(len(all_livekit_server_rooms)):
                 if (all_livekit_server_rooms[j].name == all_rooms_data[i]['room_coustom_id']):
-                    server_filter_data = all_livekit_server_rooms[j]
-                    print(all_livekit_server_rooms[j].name, '....hhh.')
-
+                    server_filter_data.append(all_rooms_data[i]) 
+                    
+                    
             update_data = (all_rooms_data[i], {"numParticipants": 'test'})
             data.append(update_data)
 
         all_rooms_data = list(data)
-        responseData = {'status': 'success', 'data': all_rooms_data, }
+        all_livekit_server_rooms = list(all_livekit_server_rooms)
+        server_filter_data = list(server_filter_data)
+        all_livekit_server_rooms = json.dumps(
+            all_livekit_server_rooms, default=str)
+        print(all_livekit_server_rooms, 'all_livekit_server_rooms')
+        responseData = {
+            'status': 'success',
+
+            'data': all_rooms_data,
+            'all_livekit_server_rooms': server_filter_data,
+            'server_filter_data': server_filter_data,
+
+
+        }
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
@@ -202,10 +212,20 @@ class CreateRoomView(APIView):
         adminProfileId = request.data['adminProfileId']
         roomVideoAndAudioStatus = request.data['roomVideoAndAudioStatus']
         #  =====Create Livekit server room=====
+        metadata = {
+            'roomName': roomName,
+            'roomUniqueId': roomUniqueId,
+            'roomPercipientTotalJoin': roomPercipientTotalJoin,
+            'roomImage': roomImage,
+            'adminProfileId': adminProfileId,
+            'roomVideoAndAudioStatus': roomVideoAndAudioStatus,
+
+        }
         client.create_room(
             name=roomUniqueId,
             empty_timeout=20 * 60,
             max_participants=100000,
+            metadata=json.dumps(metadata),
 
         )
         AllRooms.objects.create(
