@@ -142,19 +142,27 @@ ASGI_APPLICATION = "incomeexpensesapi.asgi.application"
 #     },
 # }
 
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            # "hosts": ["redis://:kawsarkhan12345@127.0.0.1:6379/0"],
-              "hosts": ["redis://:kawsarkhan12345@192.168.0.135:6379"],
-            #   "hosts": [("redis://:kawsarkhan12345@"+str( os.environ.get('REDIS_URL')))],
-            #   "hosts": ["redis://:kawsarkhan12345@1430-160-238-0-240.ngrok-free.app"],
-            "symmetric_encryption_keys": ["sys_admin_config_836"],
+            "hosts": os.environ.get('REDIS_URL'),
         },
     },
 }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             # "hosts": ["redis://:kawsarkhan12345@127.0.0.1:6379/0"],
+#               "hosts": ["redis://:kawsarkhan12345@192.168.0.135:6379"],
+#             #   "hosts": [("redis://:kawsarkhan12345@"+str( os.environ.get('REDIS_URL')))],
+#             #   "hosts": ["redis://:kawsarkhan12345@1430-160-238-0-240.ngrok-free.app"],
+#             "symmetric_encryption_keys": ["sys_admin_config_836"],
+#         },
+#     },
+# }
 
 
 
