@@ -86,6 +86,5 @@ webencodings
 dj-database-url
 psycopg2
 twilio
-
-
+livekit-server-sdk-python
 
