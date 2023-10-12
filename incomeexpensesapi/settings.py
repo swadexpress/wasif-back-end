@@ -120,6 +120,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'incomeexpensesapi.wsgi.application'
 ASGI_APPLICATION = "incomeexpensesapi.asgi.application"
+# ASGI_APPLICATION = "routing.application"
+
 
 # CHANNEL_LAYERS = {
 #     "default": {

@@ -88,3 +88,4 @@ psycopg2
 twilio
 livekit-server-sdk-python
 daphne
+channels-redis
