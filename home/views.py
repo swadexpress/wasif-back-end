@@ -1484,7 +1484,6 @@ class P2PMessageUniqueIdView(APIView):
                 "other_user",
                 "uniqueId",
                 "other_user_profile",
-               
                 "other_user__email",
                 "other_user_profile__image",
                 "other_user_profile__fast_name",
@@ -1494,22 +1493,21 @@ class P2PMessageUniqueIdView(APIView):
                 "user_profile__image",
         )
         isdata2 = P2PMessageUniqueId.objects.filter(other_user_id=myUserId).values(
-            "user",
-            "other_user",
-            "uniqueId",
-            "other_user__email",
-            "other_user_profile__image",
-            "other_user_profile__fast_name",
-            "other_user_profile__last_name",
-            "user_profile__fast_name",
-            "user_profile__last_name",
-            "user_profile__image",
+                "other_user",
+                "uniqueId",
+                "other_user_profile",
+                "other_user__email",
+                "other_user_profile__image",
+                "other_user_profile__fast_name",
+                "other_user_profile__last_name",
+                "user_profile__fast_name",
+                "user_profile__last_name",
+                "user_profile__image",
         )
 
         data = []
         data.extend(isdata)
         data.extend(isdata2)
-        print(data, 'otherUserIdotherUserIdotherUserIdotherUserId')
 
         data = list(data)
         responseData = {'status': 'success', 'data': data, }

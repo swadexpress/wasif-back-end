@@ -174,13 +174,11 @@ class AllRoomsView(APIView):
         data = []
         server_filter_data = []
         for i in range(len(all_rooms_data)):
-            
 
             for j in range(len(all_livekit_server_rooms)):
                 if (all_livekit_server_rooms[j].name == all_rooms_data[i]['room_coustom_id']):
-                    server_filter_data.append(all_rooms_data[i]) 
-                    
-                    
+                    server_filter_data.append(all_rooms_data[i])
+
             update_data = (all_rooms_data[i], {"numParticipants": 'test'})
             data.append(update_data)
 
@@ -228,7 +226,7 @@ class CreateRoomView(APIView):
             metadata=json.dumps(metadata),
 
         )
-        AllRooms.objects.create(
+        is_rooms_create = AllRooms.objects.create(
             room_admin_user_id=request.user.id,
             room_admin_profile_id=adminProfileId,
             room_name=roomName,
@@ -237,6 +235,9 @@ class CreateRoomView(APIView):
             room_media_status=roomVideoAndAudioStatus,
             room_user_can_join=roomPercipientTotalJoin,
         )
+        is_rooms_create= AllRooms.objects.filter(id =is_rooms_create.id)
+        for i in is_rooms_create:
+            i.room_sup_admin_profile.add(adminProfileId)
 
         responseData = {'status': 'success', 'data': "data", }
         return JsonResponse(responseData, status=HTTP_200_OK)

@@ -360,24 +360,20 @@ class P2PMessages(WebsocketConsumer):
             time = text_data_json["time"]
 
             all_p2p_messages = AllP2PMessage.objects.create(
-
                 other_user_profile_id=other_user_profile_id,
                 user_profile_id=user_profile_id,
                 unique_id=unique_id,
                 messages=message,
                 time=time,
-
-
             )
 
             message = {
-                 "other_user_profile":other_user_profile_id,
-                "user_profile":user_profile_id,
-                "unique_id":unique_id,
-                "messages":message,
-                "time":time,
+                "other_user_profile_id": other_user_profile_id,
+                "user_profile_id": user_profile_id,
+                "unique_id": unique_id,
+                "messages": message,
+                "time": time,
             }
-
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -460,22 +456,17 @@ class ChatConsumer(WebsocketConsumer):
                 }
             )
         if (status == 'CancelCallRoomJoin'):
-            print(status, 'status')
 
-            # ==== get data from app====
-            my_user_id = text_data_json["my_user_id"]
-            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
-            room_name = text_data_json["room_name"]
-            room_join_sit_position = text_data_json["room_join_sit_position"]
             room_join_join_uniq_id = text_data_json["room_join_join_uniq_id"]
+            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
             # ====IsJoinRoomsUsers model react in database=====
             IsJoinRoomsUsers.objects.filter(
-                room_coustom_unique_id=room_coustom_unique_id
+                room_join_join_uniq_id=room_join_join_uniq_id
             ).delete()
+            
             is_join_rooms_users_data = IsJoinRoomsUsers.objects.filter(
                 room_coustom_unique_id=room_coustom_unique_id).values()
             is_join_rooms_users_data = list(is_join_rooms_users_data)
-
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -526,8 +517,9 @@ class ChatConsumer(WebsocketConsumer):
                 user_id=gift_receive_user_id)
 
             gift_receive_user_profile_data_update.update(
-                diamond=float(
-                    gift_receive_user_profile_data[0]['diamond']) + float(gift_amount)
+                coin=float(
+                    gift_receive_user_profile_data[0]['coin']) + float(gift_amount)
+                    # gift_receive_user_profile_data[0]['diamond']) + float(gift_amount)
             )
 
             # ==== gift sent and receive user profile data sent to app ====
@@ -1115,6 +1107,44 @@ class ChatConsumer(WebsocketConsumer):
                     "kick_out_data": text_data_json,
                 }
             )
+
+        elif (status == 'JoinVideoCallRequest'):
+            print(text_data_json)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "join_video_call_data": text_data_json,
+                }
+            )
+
+        elif (status == 'JoinVideoCallRequestAccept'):
+            
+
+            join_video_call_data = text_data_json["join_video_call_data"]
+            print(text_data_json,'........')
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "join_video_call_data": join_video_call_data,
+                }
+            )
+        elif (status == 'AdminCancelCallRoomJoin'):
+        
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "cancel_video_call_data": text_data_json,
+                }
+            )
+
         elif (status == 'RoomUserMuteMic'):
 
             room_coustom_unique_id = text_data_json["room_coustom_unique_id"]

@@ -64,7 +64,7 @@ class AllRooms(models.Model):
         max_length=200, blank=True, default=None, null=True)
     room_lock = models.BooleanField(blank=True, default=False, null=True)
     room_password = models.CharField(
-        max_length=200, blank=True, default='57706', null=True)
+        max_length=200, blank=True, default=None, null=True)
     # ==============================================
 
     room_sit_1_lock_position = models.CharField(
