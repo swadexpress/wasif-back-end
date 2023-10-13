@@ -120,7 +120,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'incomeexpensesapi.wsgi.application'
 # ASGI_APPLICATION = "incomeexpensesapi.asgi.application"
-ASGI_APPLICATION = "incomeexpensesapi.routing.application"
 
 
 # ASGI_APPLICATION = "routing.application"
@@ -145,14 +144,14 @@ ASGI_APPLICATION = "incomeexpensesapi.routing.application"
 #     },
 # }
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": os.environ.get('REDIS_URL'),
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": os.environ.get('REDIS_URL'),
+#         },
+#     },
+# }
 
 # CHANNEL_LAYERS = {
 #     "default": {
@@ -301,7 +300,7 @@ SITE_ID = 1
 ##  CKEDITOR CONFIGURATION ##
 ####################################
 
-CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
+# CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = "pillow"
@@ -329,3 +328,20 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'https://django-back-end-a72e31ec344c.herokuapp.com']
+
+
+
+ASGI_APPLICATION = "incomeexpensesapi.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+    },
+}
+
+
+
+
