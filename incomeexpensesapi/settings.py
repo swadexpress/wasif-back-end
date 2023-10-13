@@ -19,8 +19,7 @@ import cloudinary.api
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -325,7 +324,7 @@ EMAIL_HOST_PASSWORD = 'kawsarkhan01794910680prantokhan57706swadexpress'
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'https://django-back-end-a72e31ec344c.herokuapp.com']
 
