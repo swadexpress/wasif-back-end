@@ -9,12 +9,14 @@ import os
 import django
 from chat.routing import websocket_urlpatterns
 from channels.routing import get_default_application
+import channels.asgi
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "incomeexpensesapi.settings")
 # Initialize Django ASGI application early to ensure the AppRegistry
 # is populated before importing code that may import ORM models.
-django.setup()
-application = get_default_application()
+# django.setup()
+# application = get_default_application()
+channel_layer = channels.asgi.get_channel_layer()
 
 
 
