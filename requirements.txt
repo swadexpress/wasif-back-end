@@ -85,8 +85,6 @@ uritemplate
 urllib3
 webencodings
 dj-database-url
-
 twilio
 livekit-server-sdk-python
 daphne
-channels-redis
