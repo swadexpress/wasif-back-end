@@ -13,8 +13,8 @@ coreapi
 coreschema
 cryptography
 cssselect2
-Django==3.1.1
-channels==2.4.0
+Django
+channels
 django-admin-thumbnails
 django-ckeditor
 django-cors-headers
@@ -85,6 +85,8 @@ uritemplate
 urllib3
 webencodings
 dj-database-url
+
 twilio
 livekit-server-sdk-python
 daphne
+channels-redis
