@@ -144,13 +144,13 @@ ASGI_APPLICATION = "incomeexpensesapi.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "hosts": ['redis://:p58239240a81051277dcaff1723bd50b0a96e4f97c3f27718ce5e040e54dae6cd@ec2-3-89-95-229.compute-1.amazonaws.com:8119'],
         },
-        "ROUTING": "chat.routing.channel_routing",
     },
 }
+
 # CHANNEL_LAYERS = {
 #     "default": {
 #         "BACKEND": "channels_redis.core.RedisChannelLayer",
