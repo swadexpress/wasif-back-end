@@ -223,7 +223,7 @@ class CreateRoomView(APIView):
             name=roomUniqueId,
             empty_timeout=20 * 60,
             max_participants=100000,
-            metadata=json.dumps(metadata),
+           
 
         )
         is_rooms_create = AllRooms.objects.create(
