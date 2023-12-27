@@ -43,7 +43,7 @@ from pyfcm import FCMNotification
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework import status
 import datetime
-
+from django.core import serializers
 import firebase_admin
 from firebase_admin import credentials, messaging
 
@@ -2061,7 +2061,7 @@ class UserProfileUpdateView(ListAPIView):
         responseData = {'status': 'success', 'data': data}
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
-from django.core import serializers
+
 
 class UserProfileView(ListAPIView):
     # permission_classes = (AllowAny,)

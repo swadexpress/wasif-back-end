@@ -1,7 +1,3 @@
-from django.shortcuts import render
-
-
-
 import os
 import livekit
 from django.shortcuts import render
@@ -202,6 +198,17 @@ class AllRoomsView(APIView):
 
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
+class MyRoomsView(APIView):
+    def post(self, request, *args, **kwargs):
+        user_id = request.data['user_id']
+        my_rooms_data = AllRooms.objects.filter(room_admin_user_id =user_id).values()
+     
+        my_rooms_data=list(my_rooms_data)
+        responseData = {
+            'status': 'success',
+            'my_rooms_data': my_rooms_data,
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class CreateRoomView(APIView):
@@ -246,25 +253,10 @@ class CreateRoomView(APIView):
         responseData = {'status': 'success', 'data': "data", }
         return JsonResponse(responseData, status=HTTP_200_OK)
 
-class DeleteRoomView(APIView):
-    def post(self, request, *args, **kwargs):
-        room_coustom_id = request.data['room_coustom_id']
-        client.delete_room(room=room_coustom_id)
-        AllRooms.objects.filter(
-            room_coustom_id=room_coustom_id,
-        ).delete()
-     
-        responseData = {'status': 'success', 'data': "data", }
-        return JsonResponse(responseData, status=HTTP_200_OK)
-
-
 
 def index(request):
-    return render(request, 'chat/index.html', {})
+    return render(request, "chat/index.html")
 
 
 def room(request, room_name):
-    return render(request, 'chat/room.html', {
-        'room_name': room_name
-    })
-
+    return render(request, "chat/room.html", {"room_name": room_name})

@@ -57,7 +57,7 @@ class AllRooms(models.Model):
     room_tag = models.CharField(
         max_length=200, blank=True, default="Welcome", null=True)
     room_image = models.CharField(
-        max_length=200, blank=True, default=None, null=True)
+        max_length=200, blank=True, default='https://scontent.fjsr1-1.fna.fbcdn.net/v/t1.15752-9/384546080_253840144277334_7690290843335446763_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=8cd0a2&_nc_eui2=AeH9N_TFM_IuYw9LHpdVdNLgO50S_JO2B0c7nRL8k7YHR4msuxw4H9cZewENUY-nVcfs0BFwtzCwTCY2vpJ2wZoP&_nc_ohc=gZfCKE6JZfQAX-iQX89&_nc_ht=scontent.fjsr1-1.fna&oh=03_AdSHQkZy6RbxyfRr_aulKoGF51KovdqOUKkiqkYvo0L5Jw&oe=6561E4B7', null=True)
     room_media_status = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     room_user_can_join = models.CharField(
@@ -121,6 +121,22 @@ class AllRooms(models.Model):
     room_sit_8_password = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     room_sit_8_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    
+
+    room_sit_9_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_9_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_9_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    
+
+    room_sit_10_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_10_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_10_mic_status = models.CharField(
         max_length=200, blank=True, default=None, null=True)
 
     # time = models.DateTimeField(auto_now_add=True)
