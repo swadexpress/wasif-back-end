@@ -196,6 +196,47 @@ class FruitInvestment(models.Model):
 
     profile_data = models.CharField(
         max_length=20000, blank=True, default=None, null=True)
+    # time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class FruitInvestmentWinRanking(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_investment_amount_user_profile')
+    win_amount = models.FloatField(
+        max_length=200, blank=True, default=0.0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+class FruitInvestmentWinLoseRecord(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_investment_win_or_lose_user_profile')
+    win_or_lose_amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+    win_fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+class FruitInvestmentRound(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_investment_record_user_profile')
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+
+
+class FruitInvestmentForHistory(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_investment_for_history_user_profile')
+
+    investment = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+
+    profile_data = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 
 class FruitInvestmentTimeline(models.Model):
@@ -203,6 +244,8 @@ class FruitInvestmentTimeline(models.Model):
         max_length=200, blank=True, default=None, null=True)
     end_time = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
 
 
 class AllPK(models.Model):

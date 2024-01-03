@@ -13,8 +13,12 @@ urlpatterns = [
          name='AllRoomsView'),
         path('MyRoomsView/', MyRoomsView.as_view(),
          name='MyRoomsView'),
+        path('RakingTodayView/', RakingTodayView.as_view(),
+         name='RakingTodayView'),
         path('CreateRoomTokenView/', CreateRoomTokenView.as_view(),
          name='CreateRoomTokenView'),
+        path('UserRecordView/', UserRecordView.as_view(),
+         name='UserRecordView'),
 ]
 
 

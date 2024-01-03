@@ -118,6 +118,70 @@ def test_update_room_metadata():
 # )
 # token = access_token.to_jwt()
 
+class RakingTodayView(APIView):
+    def get(self, request, *args, **kwargs):
+        today = datetime.datetime.today()
+
+        fruit_investment_for_history_data = FruitInvestmentWinRanking.objects.filter(
+            time__date=today
+        ).values(
+            'id',
+
+            "user_profile__fast_name",
+            "user_profile__last_name",
+            "user_profile__image",
+            "user_profile__coin",
+            "user_profile__diamond",
+            "user_profile__custom_id",
+            "win_amount",
+
+        )
+        fruit_investment_for_history_data = list(
+            fruit_investment_for_history_data)
+
+        print(fruit_investment_for_history_data,
+              'fruit_investment_for_history_data')
+
+        responseData = {
+            'status': 'success',
+            'fruit_investment_for_history_data': fruit_investment_for_history_data,
+
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class UserRecordView(APIView):
+    def post(self, request, *args, **kwargs):
+        today = datetime.datetime.today()
+        user_profile_id = request.data['user_profile_id']
+
+        fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
+            time__date=today,
+            user_profile_id=user_profile_id
+
+        ).order_by('-id').values(
+            'id',
+            "user_profile__fast_name",
+            "user_profile__last_name",
+            "user_profile__image",
+            "user_profile__coin",
+            "user_profile__diamond",
+            "user_profile__custom_id",
+            "win_or_lose_amount",
+            "rounds",
+            "win_fruit_name",
+
+        )
+        fruit_investment_win_lose_record_data = list(
+            fruit_investment_win_lose_record_data)
+
+        responseData = {
+            'status': 'success',
+            'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data,
+
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
 
 class CreateRoomTokenView(APIView):
     def post(self, request, *args, **kwargs):
@@ -198,16 +262,20 @@ class AllRoomsView(APIView):
 
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
+
+
 class MyRoomsView(APIView):
     def post(self, request, *args, **kwargs):
         user_id = request.data['user_id']
-        my_rooms_data = AllRooms.objects.filter(room_admin_user_id =user_id).values()
-     
-        my_rooms_data=list(my_rooms_data)
+        my_rooms_data = AllRooms.objects.filter(
+            room_admin_user_id=user_id).values()
+
+        my_rooms_data = list(my_rooms_data)
         responseData = {
             'status': 'success',
             'my_rooms_data': my_rooms_data,
         }
+        return JsonResponse(responseData, status=HTTP_200_OK)
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
@@ -234,7 +302,7 @@ class CreateRoomView(APIView):
             name=roomUniqueId,
             empty_timeout=20 * 60,
             max_participants=100000,
-           
+
 
         )
         is_rooms_create = AllRooms.objects.create(
@@ -246,7 +314,7 @@ class CreateRoomView(APIView):
             room_media_status=roomVideoAndAudioStatus,
             room_user_can_join=roomPercipientTotalJoin,
         )
-        is_rooms_create= AllRooms.objects.filter(id =is_rooms_create.id)
+        is_rooms_create = AllRooms.objects.filter(id=is_rooms_create.id)
         for i in is_rooms_create:
             i.room_sup_admin_profile.add(adminProfileId)
 
