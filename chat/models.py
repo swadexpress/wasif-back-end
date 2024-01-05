@@ -214,6 +214,8 @@ class FruitInvestmentWinLoseRecord(models.Model):
          blank=True, default=0, null=True)
     win_fruit_name = models.CharField(
         max_length=200, blank=True, default='', null=True)
+    fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 class FruitInvestmentRound(models.Model):
 

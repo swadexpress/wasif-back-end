@@ -154,30 +154,51 @@ class UserRecordView(APIView):
     def post(self, request, *args, **kwargs):
         today = datetime.datetime.today()
         user_profile_id = request.data['user_profile_id']
-
-        fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
+        fruit_investment_round_data = FruitInvestmentRound.objects.filter(
             time__date=today,
             user_profile_id=user_profile_id
+        ).order_by('-id')
+        fruit_investment_win_lose_record_data_list = []
+        if fruit_investment_round_data:
 
-        ).order_by('-id').values(
-            'id',
-            "user_profile__fast_name",
-            "user_profile__last_name",
-            "user_profile__image",
-            "user_profile__coin",
-            "user_profile__diamond",
-            "user_profile__custom_id",
-            "win_or_lose_amount",
-            "rounds",
-            "win_fruit_name",
+            for i in fruit_investment_round_data:
+                print(i.rounds)
 
-        )
+                fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
+                    user_profile_id=user_profile_id,
+                    rounds=i.rounds,
+                    time__date=today,
+                ).order_by('-id').values(
+                    'id',
+                    "user_profile__fast_name",
+                    "user_profile__last_name",
+                    "user_profile__image",
+                    "user_profile__coin",
+                    "user_profile__diamond",
+                    "user_profile__custom_id",
+                    "win_or_lose_amount",
+                    "fruit_name",
+                    "rounds",
+                    "win_fruit_name",
+
+                )
+                if fruit_investment_win_lose_record_data:
+                    fruit_investment_win_lose_record_data_list.append(list(fruit_investment_win_lose_record_data))
+
+                # print(fruit_investment_win_lose_record_data[0],'fruit_investment_wi..........')
+
+
+     
+        print(fruit_investment_win_lose_record_data_list,'fruit_investment_wi..........')
+
+            # print(fruit_investment_win_lose_record_data,
+            #       'fruit_investment_win_lose_record_data')
         fruit_investment_win_lose_record_data = list(
             fruit_investment_win_lose_record_data)
 
         responseData = {
             'status': 'success',
-            'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data,
+            'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data_list,
 
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
