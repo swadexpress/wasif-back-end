@@ -43,6 +43,7 @@ AUTH_USER_MODEL = 'authentication.User'
 
 INSTALLED_APPS = [
     'daphne',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -125,22 +126,17 @@ ASGI_APPLICATION = "incomeexpensesapi.routing.application"
 # ASGI_APPLICATION = "routing.application"
 
 
-
-
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             # "hosts": ["redis://:kawsarkhan12345@172.20.10.4:6379/0"],
-              "hosts": ["redis://:kawsarkhan12345@192.168.0.207:6379"],
+            "hosts": ["redis://:kawsarkhan12345@192.168.0.207:6379"],
             #   "hosts": ["redis://:kawsarkhan12345@1430-160-238-0-240.ngrok-free.app"],
             "symmetric_encryption_keys": ["sys_admin_config_836"],
         },
     },
 }
-
-
 
 
 # Database
@@ -298,7 +294,3 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'https://django-back-end-a72e31ec344c.herokuapp.com']
-
-
-
-

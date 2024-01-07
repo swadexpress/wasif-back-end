@@ -189,12 +189,12 @@ class UserRecordView(APIView):
 
 
      
-        print(fruit_investment_win_lose_record_data_list,'fruit_investment_wi..........')
+        # print(fruit_investment_win_lose_record_data_list,'fruit_investment_wi..........')
 
             # print(fruit_investment_win_lose_record_data,
             #       'fruit_investment_win_lose_record_data')
-        fruit_investment_win_lose_record_data = list(
-            fruit_investment_win_lose_record_data)
+        # fruit_investment_win_lose_record_data = list(
+        #     fruit_investment_win_lose_record_data)
 
         responseData = {
             'status': 'success',
