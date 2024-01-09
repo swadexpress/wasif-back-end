@@ -16,6 +16,24 @@ from django.utils import dateparse
 from datastorage import DataStorage
 import threading
 import random
+from collections import OrderedDict
+
+
+def remove_duplicates(data):
+    filter_win_fruits_data = []
+    for i in data:
+        is_check = {
+            'rounds': i['rounds'],
+            'win_fruit_name': i['win_fruit_name']
+        }
+        print(i['rounds'], '....')
+        if is_check not in filter_win_fruits_data:
+
+            filter_win_fruits_data.append({
+                'rounds': i['rounds'],
+                'win_fruit_name': i['win_fruit_name']
+            })
+    return filter_win_fruits_data
 
 
 class FruitgameConsumer(WebsocketConsumer):
@@ -43,6 +61,7 @@ class FruitgameConsumer(WebsocketConsumer):
         if (status == 'InvestAddAndRemove'):
             investment_data = text_data_json["investment_data"]
             user_profile_data = text_data_json["user_profile_data"]
+            minus_profile_amount = text_data_json["minus_profile_amount"]
 
             if (user_profile_data):
                 FruitInvestment.objects.filter(
@@ -58,6 +77,20 @@ class FruitgameConsumer(WebsocketConsumer):
                 FruitInvestment.objects.filter(
                     user_profile_id=user_profile_data['id'],
                 ).delete()
+            profile_data =Profile.objects.filter(user_id=user_profile_data['user'])
+            profile_data.update(
+                coin = float(profile_data[0].coin) -minus_profile_amount
+            )
+
+            gift_receive_user_profile_data = serializers.serialize(
+                "json", profile_data)
+            gift_receive_user_profile_id = [
+                i['pk'] for i in json.loads(gift_receive_user_profile_data)]
+            gift_receive_user_profile_data = [
+                i['fields'] for i in json.loads(gift_receive_user_profile_data)]
+            gift_receive_user_profile_data[0]['id'] = gift_receive_user_profile_id[0]
+            gift_receive_user_profile_data = list(
+                gift_receive_user_profile_data)
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -65,14 +98,15 @@ class FruitgameConsumer(WebsocketConsumer):
                     "type": "chat.message",
                     "status": status,
                     "room_sit_join_data": text_data_json,
+                    "user_profile_data": gift_receive_user_profile_data,
                 }
             )
         elif (status == 'FruitInvestmentTimeline'):
             today = datetime.datetime.today()
-            total_round_count = FruitInvestmentTimeline.objects.filter(
-                time__date=today
-            )
-            total_round_count = len(total_round_count)
+            # total_round_count = FruitInvestmentTimeline.objects.filter(
+            #     time__date=today
+            # )
+            # total_round_count = len(total_round_count)
 
             def FruitInvestmentTimelineSent1():
                 fruit_investment_data = FruitInvestment.objects.all()
@@ -111,6 +145,29 @@ class FruitgameConsumer(WebsocketConsumer):
                     time__date=today
                 ).order_by('-id')[0:1].values("start_time",
                                               "end_time",)
+                fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
+                    time__date=today,
+                ).order_by('-id')[0:50].values(
+                    'id',
+                    "user_profile__fast_name",
+                    "user_profile__last_name",
+                    "user_profile__image",
+                    "user_profile__coin",
+                    "user_profile__diamond",
+                    "user_profile__custom_id",
+                    "amount",
+                    "win_amount",
+                    "fruit_name",
+                    "rounds",
+                    "win_fruit_name",
+
+                )
+                fruit_investment_win_lose_record_data = list(
+                    fruit_investment_win_lose_record_data)
+                total_round_count = FruitInvestmentTimeline.objects.filter(
+                    time__date=today
+                    )
+                total_round_count = len(total_round_count)
 
                 fruit_investment_timeline_fruit_investment_timeline_data = list(
                     is_fruit_investment_timeline_fruit_investment_timeline)
@@ -121,6 +178,8 @@ class FruitgameConsumer(WebsocketConsumer):
                         "status": status,
                         "total_round_count": total_round_count,
                         "server_current_time": str(server_current_time),
+                        "fruit_investment_win_lose_record_data": remove_duplicates(
+                            fruit_investment_win_lose_record_data),
                         "fruit_investment_timeline_fruit_investment_timeline_data": fruit_investment_timeline_fruit_investment_timeline_data,
                         "end_time": is_fruit_investment_timeline_fruit_investment_timeline[0]['end_time'],
                     }
@@ -139,242 +198,260 @@ class FruitgameConsumer(WebsocketConsumer):
                 watermelon_amount = []
                 fruit_investment_data_update = []
                 server_current_time = datetime.datetime.now()
-
-                for i in fruit_investment_data:
-                    for j in json.loads(i.investment):
-                        if (j['name'] == 'apple'):
-                            apple_amount.append(int(j['amount']))
-                        elif (j['name'] == 'avocado'):
-                            avocado_amount.append(int(j['amount']))
-                        elif (j['name'] == 'grape'):
-                            grape_amount.append(int(j['amount']))
-                        # elif (j['name'] == 'mango'):
-                        #     mango_amount.append(int(j['amount']))
-                        # elif (j['name'] == 'papaya'):
-                        #     papaya_amount.append(int(j['amount']))
-                        # elif (j['name'] == 'pineapple'):
-                        #     pineapple_amount.append(int(j['amount']))
-                        # elif (j['name'] == 'strawberry'):
-                        #     strawberry_amount.append(int(j['amount']))
-                        # elif (j['name'] == 'watermelon'):
-                        #     watermelon_amount.append(int(j['amount']))
-
-                    investment_data = json.loads(i.investment)
-                    fruit_investment_data_update.append(
-                        [investment_data, [json.loads(i.profile_data)]])
-                smallest_value = 0
-                win_fruit_name = None
-                apple_amount_first_win = []
-
-                for i in fruit_investment_data_update:
-                    
-                    
-                    smallest_value = min(sum(apple_amount), sum(
-                        avocado_amount), sum(grape_amount))
-                    
-                    print(smallest_value,'smallest_valuesmallest_value')
-                    # if smallest_value > 0:
-                    if smallest_value == sum(apple_amount):
-                        win_fruit_name = 'apple'
-                        apple_amount_first_win = sorted(apple_amount)
-                        print(win_fruit_name,'...............11')
-
-                    elif smallest_value == sum(avocado_amount):
-                        win_fruit_name = 'avocado'
-                        apple_amount_first_win = sorted(avocado_amount)
-                        print(win_fruit_name,'...............22')
-
-                    elif smallest_value == sum(grape_amount):
-                        win_fruit_name = 'grape'
-                        apple_amount_first_win = sorted(grape_amount)
-
-                        print(win_fruit_name,'...............3')
-
-                    elif smallest_value == sum(mango_amount):
-                        win_fruit_name = 'mango'
-                        apple_amount_first_win = sorted(mango_amount)
-                        # print(win_fruit_name,'...............333')
-
-                    # elif smallest_value == papaya_amount:
-                    #     win_fruit_name = 'papaya'
-                    #     apple_amount_first_win = sorted(papaya_amount)
-
-                    # elif smallest_value == pineapple_amount:
-                    #     win_fruit_name = 'pineapple'
-                    #     apple_amount_first_win = sorted(pineapple_amount)
-
-                    # elif smallest_value == strawberry_amount:
-                    #     win_fruit_name = 'strawberry'
-                    #     apple_amount_first_win = sorted(strawberry_amount)
-
-                    # elif smallest_value == watermelon_amount:
-                    #     win_fruit_name = 'watermelon'
-                    #     apple_amount_first_win = sorted(watermelon_amount)
-
-                    win_investment_data_1 = []
-                    win_investment_amount_1 = 0
-                    win_investment_data_2 = []
-                    win_investment_amount_2 = 0
-                    win_investment_data_3 = []
-                    win_investment_amount_3 = 0
-
-                    all_profile_data = []
-                    print(win_fruit_name,'win_fruit_name')
-
-                    for item in i[0]:
-                        if item["name"] == win_fruit_name:
-                            if len(apple_amount_first_win) >= 0:
-                                win_investment_data_1.append(i[1][0])
-                                win_investment_amount_1 = item['win_amount']
-                                print(len(apple_amount_first_win), '1')
-                            elif len(apple_amount_first_win) >= 2:
-                                win_investment_data_2.append(i[1][0])
-                                win_investment_amount_2 = item['win_amount']
-
-                                print(len(apple_amount_first_win), '2')
-                            elif len(apple_amount_first_win) >= 3:
-                                win_investment_data_3.append(i[1][0])
-                                win_investment_amount_3 = item['win_amount']
-                                print(len(apple_amount_first_win), '3')
-
-                            filter_profile = Profile.objects.filter(
-                                id=i[1][0]['id'])
-                            filter_profile_balance = filter_profile.values()
-                            filter_profile.update(
-                                coin=(
-                                    (float(filter_profile_balance[0]['coin'])) + (float(item["win_amount"])))
-                            )
-                            is_fruit_investment_win_ranking = FruitInvestmentWinRanking.objects.filter(
-                                user_profile_id=i[1][0]['id'],
-                                time__date=today,
-                            )
-                            is_fruit_investment_win_ranking_amount = is_fruit_investment_win_ranking.values()
-                            if is_fruit_investment_win_ranking:
-                                is_fruit_investment_win_ranking.update(
-                                    win_amount=is_fruit_investment_win_ranking_amount[0]['win_amount'] + float(
-                                        item["win_amount"])
-                                )
-                            else:
-                                FruitInvestmentWinRanking.objects.create(
-                                    user_profile_id=i[1][0]['id'],
-                                    win_amount=float(item["win_amount"])
-                                )
-                            filter_profile_update = serializers.serialize(
-                                "json", filter_profile)
-                            filter_profile_update_id = [
-                                i['pk'] for i in json.loads(filter_profile_update)]
-                            filter_profile_update = [
-                                i['fields'] for i in json.loads(filter_profile_update)]
-                            filter_profile_update[0]['id'] = filter_profile_update_id[0]
-                            all_profile_data.append(filter_profile_update)
-
-                        else:
-                            filter_profile = Profile.objects.filter(
-                                id=i[1][0]['id'])
-                            filter_profile_balance = filter_profile.values()
-                            filter_profile.update(
-                                coin=(
-                                    (float(filter_profile_balance[0]['coin'])) - (float(item["amount"])))
-                            )
-                            filter_profile_update = serializers.serialize(
-                                "json", filter_profile)
-                            filter_profile_update_id = [
-                                i['pk'] for i in json.loads(filter_profile_update)]
-                            filter_profile_update = [
-                                i['fields'] for i in json.loads(filter_profile_update)]
-                            filter_profile_update[0]['id'] = filter_profile_update_id[0]
-                            all_profile_data.append(filter_profile_update)
-
-                    fruit_investment_round_data = FruitInvestmentRound.objects.filter(
-                        user_profile_id=i[1][0]['id'],
-                        rounds=total_round_count,
-                        time__date=today,
+                total_round_count = FruitInvestmentTimeline.objects.filter(
+                    time__date=today
                     )
-                    if not fruit_investment_round_data:
+                total_round_count = len(total_round_count)
 
-                        FruitInvestmentRound.objects.create(
+
+                if fruit_investment_data:
+                    for i in fruit_investment_data:
+                        for j in json.loads(i.investment):
+                            if (j['name'] == 'apple'):
+                                apple_amount.append(int(j['amount']))
+                            elif (j['name'] == 'avocado'):
+                                avocado_amount.append(int(j['amount']))
+                            elif (j['name'] == 'grape'):
+                                grape_amount.append(int(j['amount']))
+                            # elif (j['name'] == 'mango'):
+                            #     mango_amount.append(int(j['amount']))
+                            # elif (j['name'] == 'papaya'):
+                            #     papaya_amount.append(int(j['amount']))
+                            # elif (j['name'] == 'pineapple'):
+                            #     pineapple_amount.append(int(j['amount']))
+                            # elif (j['name'] == 'strawberry'):
+                            #     strawberry_amount.append(int(j['amount']))
+                            # elif (j['name'] == 'watermelon'):
+                            #     watermelon_amount.append(int(j['amount']))
+
+                        investment_data = json.loads(i.investment)
+                        fruit_investment_data_update.append(
+                            [investment_data, [json.loads(i.profile_data)]])
+                    smallest_value = 0
+                    win_fruit_name = None
+                    apple_amount_first_win = []
+
+                    for i in fruit_investment_data_update:
+
+                        smallest_value = min(sum(apple_amount), sum(
+                            avocado_amount), sum(grape_amount))
+
+                        print(smallest_value, 'smallest_valuesmallest_value')
+                        # if smallest_value > 0:
+                        if smallest_value == sum(apple_amount):
+                            win_fruit_name = 'apple'
+                            apple_amount_first_win = sorted(apple_amount)
+                            print(win_fruit_name, '...............11')
+
+                        elif smallest_value == sum(avocado_amount):
+                            win_fruit_name = 'avocado'
+                            apple_amount_first_win = sorted(avocado_amount)
+                            print(win_fruit_name, '...............22')
+
+                        elif smallest_value == sum(grape_amount):
+                            win_fruit_name = 'grape'
+                            apple_amount_first_win = sorted(grape_amount)
+
+                            print(win_fruit_name, '...............3')
+
+                        elif smallest_value == sum(mango_amount):
+                            win_fruit_name = 'mango'
+                            apple_amount_first_win = sorted(mango_amount)
+                            # print(win_fruit_name,'...............333')
+
+                        # elif smallest_value == papaya_amount:
+                        #     win_fruit_name = 'papaya'
+                        #     apple_amount_first_win = sorted(papaya_amount)
+
+                        # elif smallest_value == pineapple_amount:
+                        #     win_fruit_name = 'pineapple'
+                        #     apple_amount_first_win = sorted(pineapple_amount)
+
+                        # elif smallest_value == strawberry_amount:
+                        #     win_fruit_name = 'strawberry'
+                        #     apple_amount_first_win = sorted(strawberry_amount)
+
+                        # elif smallest_value == watermelon_amount:
+                        #     win_fruit_name = 'watermelon'
+                        #     apple_amount_first_win = sorted(watermelon_amount)
+
+                        win_investment_data_1 = []
+                        win_investment_amount_1 = 0
+                        win_investment_data_2 = []
+                        win_investment_amount_2 = 0
+                        win_investment_data_3 = []
+                        win_investment_amount_3 = 0
+
+                        all_profile_data = []
+                        print(win_fruit_name, 'win_fruit_name')
+
+                        for item in i[0]:
+                            if item["name"] == win_fruit_name:
+                                if len(apple_amount_first_win) >= 0:
+                                    win_investment_data_1.append(i[1][0])
+                                    win_investment_amount_1 = item['win_amount']
+                                    print(len(apple_amount_first_win), '1')
+                                elif len(apple_amount_first_win) >= 2:
+                                    win_investment_data_2.append(i[1][0])
+                                    win_investment_amount_2 = item['win_amount']
+
+                                    print(len(apple_amount_first_win), '2')
+                                elif len(apple_amount_first_win) >= 3:
+                                    win_investment_data_3.append(i[1][0])
+                                    win_investment_amount_3 = item['win_amount']
+                                    print(len(apple_amount_first_win), '3')
+
+                                filter_profile = Profile.objects.filter(
+                                    id=i[1][0]['id'])
+                                filter_profile_balance = filter_profile.values()
+                                filter_profile.update(
+                                    coin=(
+                                        (float(filter_profile_balance[0]['coin'])) + (float(item["win_amount"])))
+                                )
+                                is_fruit_investment_win_ranking = FruitInvestmentWinRanking.objects.filter(
+                                    user_profile_id=i[1][0]['id'],
+                                    time__date=today,
+                                )
+                                is_fruit_investment_win_ranking_amount = is_fruit_investment_win_ranking.values()
+                                if is_fruit_investment_win_ranking:
+                                    is_fruit_investment_win_ranking.update(
+                                        win_amount=is_fruit_investment_win_ranking_amount[0]['win_amount'] + float(
+                                            item["win_amount"])
+                                    )
+                                else:
+                                    FruitInvestmentWinRanking.objects.create(
+                                        user_profile_id=i[1][0]['id'],
+                                        win_amount=float(item["win_amount"])
+                                    )
+                                filter_profile_update = serializers.serialize(
+                                    "json", filter_profile)
+                                filter_profile_update_id = [
+                                    i['pk'] for i in json.loads(filter_profile_update)]
+                                filter_profile_update = [
+                                    i['fields'] for i in json.loads(filter_profile_update)]
+                                filter_profile_update[0]['id'] = filter_profile_update_id[0]
+                                all_profile_data.append(filter_profile_update)
+
+                            else:
+                                filter_profile = Profile.objects.filter(
+                                    id=i[1][0]['id'])
+                                filter_profile_balance = filter_profile.values()
+                                filter_profile.update(
+                                    coin=(
+                                        (float(filter_profile_balance[0]['coin'])) - (float(item["amount"])))
+                                )
+                                filter_profile_update = serializers.serialize(
+                                    "json", filter_profile)
+                                filter_profile_update_id = [
+                                    i['pk'] for i in json.loads(filter_profile_update)]
+                                filter_profile_update = [
+                                    i['fields'] for i in json.loads(filter_profile_update)]
+                                filter_profile_update[0]['id'] = filter_profile_update_id[0]
+                                all_profile_data.append(filter_profile_update)
+
+                        fruit_investment_round_data = FruitInvestmentRound.objects.filter(
                             user_profile_id=i[1][0]['id'],
                             rounds=total_round_count,
-
+                            time__date=today,
                         )
+                        if not fruit_investment_round_data:
 
+                            FruitInvestmentRound.objects.create(
+                                user_profile_id=i[1][0]['id'],
+                                rounds=total_round_count,
 
+                            )
+                        if smallest_value > 0:
+
+                            async_to_sync(self.channel_layer.group_send)(
+                                self.room_group_name,
+                                {
+                                    "type": "chat.message",
+                                    "status": "FruitInvestmentWiner",
+                                    "server_current_time": str(server_current_time),
+                                    "total_round_count": total_round_count,
+                                    "win_fruit_name": win_fruit_name,
+                                    "win_investment_data_1": win_investment_data_1,
+                                    "win_investment_data_2": win_investment_data_2,
+                                    "win_investment_data_3": win_investment_data_3,
+                                    "all_profile_data": all_profile_data,
+                                    "win_investment_amount_1": win_investment_amount_1,
+                                    "win_investment_amount_2": win_investment_amount_2,
+                                    "win_investment_amount_3": win_investment_amount_3,
+                                }
+                            )
+
+                        else:
+                            win_investment_data_dumy_1 = Profile.objects.filter(
+                                id=1).values()
+                            win_investment_data_dumy_2 = Profile.objects.filter(
+                                id=2).values()
+                            async_to_sync(self.channel_layer.group_send)(
+                                self.room_group_name,
+                                {
+                                    "type": "chat.message",
+                                    "status": "FruitInvestmentWiner",
+                                    "win_fruit_name": 'apple',
+                                    "win_investment_data_1": list(win_investment_data_dumy_1),
+                                    "win_investment_data_2": list(win_investment_data_dumy_2),
+                                    "win_investment_data_3": list(win_investment_data_dumy_1),
+                                    "all_profile_data": all_profile_data,
+                                    "win_investment_amount_1": random.randint(11111, 99999),
+                                    "win_investment_amount_2": random.randint(1111, 9999),
+                                    "win_investment_amount_3": random.randint(111, 999),
+
+                                }
+                            )
+
+                        # print('oka.....')
+                        fruit_investment_data = FruitInvestment.objects.all()
+
+                        for fruit_investment_item in fruit_investment_data:
+                            for j in json.loads(fruit_investment_item.investment):
+                                FruitInvestmentWinLoseRecord.objects.create(
+                                    user_profile_id=fruit_investment_item.user_profile_id,
+                                    amount=float(j['amount']),
+                                    win_amount=float(j['win_amount']),
+                                    rounds=total_round_count,
+                                    win_fruit_name=win_fruit_name,
+                                    fruit_name=j['name'],
+                                )
+
+                else:
+
+                    win_investment_data_dumy_1 = Profile.objects.filter(
+                        id=1).values()
+                    win_investment_data_dumy_2 = Profile.objects.filter(
+                        id=2).values()
                     async_to_sync(self.channel_layer.group_send)(
                         self.room_group_name,
                         {
                             "type": "chat.message",
                             "status": "FruitInvestmentWiner",
-                            "server_current_time": str(server_current_time),
-                            "total_round_count": total_round_count,
-                            "win_fruit_name": win_fruit_name,
-                            "win_investment_data_1": win_investment_data_1,
-                            "win_investment_data_2": win_investment_data_2,
-                            "win_investment_data_3": win_investment_data_3,
-                            "all_profile_data": all_profile_data,
-                            "win_investment_amount_1": win_investment_amount_1,
-                            "win_investment_amount_2": win_investment_amount_2,
-                            "win_investment_amount_3": win_investment_amount_3,
+                            "win_fruit_name": 'apple',
+                            "win_investment_data_1": list(win_investment_data_dumy_1),
+                            "win_investment_data_2": list(win_investment_data_dumy_2),
+                            "win_investment_data_3": list(win_investment_data_dumy_1),
+                            "all_profile_data": '',
+                            "win_investment_amount_1": random.randint(11111, 99999),
+                            "win_investment_amount_2": random.randint(1111, 9999),
+                            "win_investment_amount_3": random.randint(111, 999),
+
                         }
                     )
 
-
-                    # print('oka.....')
-
-                    for fruit_investment_item in fruit_investment_data:
-                        for j in json.loads(fruit_investment_item.investment):
-                            FruitInvestmentWinLoseRecord.objects.create(
-                                user_profile_id=fruit_investment_item.user_profile_id,
-                                win_or_lose_amount=float(j['amount']),
-                                rounds=total_round_count,
-                                win_fruit_name=win_fruit_name,
-                                fruit_name=j['name'],
-                            )
-
-
-                    
                 FruitInvestment.objects.all().delete()
                 FruitInvestmentTimelineSent_timer = threading.Timer(
                     10.0, FruitInvestmentTimelineSent1)
                 FruitInvestmentTimelineSent_timer.start()
 
-
-
-
-
-
-
-
-
-
-
-                    # else:
-                    #     win_investment_data_dumy_1 = Profile.objects.filter(
-                    #         id=1).values()
-                    #     win_investment_data_dumy_2 = Profile.objects.filter(
-                    #         id=2).values()
-                    #     async_to_sync(self.channel_layer.group_send)(
-                    #         self.room_group_name,
-                    #         {
-                    #             "type": "chat.message",
-                    #             "status": "FruitInvestmentWiner",
-                    #             "win_fruit_name": 'apple',
-                    #             "win_investment_data_1": list(win_investment_data_dumy_1),
-                    #             "win_investment_data_2": list(win_investment_data_dumy_2),
-                    #             "win_investment_data_3": list(win_investment_data_dumy_1),
-                    #             "all_profile_data": "",
-                    #             "win_investment_amount_1": random.randint(11111, 99999),
-                    #             "win_investment_amount_2": random.randint(1111, 9999),
-                    #             "win_investment_amount_3": random.randint(111, 999),
-
-                    #         }
-                    #     )
-                    #     FruitInvestmentTimelineSent_timer = threading.Timer(
-                    #         10.0, FruitInvestmentTimelineSent1)
-                    #     FruitInvestmentTimelineSent_timer.start()
-
             def FruitInvestmentTimelineSent():
                 start_time = datetime.datetime.now()
                 server_current_time = datetime.datetime.now()
+                total_round_count = FruitInvestmentTimeline.objects.filter(
+                    time__date=today
+                    )
+                total_round_count = len(total_round_count)
 
                 end_time = datetime.datetime.now() + datetime.timedelta(seconds=60)
                 is_fruit_investment_timeline_fruit_investment_timeline = FruitInvestmentTimeline.objects.filter(
@@ -412,6 +489,26 @@ class FruitgameConsumer(WebsocketConsumer):
                     "start_time",
                     "end_time",
                 )
+                fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
+
+                    time__date=today,
+                ).order_by('-id')[0:50].values(
+                    'id',
+                    "user_profile__fast_name",
+                    "user_profile__last_name",
+                    "user_profile__image",
+                    "user_profile__coin",
+                    "user_profile__diamond",
+                    "user_profile__custom_id",
+                    "amount",
+                    "win_amount",
+                    "fruit_name",
+                    "rounds",
+                    "win_fruit_name",
+
+                )
+                fruit_investment_win_lose_record_data = list(
+                    fruit_investment_win_lose_record_data)
 
                 fruit_investment_timeline_fruit_investment_timeline_data = list(
                     is_fruit_investment_timeline_fruit_investment_timeline)
@@ -422,6 +519,8 @@ class FruitgameConsumer(WebsocketConsumer):
                         "status": status,
                         "server_current_time": str(server_current_time),
                         "total_round_count": total_round_count,
+                        "fruit_investment_win_lose_record_data": remove_duplicates(
+                            fruit_investment_win_lose_record_data),
                         "fruit_investment_timeline_fruit_investment_timeline_data": fruit_investment_timeline_fruit_investment_timeline_data,
                         "end_time": is_fruit_investment_timeline_fruit_investment_timeline[0]['end_time'],
                     }

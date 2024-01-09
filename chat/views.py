@@ -176,19 +176,19 @@ class UserRecordView(APIView):
                     "user_profile__coin",
                     "user_profile__diamond",
                     "user_profile__custom_id",
-                    "win_or_lose_amount",
+                    "amount",
+                    "win_amount",
                     "fruit_name",
                     "rounds",
                     "win_fruit_name",
 
                 )
                 if fruit_investment_win_lose_record_data:
-                    fruit_investment_win_lose_record_data_list.append(list(fruit_investment_win_lose_record_data))
+                    fruit_investment_win_lose_record_data_list.append(
+                        list(fruit_investment_win_lose_record_data))
 
                 # print(fruit_investment_win_lose_record_data[0],'fruit_investment_wi..........')
 
-
-     
         # print(fruit_investment_win_lose_record_data_list,'fruit_investment_wi..........')
 
             # print(fruit_investment_win_lose_record_data,

@@ -208,7 +208,9 @@ class FruitInvestmentWinLoseRecord(models.Model):
 
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_investment_win_or_lose_user_profile')
-    win_or_lose_amount = models.FloatField(
+    amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    win_amount = models.FloatField(
          blank=True, default=0.0, null=True)
     rounds = models.IntegerField(
          blank=True, default=0, null=True)
