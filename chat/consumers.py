@@ -117,7 +117,6 @@ class FruitgameConsumer(WebsocketConsumer):
                 is_fruit_investment_timeline_fruit_investment_timeline = FruitInvestmentTimeline.objects.filter(
                     time__date=today
 
-
                 ).order_by('-id')[0:1].values("start_time",
                                               "end_time",)
                 if (is_fruit_investment_timeline_fruit_investment_timeline):
@@ -171,11 +170,16 @@ class FruitgameConsumer(WebsocketConsumer):
 
                 fruit_investment_timeline_fruit_investment_timeline_data = list(
                     is_fruit_investment_timeline_fruit_investment_timeline)
+                fruit_investment_data = FruitInvestment.objects.all().values(
+                    "investment"
+                )
+                fruit_investment_data =list(fruit_investment_data)
                 async_to_sync(self.channel_layer.group_send)(
                     self.room_group_name,
                     {
                         "type": "chat.message",
                         "status": status,
+                        "fruit_investment_data": fruit_investment_data,
                         "total_round_count": total_round_count,
                         "server_current_time": str(server_current_time),
                         "fruit_investment_win_lose_record_data": remove_duplicates(
@@ -332,22 +336,22 @@ class FruitgameConsumer(WebsocketConsumer):
                                 filter_profile_update[0]['id'] = filter_profile_update_id[0]
                                 all_profile_data.append(filter_profile_update)
 
-                            else:
-                                filter_profile = Profile.objects.filter(
-                                    id=i[1][0]['id'])
-                                filter_profile_balance = filter_profile.values()
-                                filter_profile.update(
-                                    coin=(
-                                        (float(filter_profile_balance[0]['coin'])) - (float(item["amount"])))
-                                )
-                                filter_profile_update = serializers.serialize(
-                                    "json", filter_profile)
-                                filter_profile_update_id = [
-                                    i['pk'] for i in json.loads(filter_profile_update)]
-                                filter_profile_update = [
-                                    i['fields'] for i in json.loads(filter_profile_update)]
-                                filter_profile_update[0]['id'] = filter_profile_update_id[0]
-                                all_profile_data.append(filter_profile_update)
+                            # else:
+                            #     filter_profile = Profile.objects.filter(
+                            #         id=i[1][0]['id'])
+                            #     filter_profile_balance = filter_profile.values()
+                            #     filter_profile.update(
+                            #         coin=(
+                            #             (float(filter_profile_balance[0]['coin'])) - (float(item["amount"])))
+                            #     )
+                            #     filter_profile_update = serializers.serialize(
+                            #         "json", filter_profile)
+                            #     filter_profile_update_id = [
+                            #         i['pk'] for i in json.loads(filter_profile_update)]
+                            #     filter_profile_update = [
+                            #         i['fields'] for i in json.loads(filter_profile_update)]
+                            #     filter_profile_update[0]['id'] = filter_profile_update_id[0]
+                            #     all_profile_data.append(filter_profile_update)
 
                         fruit_investment_round_data = FruitInvestmentRound.objects.filter(
                             user_profile_id=i[1][0]['id'],
@@ -512,12 +516,19 @@ class FruitgameConsumer(WebsocketConsumer):
 
                 fruit_investment_timeline_fruit_investment_timeline_data = list(
                     is_fruit_investment_timeline_fruit_investment_timeline)
+                fruit_investment_data = FruitInvestment.objects.all().values(
+                    "investment"
+                )
+                fruit_investment_data =list(fruit_investment_data)
+                
+                
                 async_to_sync(self.channel_layer.group_send)(
                     self.room_group_name,
                     {
                         "type": "chat.message",
                         "status": status,
                         "server_current_time": str(server_current_time),
+                        "fruit_investment_data": fruit_investment_data,
                         "total_round_count": total_round_count,
                         "fruit_investment_win_lose_record_data": remove_duplicates(
                             fruit_investment_win_lose_record_data),
