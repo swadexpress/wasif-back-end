@@ -1336,7 +1336,7 @@ class MyRoomAdminListView(APIView):
     def post(self, request, *args, **kwargs):
         bandedUserList = request.data['bandedUserList']
 
-        data = Profile.objects.filter(user__in=bandedUserList).order_by('-id').values(
+        data = Profile.objects.filter(id__in=bandedUserList).order_by('-id').values(
             "id",
             "user",
             "followers",

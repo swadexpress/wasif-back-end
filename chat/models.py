@@ -49,8 +49,15 @@ class AllRooms(models.Model):
         blank=True)
     room_name = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    room_theme = models.CharField(
+        max_length=200, blank=True, default='theme1', null=True)
+    
+
     room_coustom_id = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    
+    room_sended_amount = models.CharField(
+        max_length=200, blank=True, default="0", null=True)
 
     room_welcome_message = models.CharField(
         max_length=200, blank=True, default="Welcome", null=True)
