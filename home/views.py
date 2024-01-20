@@ -59,7 +59,6 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-
 class FollowersListView(APIView):
     def post(self, request, *args, **kwargs):
         usersId = request.data['usersId']
@@ -1130,7 +1129,6 @@ class BannerImagesView(APIView):
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
 
-
 class UploadBannerImagesAndVideosView(APIView):
     def post(self, request, *args, **kwargs):
         # caption = request.data.get('caption', None)
@@ -1335,6 +1333,7 @@ class MyBannedListView(APIView):
 class MyRoomAdminListView(APIView):
     def post(self, request, *args, **kwargs):
         bandedUserList = request.data['bandedUserList']
+        print(bandedUserList, '.....')
 
         data = Profile.objects.filter(id__in=bandedUserList).order_by('-id').values(
             "id",
@@ -1357,7 +1356,20 @@ class MyRoomAdminListView(APIView):
         )
 
         data = list(data)
-        responseData = {'status': 'success', 'data': data, }
+        filter_data = []
+        filter_check_data = []
+        for i in data:
+            is_check = {
+                'id': i['id'],
+            }
+            if is_check not in filter_check_data:
+                filter_check_data.append({
+                    'id': i['id'],
+                })
+                filter_data.append(i)
+
+        print(filter_data, '.......data')
+        responseData = {'status': 'success', 'data': filter_data, }
 
         return JsonResponse(responseData, status=HTTP_200_OK)
 
@@ -1493,16 +1505,16 @@ class P2PMessageUniqueIdView(APIView):
                 "user_profile__image",
         )
         isdata2 = P2PMessageUniqueId.objects.filter(other_user_id=myUserId).values(
-                "other_user",
-                "uniqueId",
-                "other_user_profile",
-                "other_user__email",
-                "other_user_profile__image",
-                "other_user_profile__fast_name",
-                "other_user_profile__last_name",
-                "user_profile__fast_name",
-                "user_profile__last_name",
-                "user_profile__image",
+            "other_user",
+            "uniqueId",
+            "other_user_profile",
+            "other_user__email",
+            "other_user_profile__image",
+            "other_user_profile__fast_name",
+            "other_user_profile__last_name",
+            "user_profile__fast_name",
+            "user_profile__last_name",
+            "user_profile__image",
         )
 
         data = []
@@ -2062,7 +2074,6 @@ class UserProfileUpdateView(ListAPIView):
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)
 
 
-
 class UserProfileView(ListAPIView):
     # permission_classes = (AllowAny,)
     # serializer_class = ProfileSerializer
@@ -2070,11 +2081,12 @@ class UserProfileView(ListAPIView):
 
     def post(self, request,  *args, **kwargs):
         userId = request.data['userId']
-        json_data = serializers.serialize("json", Profile.objects.filter(user_id=userId))
+        json_data = serializers.serialize(
+            "json", Profile.objects.filter(user_id=userId))
         profile_id = [i['pk'] for i in json.loads(json_data)]
         data = [i['fields'] for i in json.loads(json_data)]
-        # add profile  id 
-        data[0]['id']=profile_id[0]
+        # add profile  id
+        data[0]['id'] = profile_id[0]
 
         data = list(data)
 
