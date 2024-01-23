@@ -204,12 +204,29 @@ class UserRecordView(APIView):
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
+class UserReceiveGiftsView(APIView):
+    def post(self, request, *args, **kwargs):
+        today = datetime.datetime.today()
+        user_profile_id = request.data['user_profile_id']
+        all_sented_gifts_data = AllSentedGifts.objects.filter(
+            gift_sent_user_profile_id=user_profile_id
+        ).values()
+
+        responseData = {
+            'status': 'success',
+            'all_sented_gifts_data': list(all_sented_gifts_data),
+
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
 class CreateRoomTokenView(APIView):
     def post(self, request, *args, **kwargs):
         roomName = request.data['roomName']
         roomUniqueId = request.data['roomId']
         metaData = request.data['metaData']
         identity = request.data['identity']
+        userProfileId = request.data['userProfileId']
         print(roomUniqueId, 'roomUniqueId')
         grant = livekit.VideoGrant(
             room_join=True,
@@ -225,9 +242,23 @@ class CreateRoomTokenView(APIView):
 
         )
         token = access_token.to_jwt()
+        all_joinded_user_profile_data = AllRooms.objects.filter(
+            room_coustom_id=roomUniqueId)
+        is_all_joinded_user_profile_data = all_joinded_user_profile_data.filter(
+            room_all_joinded_user_profile=userProfileId
+        )
+        if not is_all_joinded_user_profile_data:
+            all_joinded_user_profile_data[0].room_all_joinded_user_profile.add(
+                userProfileId
+            )
 
-        json_data = serializers.serialize("json", AllRooms.objects.filter(
-            room_coustom_id=roomUniqueId))
+            print(is_all_joinded_user_profile_data, 'not.........not')
+
+        print(is_all_joinded_user_profile_data,
+              'is_all_joinded_user_profile_data')
+
+        json_data = serializers.serialize(
+            "json", all_joinded_user_profile_data)
 
         profile_id = [i['pk'] for i in json.loads(json_data)]
         data = [i['fields'] for i in json.loads(json_data)]
@@ -254,7 +285,11 @@ class CreateRoomTokenView(APIView):
 
 class AllRoomsView(APIView):
     def get(self, request, *args, **kwargs):
-        all_rooms_data = AllRooms.objects.all().values()
+        all_rooms_data = AllRooms.objects.all()
+        all_rooms_data = serializers.serialize("json", all_rooms_data)
+        all_rooms_data = [i['fields'] for i in json.loads(all_rooms_data)]
+
+        print(all_rooms_data,'all_rooms_data')
         all_livekit_server_rooms = client.list_rooms()
         data = []
         server_filter_data = []
@@ -281,6 +316,37 @@ class AllRoomsView(APIView):
             'server_filter_data': server_filter_data,
 
 
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+    
+
+class AllJoinedRoomsView(APIView):
+    def post(self, request, *args, **kwargs):
+        user_profile_id = request.data['user_profile_id']
+        all_rooms_data = AllRooms.objects.filter(
+            room_all_joinded_user_profile=user_profile_id
+        )
+        all_rooms_data = serializers.serialize("json", all_rooms_data)
+        all_rooms_data = [i['fields'] for i in json.loads(all_rooms_data)]
+
+        print(all_rooms_data,'all_rooms_data')
+        all_livekit_server_rooms = client.list_rooms()
+        data = []
+        server_filter_data = []
+        for i in range(len(all_rooms_data)):
+
+            for j in range(len(all_livekit_server_rooms)):
+                if (all_livekit_server_rooms[j].name == all_rooms_data[i]['room_coustom_id']):
+                    server_filter_data.append(all_rooms_data[i])
+
+            update_data = (all_rooms_data[i], {"numParticipants": 'test'})
+            server_filter_data.append(update_data)
+
+        server_filter_data = list(server_filter_data)
+
+        responseData = {
+            'status': 'success',
+            'data': server_filter_data,
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
 

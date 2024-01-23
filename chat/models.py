@@ -30,7 +30,12 @@ class AllRooms(models.Model):
         on_delete=models.CASCADE,
         related_name='room_admin_profile'
     )
-
+        
+    room_all_joinded_user_profile = models.ManyToManyField(
+        Profile,
+        related_name="room_all_joinded_user_profile",
+        blank=True
+    )
     room_sup_admin_profile = models.ManyToManyField(
         Profile,
         related_name="room_sup_admin_profile",
@@ -58,6 +63,7 @@ class AllRooms(models.Model):
     
     room_sended_amount = models.CharField(
         max_length=200, blank=True, default="0", null=True)
+
 
     room_welcome_message = models.CharField(
         max_length=200, blank=True, default="Welcome", null=True)

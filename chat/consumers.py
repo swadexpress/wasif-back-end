@@ -273,26 +273,26 @@ class FruitgameConsumer(WebsocketConsumer):
 
                             # print(win_fruit_name, '...............3')
 
-                        elif smallest_value == sum(mango_amount):
-                            win_fruit_name = 'mango'
-                            apple_amount_first_win = sorted(mango_amount)
-                            # print(win_fruit_name,'...............333')
+                        # elif smallest_value == sum(mango_amount):
+                        #     win_fruit_name = 'mango'
+                        #     apple_amount_first_win = sorted(mango_amount)
+                        #     # print(win_fruit_name,'...............333')
 
-                        elif smallest_value == sum(papaya_amount):
-                            win_fruit_name = 'papaya'
-                            apple_amount_first_win = sorted(papaya_amount)
+                        # elif smallest_value == sum(papaya_amount):
+                        #     win_fruit_name = 'papaya'
+                        #     apple_amount_first_win = sorted(papaya_amount)
 
-                        elif smallest_value == sum(pineapple_amount):
-                            win_fruit_name = 'pineapple'
-                            apple_amount_first_win = sorted(pineapple_amount)
+                        # elif smallest_value == sum(pineapple_amount):
+                        #     win_fruit_name = 'pineapple'
+                        #     apple_amount_first_win = sorted(pineapple_amount)
 
-                        elif smallest_value == sum(strawberry_amount):
-                            win_fruit_name = 'strawberry'
-                            apple_amount_first_win = sorted(strawberry_amount)
+                        # elif smallest_value == sum(strawberry_amount):
+                        #     win_fruit_name = 'strawberry'
+                        #     apple_amount_first_win = sorted(strawberry_amount)
 
-                        elif smallest_value == sum(watermelon_amount):
-                            win_fruit_name = 'watermelon'
-                            apple_amount_first_win = sorted(watermelon_amount)
+                        # elif smallest_value == sum(watermelon_amount):
+                        #     win_fruit_name = 'watermelon'
+                        #     apple_amount_first_win = sorted(watermelon_amount)
 
                         all_profile_data = []
                         for item in i[0]:
@@ -833,16 +833,7 @@ class ChatConsumer(WebsocketConsumer):
             gift_sent_user_profile_data[0]['id'] = gift_sent_user_profile_id[0]
             gift_sent_user_profile_data = list(gift_sent_user_profile_data)
 
-            # ==== create databe AllSentedGifts model ====
-            AllSentedGifts.objects.create(
-                gift_sent_user_id=gift_sent_user_id,
-                gift_receive_user_id=gift_receive_user_id,
-                gift_sent_user_profile_id=gift_sent_user_profile_id_get,
-                gift_receive_user_profile_id=gift_receive_user_profile_id_get,
-                room_coustom_unique_id=room_coustom_unique_id,
-                gift_name=gift_name,
-                gift_amount=gift_amount,
-            )
+            
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -857,6 +848,16 @@ class ChatConsumer(WebsocketConsumer):
                     "room_data": room_details,
 
                 }
+            )
+            # ==== create databe AllSentedGifts model ====
+            AllSentedGifts.objects.create(
+                gift_sent_user_id=gift_sent_user_id,
+                gift_receive_user_id=gift_receive_user_id,
+                gift_sent_user_profile_id=gift_sent_user_profile_id_get,
+                gift_receive_user_profile_id=gift_receive_user_profile_id_get,
+                room_coustom_unique_id=room_coustom_unique_id,
+                gift_name=gift_name,
+                gift_amount=gift_amount,
             )
 
         elif (status == 'MultipleUserGiftSend'):

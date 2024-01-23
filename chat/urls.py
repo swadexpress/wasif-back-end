@@ -11,6 +11,8 @@ urlpatterns = [
          name='CreateRoomView'),
         path('AllRoomsView/', AllRoomsView.as_view(),
          name='AllRoomsView'),
+        path('AllJoinedRoomsView/', AllJoinedRoomsView.as_view(),
+         name='AllJoinedRoomsView'),
         path('MyRoomsView/', MyRoomsView.as_view(),
          name='MyRoomsView'),
         path('RakingTodayView/', RakingTodayView.as_view(),
@@ -19,6 +21,8 @@ urlpatterns = [
          name='CreateRoomTokenView'),
         path('UserRecordView/', UserRecordView.as_view(),
          name='UserRecordView'),
+        path('UserReceiveGiftsView/', UserReceiveGiftsView.as_view(),
+         name='UserReceiveGiftsView'),
 ]
 
 
