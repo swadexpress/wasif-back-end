@@ -160,7 +160,6 @@ class UserRecordView(APIView):
         ).order_by('-id')
         fruit_investment_win_lose_record_data_list = []
         if fruit_investment_round_data:
-
             for i in fruit_investment_round_data:
                 print(i.rounds)
 
@@ -187,19 +186,27 @@ class UserRecordView(APIView):
                     fruit_investment_win_lose_record_data_list.append(
                         list(fruit_investment_win_lose_record_data))
 
-                # print(fruit_investment_win_lose_record_data[0],'fruit_investment_wi..........')
+        fruit_investment_for_history_data = FruitInvestmentWinRanking.objects.filter(
+            time__date=today
+        ).values(
+            'id',
 
-        # print(fruit_investment_win_lose_record_data_list,'fruit_investment_wi..........')
+            "user_profile__fast_name",
+            "user_profile__last_name",
+            "user_profile__image",
+            "user_profile__coin",
+            "user_profile__diamond",
+            "user_profile__custom_id",
+            "win_amount",
 
-            # print(fruit_investment_win_lose_record_data,
-            #       'fruit_investment_win_lose_record_data')
-        # fruit_investment_win_lose_record_data = list(
-        #     fruit_investment_win_lose_record_data)
+        )
+        fruit_investment_for_history_data = list(
+            fruit_investment_for_history_data)
 
         responseData = {
             'status': 'success',
             'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data_list,
-
+            'fruit_investment_for_history_data': fruit_investment_for_history_data,
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
 
@@ -289,7 +296,7 @@ class AllRoomsView(APIView):
         all_rooms_data = serializers.serialize("json", all_rooms_data)
         all_rooms_data = [i['fields'] for i in json.loads(all_rooms_data)]
 
-        print(all_rooms_data,'all_rooms_data')
+        print(all_rooms_data, 'all_rooms_data')
         all_livekit_server_rooms = client.list_rooms()
         data = []
         server_filter_data = []
@@ -318,7 +325,7 @@ class AllRoomsView(APIView):
 
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
-    
+
 
 class AllJoinedRoomsView(APIView):
     def post(self, request, *args, **kwargs):
@@ -329,7 +336,7 @@ class AllJoinedRoomsView(APIView):
         all_rooms_data = serializers.serialize("json", all_rooms_data)
         all_rooms_data = [i['fields'] for i in json.loads(all_rooms_data)]
 
-        print(all_rooms_data,'all_rooms_data')
+        print(all_rooms_data, 'all_rooms_data')
         all_livekit_server_rooms = client.list_rooms()
         data = []
         server_filter_data = []
