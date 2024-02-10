@@ -19,6 +19,12 @@ from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
 
 
+
+
+
+
+
+
 class AllRooms(models.Model):
     room_admin_user = models.ForeignKey(
         User,
@@ -166,7 +172,22 @@ class IsJoinRoomsUsers(models.Model):
         max_length=200, blank=True, default=None, null=True)
     room_join_join_uniq_id = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    
+
     # time = models.DateTimeField(auto_now_add=True)
+class VIP(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, 
+        related_name='vip_user_profile')
+
+    name = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    price = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    
+    per_day_renewal = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    create_time = models.DateTimeField(auto_now_add=True,blank=True,null=True)
 
 
 class AllP2PMessage(models.Model):

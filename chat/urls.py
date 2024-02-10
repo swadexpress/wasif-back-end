@@ -23,6 +23,15 @@ urlpatterns = [
          name='UserRecordView'),
         path('UserReceiveGiftsView/', UserReceiveGiftsView.as_view(),
          name='UserReceiveGiftsView'),
+        path('VIPView/', VIPView.as_view(),
+         name='VIPView'),
+        path('BuyVIPView/', BuyVIPView.as_view(),
+         name='BuyVIPView'),
+        path('UsedBuyVIPView/', UsedBuyVIPView.as_view(),
+         name='UsedBuyVIPView'),
+
+
+
 ]
 
 

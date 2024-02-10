@@ -118,6 +118,67 @@ def test_update_room_metadata():
 # )
 # token = access_token.to_jwt()
 
+class BuyVIPView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        user_profile_id = request.data['user_profile_id']
+        name = request.data['name']
+        per_day_renewal = request.data['per_day_renewal']
+        price = request.data['price']
+
+        VIP.objects.create(
+            user_profile_id=user_profile_id,
+            name=name,
+            price=price,
+            per_day_renewal=per_day_renewal,
+        )
+
+        responseData = {
+            'status': 'success',
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class VIPView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        user_profile_id = request.data['user_profile_id']
+
+        vip_data = VIP.objects.filter(user_profile_id=user_profile_id).values(
+            "id",
+            "user_profile",
+            "name",
+            "price",
+            "per_day_renewal",
+
+        )
+
+        responseData = {
+            'status': 'success',
+            'vip_data': list(vip_data)
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+class UsedBuyVIPView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        user_profile_id = request.data['user_profile_id']
+
+        vip_data = VIP.objects.filter(user_profile_id=user_profile_id).values(
+            "id",
+            "user_profile",
+            "name",
+            "price",
+            "per_day_renewal",
+
+        )
+
+        responseData = {
+            'status': 'success',
+            'vip_data': list(vip_data)
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
 class RakingTodayView(APIView):
     def get(self, request, *args, **kwargs):
         today = datetime.datetime.today()
