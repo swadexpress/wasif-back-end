@@ -158,7 +158,7 @@ class VIPView(APIView):
             'vip_data': list(vip_data)
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
-class UsedBuyVIPView(APIView):
+class VIPListView(APIView):
     def post(self, request, *args, **kwargs):
 
         user_profile_id = request.data['user_profile_id']
@@ -176,6 +176,22 @@ class UsedBuyVIPView(APIView):
             'status': 'success',
             'vip_data': list(vip_data)
         }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+class UsedBuyVIPView(APIView):
+    def post(self, request, *args, **kwargs):
+        vip_name = request.data['vip_name']
+        user_profile_id = request.data['user_profile_id']
+        profile_data = Profile.objects.filter(id=user_profile_id)
+        profile_data.update(is_vip =vip_name)
+        json_data = serializers.serialize(
+            "json",profile_data )
+        profile_id = [i['pk'] for i in json.loads(json_data)]
+        data = [i['fields'] for i in json.loads(json_data)]
+        data[0]['id'] = profile_id[0]
+        data = list(data)
+
+        responseData = {'status': 'success', 'data': data}
+        
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 

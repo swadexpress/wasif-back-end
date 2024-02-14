@@ -1209,6 +1209,7 @@ class ChatConsumer(WebsocketConsumer):
                     "type": "chat.message",
                     "status": status,
                     "pk_data": pk_data,
+                    "is_vip": text_data_json["is_vip"],
                 }
             )
 

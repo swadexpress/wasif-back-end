@@ -2091,4 +2091,5 @@ class UserProfileView(ListAPIView):
         data = list(data)
 
         responseData = {'status': 'success', 'data': data}
+        
         return JsonResponse(responseData, safe=False, status=HTTP_200_OK)

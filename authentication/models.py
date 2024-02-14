@@ -117,7 +117,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE ,related_name='profile')
     followers = models.ManyToManyField(User, related_name='followers', blank=True)
     following = models.ManyToManyField(User, related_name="following", blank=True)
-    
+
     custom_id = models.CharField(max_length=10, null=True,blank=True)
     about_me = models.CharField(max_length=250, null=True,blank=True)
     fast_name = models.CharField(blank=True, max_length=50)
@@ -134,6 +134,8 @@ class Profile(models.Model):
     zip_code = models.CharField(blank=True, max_length=20)
     image = models.CharField(blank=True, max_length=400)
     cover_image = models.CharField(blank=True, max_length=400)
+    is_vip = models.CharField( max_length=300, null=True,blank=True)
+    is_mvip = models.CharField( max_length=300, null=True,blank=True)
     # ======================================================
     coin = models.CharField(blank=True, max_length=400,default=0)
     total_coin = models.CharField(blank=True, max_length=400,default=0)

@@ -29,6 +29,8 @@ urlpatterns = [
          name='BuyVIPView'),
         path('UsedBuyVIPView/', UsedBuyVIPView.as_view(),
          name='UsedBuyVIPView'),
+        path('VIPListView/', VIPListView.as_view(),
+         name='VIPListView'),
 
 
 
