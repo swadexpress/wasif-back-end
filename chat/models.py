@@ -155,8 +155,62 @@ class AllRooms(models.Model):
         max_length=200, blank=True, default=None, null=True)
     room_sit_10_password = models.CharField(
         max_length=200, blank=True, default=None, null=True)
-    room_sit_10_mic_status = models.CharField(
+    
+    
+
+
+    room_sit_11_mic_status = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    room_sit_11_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_11_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    
+    
+    room_sit_12_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    
+    room_sit_12_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_12_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+
+
+
+    
+    room_sit_13_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_13_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_13_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    
+    room_sit_14_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_14_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_14_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+    
+    room_sit_15_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_15_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_15_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    
+    
+    room_sit_16_mic_status = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_16_lock_position = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    room_sit_16_password = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
+
 
     # time = models.DateTimeField(auto_now_add=True)
 

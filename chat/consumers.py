@@ -1304,44 +1304,16 @@ class ChatConsumer(WebsocketConsumer):
                     "room_data": room_details,
                 }
             )
-        elif (status == 'RoomMoveToAudioAndAudioToVideo'):
-
-            room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
-            room_media_status = text_data_json["room_media_status"]
-
-            all_room_update = AllRooms.objects.filter(
-                room_coustom_id=room_coustom_unique_id)
-            all_room_update.update(
-                room_media_status=room_media_status
-            )
-
-            json_data = serializers.serialize("json", all_room_update)
-            profile_id = [i['pk'] for i in json.loads(json_data)]
-            data = [i['fields'] for i in json.loads(json_data)]
-            # add profile  id
-            data[0]['id'] = profile_id[0]
-            room_details = list(data)
-
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": "chat.message",
-                    "status": status,
-                    "room_data": room_details,
-                }
-            )
 
         elif (status == 'RoomMoveToAudioAndAudioToVideo'):
 
             room_coustom_unique_id = text_data_json["room_coustom_unique_id"]
             room_media_status = text_data_json["room_media_status"]
-
             all_room_update = AllRooms.objects.filter(
                 room_coustom_id=room_coustom_unique_id)
             all_room_update.update(
                 room_media_status=room_media_status
             )
-
             json_data = serializers.serialize("json", all_room_update)
             profile_id = [i['pk'] for i in json.loads(json_data)]
             data = [i['fields'] for i in json.loads(json_data)]

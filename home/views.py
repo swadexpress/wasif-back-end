@@ -1333,7 +1333,6 @@ class MyBannedListView(APIView):
 class MyRoomAdminListView(APIView):
     def post(self, request, *args, **kwargs):
         bandedUserList = request.data['bandedUserList']
-        print(bandedUserList, '.....')
 
         data = Profile.objects.filter(id__in=bandedUserList).order_by('-id').values(
             "id",
