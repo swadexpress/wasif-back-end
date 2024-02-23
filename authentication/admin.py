@@ -12,7 +12,7 @@ admin.site.register(User, UserAdmin)
 admin.site.register(OTPToken)
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['email' ]
+    list_display = ['email','custom_id' ]
     list_filter = ['custom_id','user']
     search_fields = ['custom_id','user']
 

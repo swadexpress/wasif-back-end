@@ -73,6 +73,11 @@ class AllRooms(models.Model):
 
     room_welcome_message = models.CharField(
         max_length=200, blank=True, default="Welcome", null=True)
+    
+    room_notice_message = models.CharField(
+        max_length=200, blank=True, default="", null=True)
+    
+
     room_tag = models.CharField(
         max_length=200, blank=True, default="Welcome", null=True)
     room_image = models.CharField(
@@ -268,10 +273,13 @@ class AllSentedGifts(models.Model):
         Profile, on_delete=models.CASCADE, related_name='gift_receive_user_profile')
     room_coustom_unique_id = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    
+    
     gift_name = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     gift_amount = models.CharField(
         max_length=200, blank=True, default=None, null=True)
+    time = models.DateTimeField(auto_now_add=True, null=True,blank=True,)
 
 
 class FruitInvestment(models.Model):

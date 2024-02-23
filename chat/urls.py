@@ -31,6 +31,10 @@ urlpatterns = [
          name='UsedBuyVIPView'),
         path('VIPListView/', VIPListView.as_view(),
          name='VIPListView'),
+        path('ExchangeCoinToDaimondView/', ExchangeCoinToDaimondView.as_view(),
+         name='ExchangeCoinToDaimondView'),
+        path('RoomGiftSentHistoryView/', RoomGiftSentHistoryView.as_view(),
+         name='RoomGiftSentHistoryView'),
 
 
 

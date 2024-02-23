@@ -158,6 +158,8 @@ class VIPView(APIView):
             'vip_data': list(vip_data)
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
+
+
 class VIPListView(APIView):
     def post(self, request, *args, **kwargs):
 
@@ -177,21 +179,23 @@ class VIPListView(APIView):
             'vip_data': list(vip_data)
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
+
+
 class UsedBuyVIPView(APIView):
     def post(self, request, *args, **kwargs):
         vip_name = request.data['vip_name']
         user_profile_id = request.data['user_profile_id']
         profile_data = Profile.objects.filter(id=user_profile_id)
-        profile_data.update(is_vip =vip_name)
+        profile_data.update(is_vip=vip_name)
         json_data = serializers.serialize(
-            "json",profile_data )
+            "json", profile_data)
         profile_id = [i['pk'] for i in json.loads(json_data)]
         data = [i['fields'] for i in json.loads(json_data)]
         data[0]['id'] = profile_id[0]
         data = list(data)
 
         responseData = {'status': 'success', 'data': data}
-        
+
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
@@ -216,9 +220,6 @@ class RakingTodayView(APIView):
         fruit_investment_for_history_data = list(
             fruit_investment_for_history_data)
 
-        print(fruit_investment_for_history_data,
-              'fruit_investment_for_history_data')
-
         responseData = {
             'status': 'success',
             'fruit_investment_for_history_data': fruit_investment_for_history_data,
@@ -236,6 +237,7 @@ class UserRecordView(APIView):
             user_profile_id=user_profile_id
         ).order_by('-id')
         fruit_investment_win_lose_record_data_list = []
+        today_total_win_amount = []
         if fruit_investment_round_data:
             for i in fruit_investment_round_data:
                 print(i.rounds)
@@ -259,47 +261,135 @@ class UserRecordView(APIView):
                     "win_fruit_name",
 
                 )
+
                 if fruit_investment_win_lose_record_data:
                     fruit_investment_win_lose_record_data_list.append(
                         list(fruit_investment_win_lose_record_data))
-
-        fruit_investment_for_history_data = FruitInvestmentWinRanking.objects.filter(
-            time__date=today
-        ).values(
-            'id',
-
-            "user_profile__fast_name",
-            "user_profile__last_name",
-            "user_profile__image",
-            "user_profile__coin",
-            "user_profile__diamond",
-            "user_profile__custom_id",
-            "win_amount",
-
-        )
-        fruit_investment_for_history_data = list(
-            fruit_investment_for_history_data)
-
+                    today_total_win_amount.append(
+                        int(fruit_investment_win_lose_record_data[0]['win_amount']))
         responseData = {
             'status': 'success',
             'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data_list,
-            'fruit_investment_for_history_data': fruit_investment_for_history_data,
+            "today_total_win_amount": sum(today_total_win_amount),
+
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class ExchangeCoinToDaimondView(APIView):
+    def post(self, request, *args, **kwargs):
+        user_profile_id = request.data['user_profile_id']
+        amounts = request.data['amounts']
+
+        profile_data = Profile.objects.filter(
+            id=user_profile_id)
+
+        profile_data.update(
+            coin=float(profile_data[0].coin) + (float(amounts)/2),
+            diamond=float(profile_data[0].diamond) - float(amounts)
+        )
+
+        gift_receive_user_profile_data = serializers.serialize(
+            "json", profile_data)
+        gift_receive_user_profile_id = [
+            i['pk'] for i in json.loads(gift_receive_user_profile_data)]
+        gift_receive_user_profile_data = [
+            i['fields'] for i in json.loads(gift_receive_user_profile_data)]
+        gift_receive_user_profile_data[0]['id'] = gift_receive_user_profile_id[0]
+        gift_receive_user_profile_data = list(
+            gift_receive_user_profile_data)
+
+        responseData = {
+            'status': 'success',
+            'profile_data': list(gift_receive_user_profile_data),
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
 
 
 class UserReceiveGiftsView(APIView):
     def post(self, request, *args, **kwargs):
-        today = datetime.datetime.today()
         user_profile_id = request.data['user_profile_id']
         all_sented_gifts_data = AllSentedGifts.objects.filter(
-            gift_sent_user_profile_id=user_profile_id
-        ).values()
+            gift_receive_user_profile_id=user_profile_id
+        ).values(
+            'gift_sent_user',
+            'gift_receive_user',
+            'gift_sent_user_profile',
+            'gift_receive_user_profile',
+            'room_coustom_unique_id',
+            'gift_name',
+            'gift_amount',
+        )
+
+        print(all_sented_gifts_data, '............')
 
         responseData = {
             'status': 'success',
             'all_sented_gifts_data': list(all_sented_gifts_data),
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
 
+
+class RoomGiftSentHistoryView(APIView):
+    def post(self, request, *args, **kwargs):
+        today = datetime.datetime.today()
+        room_coustom_unique_id = request.data['room_coustom_unique_id']
+        all_sented_gifts_user_id_data = AllSentedGifts.objects.filter(
+            room_coustom_unique_id=room_coustom_unique_id,
+            time__date=today,
+
+        ).values(
+            'gift_sent_user',
+            'gift_receive_user',
+            'gift_sent_user_profile',
+            'gift_receive_user_profile',
+            'room_coustom_unique_id',
+            'gift_name',
+            'gift_amount',
+        )
+
+        all_sented_gifts_user_profile_id = []
+        for i in all_sented_gifts_user_id_data:
+
+            if i['gift_sent_user'] not in all_sented_gifts_user_profile_id:
+                all_sented_gifts_user_profile_id.append(i['gift_sent_user'])
+        all_sented_gifts_filter_data = []
+
+        for i in all_sented_gifts_user_profile_id:
+            all_sented_gifts_data = AllSentedGifts.objects.filter(
+                gift_sent_user_profile_id=i,
+                time__date=today,
+            ).values(
+                'id',
+                'gift_sent_user',
+                'gift_receive_user',
+                'gift_sent_user_profile',
+                'gift_sent_user_profile__fast_name',
+                'gift_sent_user_profile__last_name',
+                'gift_sent_user_profile__id',
+                'gift_sent_user_profile__user',
+                'gift_sent_user_profile__image',
+                'gift_receive_user_profile',
+                'room_coustom_unique_id',
+                'gift_name',
+                'gift_amount',
+            )
+
+
+            total_gift_sent_amounts = []
+            for j in all_sented_gifts_data:
+                total_gift_sent_amounts.append(int(j['gift_amount']))
+
+            all_sented_gifts_filter_data.append({
+                "all_gifts_total_amount":sum(total_gift_sent_amounts),
+                'user_details':all_sented_gifts_data[0]
+            })
+
+
+        print(all_sented_gifts_filter_data,'all_sented_gifts_filter_data')
+        responseData = {
+            'status': 'success',
+            'all_sented_gifts_filter_data':all_sented_gifts_filter_data,
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
 
