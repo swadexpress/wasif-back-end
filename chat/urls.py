@@ -35,6 +35,8 @@ urlpatterns = [
          name='ExchangeCoinToDaimondView'),
         path('RoomGiftSentHistoryView/', RoomGiftSentHistoryView.as_view(),
          name='RoomGiftSentHistoryView'),
+        path('UserSevenDaysRecordView/', UserSevenDaysRecordView.as_view(),
+         name='UserSevenDaysRecordView'),
 
 
 

@@ -231,6 +231,55 @@ class RakingTodayView(APIView):
 class UserRecordView(APIView):
     def post(self, request, *args, **kwargs):
         today = datetime.datetime.today()
+        seven_days = datetime.datetime.now()-datetime.timedelta(days=7)
+        user_profile_id = request.data['user_profile_id']
+        fruit_investment_round_data = FruitInvestmentRound.objects.filter(
+            time__gte=seven_days,
+            user_profile_id=user_profile_id
+        ).order_by('-id')
+        fruit_investment_win_lose_record_data_list = []
+        today_total_win_amount = []
+        if fruit_investment_round_data:
+            for i in fruit_investment_round_data:
+                print(i.rounds)
+
+                fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
+                    user_profile_id=user_profile_id,
+                    rounds=i.rounds,
+                    time__gte=seven_days,
+                ).order_by('-id').values(
+                    'id',
+                    "user_profile__fast_name",
+                    "user_profile__last_name",
+                    "user_profile__image",
+                    "user_profile__coin",
+                    "user_profile__diamond",
+                    "user_profile__custom_id",
+                    "amount",
+                    "win_amount",
+                    "fruit_name",
+                    "rounds",
+                    "win_fruit_name",
+
+                )
+
+                if fruit_investment_win_lose_record_data:
+                    fruit_investment_win_lose_record_data_list.append(
+                        list(fruit_investment_win_lose_record_data))
+                    today_total_win_amount.append(
+                        int(fruit_investment_win_lose_record_data[0]['win_amount']))
+        responseData = {
+            'status': 'success',
+            'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data_list,
+            "today_total_win_amount": sum(today_total_win_amount),
+
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+class UserSevenDaysRecordView(APIView):
+    def post(self, request, *args, **kwargs):
+        today = datetime.datetime.today()
         user_profile_id = request.data['user_profile_id']
         fruit_investment_round_data = FruitInvestmentRound.objects.filter(
             time__date=today,
@@ -357,7 +406,7 @@ class RoomGiftSentHistoryView(APIView):
 
         for i in all_sented_gifts_user_profile_id:
             all_sented_gifts_data = AllSentedGifts.objects.filter(
-                gift_sent_user_profile_id=i,
+                gift_sent_user_id=i,
                 time__date=today,
             ).values(
                 'id',
@@ -375,21 +424,20 @@ class RoomGiftSentHistoryView(APIView):
                 'gift_amount',
             )
 
-
             total_gift_sent_amounts = []
+            print(all_sented_gifts_data,'all_sented_gifts_data')
             for j in all_sented_gifts_data:
                 total_gift_sent_amounts.append(int(j['gift_amount']))
 
             all_sented_gifts_filter_data.append({
-                "all_gifts_total_amount":sum(total_gift_sent_amounts),
-                'user_details':all_sented_gifts_data[0]
+                "all_gifts_total_amount": sum(total_gift_sent_amounts),
+                'user_details': all_sented_gifts_data[0]
             })
 
-
-        print(all_sented_gifts_filter_data,'all_sented_gifts_filter_data')
+        print(all_sented_gifts_filter_data, 'all_sented_gifts_filter_data')
         responseData = {
             'status': 'success',
-            'all_sented_gifts_filter_data':all_sented_gifts_filter_data,
+            'all_sented_gifts_filter_data': all_sented_gifts_filter_data,
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
 
