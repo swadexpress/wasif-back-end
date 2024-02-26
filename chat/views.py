@@ -231,22 +231,22 @@ class RakingTodayView(APIView):
 class UserRecordView(APIView):
     def post(self, request, *args, **kwargs):
         today = datetime.datetime.today()
-        seven_days = datetime.datetime.now()-datetime.timedelta(days=7)
+        weekly = datetime.datetime.now()-datetime.timedelta(days=7)
         user_profile_id = request.data['user_profile_id']
         fruit_investment_round_data = FruitInvestmentRound.objects.filter(
-            time__gte=seven_days,
+            time__date=today,
             user_profile_id=user_profile_id
         ).order_by('-id')
         fruit_investment_win_lose_record_data_list = []
         today_total_win_amount = []
         if fruit_investment_round_data:
             for i in fruit_investment_round_data:
-                print(i.rounds)
+                # print(i.rounds)
 
                 fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
                     user_profile_id=user_profile_id,
                     rounds=i.rounds,
-                    time__gte=seven_days,
+                    time__date=today,
                 ).order_by('-id').values(
                     'id',
                     "user_profile__fast_name",
@@ -268,10 +268,51 @@ class UserRecordView(APIView):
                         list(fruit_investment_win_lose_record_data))
                     today_total_win_amount.append(
                         int(fruit_investment_win_lose_record_data[0]['win_amount']))
+
+        # ===============================Weekly==========================
+
+        fruit_investment_round_weekly_data = FruitInvestmentRound.objects.filter(
+            time__gte=weekly,
+            user_profile_id=user_profile_id
+        ).order_by('-id')
+        fruit_investment_win_lose_record_weekly_data_list = []
+        today_total_win_weekly_amount = []
+        if fruit_investment_round_weekly_data:
+            for i in fruit_investment_round_weekly_data:
+                # print(i.rounds)
+
+                fruit_investment_win_lose_record_weekly_data = FruitInvestmentWinLoseRecord.objects.filter(
+                    user_profile_id=user_profile_id,
+                    rounds=i.rounds,
+                    time__gte=weekly,
+                ).order_by('-id').values(
+                    'id',
+                    "user_profile__fast_name",
+                    "user_profile__last_name",
+                    "user_profile__image",
+                    "user_profile__coin",
+                    "user_profile__diamond",
+                    "user_profile__custom_id",
+                    "amount",
+                    "win_amount",
+                    "fruit_name",
+                    "rounds",
+                    "win_fruit_name",
+
+                )
+
+                if fruit_investment_win_lose_record_weekly_data:
+                    fruit_investment_win_lose_record_weekly_data_list.append(
+                        list(fruit_investment_win_lose_record_weekly_data))
+                    today_total_win_weekly_amount.append(
+                        int(fruit_investment_win_lose_record_weekly_data[0]['win_amount']))
+
         responseData = {
             'status': 'success',
             'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data_list,
+            'fruit_investment_win_lose_record_weekly_data': fruit_investment_win_lose_record_weekly_data_list,
             "today_total_win_amount": sum(today_total_win_amount),
+            "today_total_win_amount": sum(today_total_win_weekly_amount),
 
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
@@ -382,6 +423,8 @@ class UserReceiveGiftsView(APIView):
 class RoomGiftSentHistoryView(APIView):
     def post(self, request, *args, **kwargs):
         today = datetime.datetime.today()
+        weekly = datetime.datetime.now()-datetime.timedelta(days=7)
+        _monthly = datetime.datetime.now()-datetime.timedelta(days=28)
         room_coustom_unique_id = request.data['room_coustom_unique_id']
         all_sented_gifts_user_id_data = AllSentedGifts.objects.filter(
             room_coustom_unique_id=room_coustom_unique_id,
@@ -399,7 +442,6 @@ class RoomGiftSentHistoryView(APIView):
 
         all_sented_gifts_user_profile_id = []
         for i in all_sented_gifts_user_id_data:
-
             if i['gift_sent_user'] not in all_sented_gifts_user_profile_id:
                 all_sented_gifts_user_profile_id.append(i['gift_sent_user'])
         all_sented_gifts_filter_data = []
@@ -425,7 +467,7 @@ class RoomGiftSentHistoryView(APIView):
             )
 
             total_gift_sent_amounts = []
-            print(all_sented_gifts_data,'all_sented_gifts_data')
+            print(all_sented_gifts_data, 'all_sented_gifts_data')
             for j in all_sented_gifts_data:
                 total_gift_sent_amounts.append(int(j['gift_amount']))
 
@@ -434,10 +476,136 @@ class RoomGiftSentHistoryView(APIView):
                 'user_details': all_sented_gifts_data[0]
             })
 
-        print(all_sented_gifts_filter_data, 'all_sented_gifts_filter_data')
+# =======================================================
+
+        all_sented_gifts_user_id_data_weekly = AllSentedGifts.objects.filter(
+            room_coustom_unique_id=room_coustom_unique_id,
+            time__gte=weekly,
+
+        ).values(
+            'gift_sent_user',
+            'gift_receive_user',
+            'gift_sent_user_profile',
+            'gift_receive_user_profile',
+            'room_coustom_unique_id',
+            'gift_name',
+            'gift_amount',
+        )
+
+        print(all_sented_gifts_user_id_data_weekly,
+              'all_sented_gifts_user_id_data_weekly')
+
+        all_sented_gifts_user_profile_id_weekly = []
+
+        for i in all_sented_gifts_user_id_data_weekly:
+
+            if i['gift_sent_user'] not in all_sented_gifts_user_profile_id_weekly:
+                all_sented_gifts_user_profile_id_weekly.append(
+                    i['gift_sent_user'])
+        all_sented_gifts_filter_data_weekly = []
+
+        for i in all_sented_gifts_user_profile_id_weekly:
+            all_sented_gifts_data_weekly = AllSentedGifts.objects.filter(
+                gift_sent_user_id=i,
+                time__gte=weekly,
+            ).values(
+                'id',
+                'gift_sent_user',
+                'gift_receive_user',
+                'gift_sent_user_profile',
+                'gift_sent_user_profile__fast_name',
+                'gift_sent_user_profile__last_name',
+                'gift_sent_user_profile__id',
+                'gift_sent_user_profile__user',
+                'gift_sent_user_profile__image',
+                'gift_receive_user_profile',
+                'room_coustom_unique_id',
+                'gift_name',
+                'gift_amount',
+            )
+
+            total_gift_sent_amounts_weekly = []
+
+            for j in all_sented_gifts_data_weekly:
+                total_gift_sent_amounts_weekly.append(int(j['gift_amount']))
+
+            all_sented_gifts_filter_data_weekly.append({
+                "all_gifts_total_amount": sum(total_gift_sent_amounts_weekly),
+                'user_details': all_sented_gifts_data_weekly[0]
+            })
+
+        # ================================Monthly=========================
+
+        all_sented_gifts_user_id_data_monthly = AllSentedGifts.objects.filter(
+            room_coustom_unique_id=room_coustom_unique_id,
+            time__gte=_monthly,
+
+        ).values(
+            'gift_sent_user',
+            'gift_receive_user',
+            'gift_sent_user_profile',
+            'gift_receive_user_profile',
+            'room_coustom_unique_id',
+            'gift_name',
+            'gift_amount',
+        )
+
+
+        all_sented_gifts_user_profile_id_monthly = []
+        for i in all_sented_gifts_user_id_data_monthly:
+
+            if i['gift_sent_user'] not in all_sented_gifts_user_profile_id_monthly:
+                all_sented_gifts_user_profile_id_monthly.append(
+                    i['gift_sent_user'])
+        all_sented_gifts_filter_data_monthly = []
+
+        for i in all_sented_gifts_user_profile_id_monthly:
+            all_sented_gifts_data_monthly = AllSentedGifts.objects.filter(
+                gift_sent_user_id=i,
+                time__gte=_monthly,
+            ).values(
+                'id',
+                'gift_sent_user',
+                'gift_receive_user',
+                'gift_sent_user_profile',
+                'gift_sent_user_profile__fast_name',
+                'gift_sent_user_profile__last_name',
+                'gift_sent_user_profile__id',
+                'gift_sent_user_profile__user',
+                'gift_sent_user_profile__image',
+                'gift_receive_user_profile',
+                'room_coustom_unique_id',
+                'gift_name',
+                'gift_amount',
+            )
+
+            total_gift_sent_amounts_monthly = []
+
+            for j in all_sented_gifts_data_monthly:
+                total_gift_sent_amounts_monthly.append(int(j['gift_amount']))
+
+            all_sented_gifts_filter_data_monthly.append({
+                "all_gifts_total_amount": sum(total_gift_sent_amounts_monthly),
+                'user_details': all_sented_gifts_data_monthly[0]
+            })
+            sorted_all_sented_gifts_filter_data_monthly =[]
+            sorted_all_sented_gifts_filter_data_weekly =[]
+            sorted_all_sented_gifts_filter_data =[]
+
+            sorted_all_sented_gifts_filter_data_monthly = sorted(all_sented_gifts_filter_data_monthly, key=lambda x: x["all_gifts_total_amount"])
+            sorted_all_sented_gifts_filter_data_weekly = sorted(all_sented_gifts_filter_data_weekly, key=lambda x: x["all_gifts_total_amount"])
+            sorted_all_sented_gifts_filter_data = sorted(all_sented_gifts_filter_data, key=lambda x: x["all_gifts_total_amount"])
+
+
+           
+
+
+
         responseData = {
             'status': 'success',
-            'all_sented_gifts_filter_data': all_sented_gifts_filter_data,
+            'all_sented_gifts_filter_data': sorted_all_sented_gifts_filter_data,
+            'all_sented_gifts_filter_data_weekly': sorted_all_sented_gifts_filter_data_weekly,
+            'all_sented_gifts_filter_data_monthly': sorted_all_sented_gifts_filter_data_monthly,
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
 

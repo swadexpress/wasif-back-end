@@ -26,9 +26,8 @@ def remove_duplicates(data):
             'rounds': i['rounds'],
             'win_fruit_name': i['win_fruit_name']
         }
-        # print(i['rounds'], '....')
-        if is_check not in filter_win_fruits_data:
 
+        if is_check not in filter_win_fruits_data:
             filter_win_fruits_data.append({
                 'rounds': i['rounds'],
                 'win_fruit_name': i['win_fruit_name']
@@ -227,16 +226,16 @@ class FruitgameConsumer(WebsocketConsumer):
                                 avocado_amount.append(int(j['win_amount']))
                             elif (j['name'] == 'grape'):
                                 grape_amount.append(int(j['win_amount']))
-                            # elif (j['name'] == 'mango'):
-                            #     mango_amount.append(int(j['win_amount']))
-                            # elif (j['name'] == 'papaya'):
-                            #     papaya_amount.append(int(j['win_amount']))
-                            # elif (j['name'] == 'pineapple'):
-                            #     pineapple_amount.append(int(j['win_amount']))
-                            # elif (j['name'] == 'strawberry'):
-                            #     strawberry_amount.append(int(j['win_amount']))
-                            # elif (j['name'] == 'watermelon'):
-                            #     watermelon_amount.append(int(j['win_amount']))
+                            elif (j['name'] == 'mango'):
+                                mango_amount.append(int(j['win_amount']))
+                            elif (j['name'] == 'papaya'):
+                                papaya_amount.append(int(j['win_amount']))
+                            elif (j['name'] == 'pineapple'):
+                                pineapple_amount.append(int(j['win_amount']))
+                            elif (j['name'] == 'strawberry'):
+                                strawberry_amount.append(int(j['win_amount']))
+                            elif (j['name'] == 'watermelon'):
+                                watermelon_amount.append(int(j['win_amount']))
 
                         investment_data = json.loads(i.investment)
                         fruit_investment_data_update.append(
@@ -248,11 +247,11 @@ class FruitgameConsumer(WebsocketConsumer):
                             sum(apple_amount),
                             sum(avocado_amount),
                             sum(grape_amount),
-                            # sum(mango_amount),
-                            # sum(papaya_amount),
-                            # sum(pineapple_amount),
-                            # sum(strawberry_amount),
-                            # sum(watermelon_amount),
+                            sum(mango_amount),
+                            sum(papaya_amount),
+                            sum(pineapple_amount),
+                            sum(strawberry_amount),
+                            sum(watermelon_amount),
                         )
 
                         print(smallest_value, 'smallest_valuesmallest_value')
@@ -297,8 +296,10 @@ class FruitgameConsumer(WebsocketConsumer):
                         for item in i[0]:
                             if item["name"] == win_fruit_name:
                                 if len(apple_amount_first_win) == 1:
+
+                                    print(apple_amount_first_win,'apple_amount_first_win')
                                     # pass
-                                    if (apple_amount_first_win[0] == item['amount']):
+                                    if (apple_amount_first_win[0] == item['win_amount']):
                                         win_investment_data.append(i[1][0])
                                         win_investment_amount.append(
                                             int(item['win_amount']))
@@ -306,13 +307,13 @@ class FruitgameConsumer(WebsocketConsumer):
                                             len(apple_amount_first_win), '1...')
 
                                 elif len(apple_amount_first_win) == 2:
-                                    if (apple_amount_first_win[0] == item['amount']):
+                                    if (apple_amount_first_win[0] == item['win_amount']):
                                         win_investment_data.append(i[1][0])
                                         win_investment_amount.append(
                                             int(item['win_amount']))
                                         print(
                                             len(apple_amount_first_win), '1...')
-                                    elif (apple_amount_first_win[1] == item['amount']):
+                                    elif (apple_amount_first_win[1] == item['win_amount']):
                                         win_investment_data.append(i[1][0])
                                         win_investment_amount.append(
                                             int(item['win_amount']))
@@ -321,28 +322,26 @@ class FruitgameConsumer(WebsocketConsumer):
 
                                 elif len(apple_amount_first_win) == 3:
                                     # pass
-                                    if (apple_amount_first_win[0] == item['amount']):
+                                    if (apple_amount_first_win[0] == item['win_amount']):
                                         win_investment_data.append(i[1][0])
                                         win_investment_amount.append(
                                             int(item['win_amount']))
                                         print(
                                             len(apple_amount_first_win), '1...')
 
-                                    elif (apple_amount_first_win[1] == item['amount']):
+                                    elif (apple_amount_first_win[1] == item['win_amount']):
                                         win_investment_data.append(i[1][0])
                                         win_investment_amount.append(
                                             int(item['win_amount']))
                                         print(
                                             len(apple_amount_first_win), '2.....')
 
-                                    elif (apple_amount_first_win[2] == item['amount']):
+                                    elif (apple_amount_first_win[2] == item['win_amount']):
                                         win_investment_data.append(i[1][0])
                                         win_investment_amount.append(
                                             int(item['win_amount']))
                                         print(
                                             len(apple_amount_first_win), '3...')
-
-
 
                                 filter_profile = Profile.objects.filter(
                                     id=i[1][0]['id'])
@@ -409,6 +408,7 @@ class FruitgameConsumer(WebsocketConsumer):
                         # print(win_investment_data_2,'win_investment_data_2')
                         # print(win_investment_data_3,'win_investment_data_3')
                         # my_list = [10, 17, 13]
+                        print(win_investment_data, '.win_investment_data')
 
                         async_to_sync(self.channel_layer.group_send)(
                             self.room_group_name,
@@ -436,10 +436,10 @@ class FruitgameConsumer(WebsocketConsumer):
                             {
                                 "type": "chat.message",
                                 "status": "FruitInvestmentWiner",
-                                "win_fruit_name": 'apple',
+                                "win_fruit_name": win_fruit_name,
                                 "win_investment_data": [list(win_investment_data_dumy_1)[0], list(win_investment_data_dumy_2)[0], list(win_investment_data_dumy_1)[0]],
                                 "all_profile_data": all_profile_data,
-                                "win_investment_amount_1": random.randint(11111, 99999),
+                                "win_investment_amount": [random.randint(11111, 99999), random.randint(11111, 99999), random.randint(11111, 99999)],
                                 "win_investment_amount_2": random.randint(1111, 9999),
                                 "win_investment_amount_3": random.randint(111, 999),
 
@@ -459,8 +459,8 @@ class FruitgameConsumer(WebsocketConsumer):
                             "status": "FruitInvestmentWiner",
                             "win_fruit_name": 'apple',
                             "win_investment_data": [list(win_investment_data_dumy_1)[0], list(win_investment_data_dumy_2)[0], list(win_investment_data_dumy_1)[0]],
-                            "all_profile_data": '',
-                            "win_investment_amount_1": random.randint(11111, 99999),
+                            "all_profile_data":win_fruit_name,
+                            "win_investment_amount": [random.randint(11111, 99999), random.randint(11111, 99999), random.randint(11111, 99999)],
                             "win_investment_amount_2": random.randint(1111, 9999),
                             "win_investment_amount_3": random.randint(111, 999),
 
@@ -771,9 +771,9 @@ class ChatConsumer(WebsocketConsumer):
 
             # ============= room sended amoun balance update====================
             all_room_data = AllRooms.objects.filter(
-               room_coustom_id=room_coustom_unique_id)
+                room_coustom_id=room_coustom_unique_id)
             room_data_amount = all_room_data.values()
-            
+
             all_room_data.update(
                 room_sended_amount=float(
                     room_data_amount[0]['room_sended_amount']) + float(gift_amount)
@@ -787,8 +787,7 @@ class ChatConsumer(WebsocketConsumer):
             # add profile  id
             data[0]['id'] = all_room_update_id[0]
             room_details = list(data)
-            print(room_details,'...dd............ss')
-
+            print(room_details, '...dd............ss')
 
             # ============= gift sent user balance update====================
             gift_sent_user_profile_data = Profile.objects.filter(
@@ -809,7 +808,7 @@ class ChatConsumer(WebsocketConsumer):
             gift_receive_user_profile_data_update.update(
                 # coin=float(
                 #     gift_receive_user_profile_data[0]['coin']) + float(gift_amount)
-                
+
                 diamond=float(gift_receive_user_profile_data[0]['diamond']) + float(gift_amount))
 
             # ==== gift sent and receive user profile data sent to app ====
@@ -833,8 +832,6 @@ class ChatConsumer(WebsocketConsumer):
                                            for i in json.loads(gift_sent_user_profile_data)]
             gift_sent_user_profile_data[0]['id'] = gift_sent_user_profile_id[0]
             gift_sent_user_profile_data = list(gift_sent_user_profile_data)
-
-            
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
