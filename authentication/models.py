@@ -120,8 +120,8 @@ class Profile(models.Model):
 
     custom_id = models.CharField(max_length=10, null=True,blank=True)
     about_me = models.CharField(max_length=250, null=True,blank=True)
-    fast_name = models.CharField(blank=True, max_length=50)
-    last_name = models.CharField(blank=True, max_length=50)
+    fast_name = models.CharField( max_length=50,null=True,blank=True,default=' ')
+    last_name = models.CharField( max_length=50,null=True,blank=True,default=' ')
     gender = models.CharField( max_length=10, null=True,blank=True)
     date_of_birth = models.CharField( max_length=300, null=True,blank=True)
     country = models.CharField( max_length=300, null=True,blank=True)
