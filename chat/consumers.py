@@ -297,7 +297,8 @@ class FruitgameConsumer(WebsocketConsumer):
                             if item["name"] == win_fruit_name:
                                 if len(apple_amount_first_win) == 1:
 
-                                    print(apple_amount_first_win,'apple_amount_first_win')
+                                    print(apple_amount_first_win,
+                                          'apple_amount_first_win')
                                     # pass
                                     if (apple_amount_first_win[0] == item['win_amount']):
                                         win_investment_data.append(i[1][0])
@@ -459,7 +460,7 @@ class FruitgameConsumer(WebsocketConsumer):
                             "status": "FruitInvestmentWiner",
                             "win_fruit_name": 'apple',
                             "win_investment_data": [list(win_investment_data_dumy_1)[0], list(win_investment_data_dumy_2)[0], list(win_investment_data_dumy_1)[0]],
-                            "all_profile_data":win_fruit_name,
+                            "all_profile_data": win_fruit_name,
                             "win_investment_amount": [random.randint(11111, 99999), random.randint(11111, 99999), random.randint(11111, 99999)],
                             "win_investment_amount_2": random.randint(1111, 9999),
                             "win_investment_amount_3": random.randint(111, 999),
@@ -797,7 +798,10 @@ class ChatConsumer(WebsocketConsumer):
 
             gift_sent_user_profile_data_update.update(
                 coin=float(
-                    gift_sent_user_profile_data[0]['coin']) - float(gift_amount_minus)
+                    gift_sent_user_profile_data[0]['coin']) - float(gift_amount_minus),
+                total_sent_coin=float(
+                    gift_sent_user_profile_data[0]['total_sent_coin']) + float(gift_amount_minus)
+
             )
             # ============= gift receive user balance update====================
             gift_receive_user_profile_data = Profile.objects.filter(
@@ -809,7 +813,11 @@ class ChatConsumer(WebsocketConsumer):
                 # coin=float(
                 #     gift_receive_user_profile_data[0]['coin']) + float(gift_amount)
 
-                diamond=float(gift_receive_user_profile_data[0]['diamond']) + float(gift_amount))
+                diamond=float(
+                    gift_receive_user_profile_data[0]['diamond']) + float(gift_amount),
+                total_receive_diamond=float(
+                    gift_receive_user_profile_data[0]['total_receive_diamond']) + float(gift_amount)
+            )
 
             # ==== gift sent and receive user profile data sent to app ====
             # =====================================================

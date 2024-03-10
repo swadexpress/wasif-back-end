@@ -131,7 +131,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             # "hosts": ["redis://:kawsarkhan12345@172.20.10.4:6379/0"],
-            "hosts": ["redis://:kawsarkhan12345@192.168.0.207:6379"],
+            "hosts": ["redis://:kawsarkhan12345@192.168.0.135:6379"],
             #   "hosts": ["redis://:kawsarkhan12345@1430-160-238-0-240.ngrok-free.app"],
             "symmetric_encryption_keys": ["sys_admin_config_836"],
         },

@@ -139,8 +139,12 @@ class Profile(models.Model):
     # ======================================================
     coin = models.CharField(blank=True, max_length=400,default=0)
     total_coin = models.CharField(blank=True, max_length=400,default=0)
+    total_sent_coin = models.CharField(blank=True, max_length=400,default=0)
+    total_receive_coin = models.CharField(blank=True, max_length=400,default=0)
     diamond = models.CharField(blank=True, max_length=400,default=0)
     total_diamond = models.CharField(blank=True, max_length=400,default=0)
+    total_sent_diamond = models.CharField(blank=True, max_length=400,default=0)
+    total_receive_diamond = models.CharField(blank=True, max_length=400,default=0)
     # ======================================================
     is_blocked = models.BooleanField(default=False)
     is_host_agent = models.BooleanField(default=False)
