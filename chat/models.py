@@ -292,11 +292,31 @@ class FruitInvestment(models.Model):
 
     profile_data = models.CharField(
         max_length=20000, blank=True, default=None, null=True)
+    
+class FruitLoopInvestment(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_user_profile')
+
+    investment = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+
+    profile_data = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+    
+
+
     # time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 class FruitInvestmentWinRanking(models.Model):
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_investment_amount_user_profile')
+    win_amount = models.FloatField(
+        max_length=200, blank=True, default=0.0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+class FruitLoopInvestmentWinRanking(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_amount_user_profile')
     win_amount = models.FloatField(
         max_length=200, blank=True, default=0.0, null=True)
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
@@ -315,10 +335,37 @@ class FruitInvestmentWinLoseRecord(models.Model):
     fruit_name = models.CharField(
         max_length=200, blank=True, default='', null=True)
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+
+class FruitLoopInvestmentWinLoseRecord(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_win_or_lose_user_profile')
+    amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    win_amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+    win_fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
+    fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+
+
 class FruitInvestmentRound(models.Model):
 
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_investment_record_user_profile')
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+class FruitLoopInvestmentRound(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_record_user_profile')
     rounds = models.IntegerField(
          blank=True, default=0, null=True)
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
@@ -340,6 +387,13 @@ class FruitInvestmentForHistory(models.Model):
 
 
 class FruitInvestmentTimeline(models.Model):
+    start_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    end_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class FruitLoopInvestmentTimeline(models.Model):
     start_time = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     end_time = models.CharField(

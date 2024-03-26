@@ -227,6 +227,37 @@ class RakingTodayView(APIView):
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
 
+class RakingTodayForFruitsLoopView(APIView):
+    def get(self, request, *args, **kwargs):
+        today = datetime.datetime.today()
+
+        fruit_investment_for_history_data = FruitLoopInvestmentWinRanking.objects.filter(
+            time__date=today
+        ).values(
+            'id',
+
+            "user_profile__fast_name",
+            "user_profile__last_name",
+            "user_profile__image",
+            "user_profile__coin",
+            "user_profile__diamond",
+            "user_profile__custom_id",
+            "win_amount",
+
+        )
+        fruit_investment_for_history_data = list(
+            fruit_investment_for_history_data)
+
+        responseData = {
+            'status': 'success',
+            'fruit_investment_for_history_data': fruit_investment_for_history_data,
+
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+
+
 
 class UserRecordView(APIView):
     def post(self, request, *args, **kwargs):
@@ -316,6 +347,98 @@ class UserRecordView(APIView):
 
         }
         return JsonResponse(responseData, status=HTTP_200_OK)
+
+class UserRecordForFruitsLoopView(APIView):
+    def post(self, request, *args, **kwargs):
+        today = datetime.datetime.today()
+        weekly = datetime.datetime.now()-datetime.timedelta(days=7)
+        user_profile_id = request.data['user_profile_id']
+        fruit_investment_round_data = FruitLoopInvestmentRound.objects.filter(
+            time__date=today,
+            user_profile_id=user_profile_id
+        ).order_by('-id')
+        fruit_investment_win_lose_record_data_list = []
+        today_total_win_amount = []
+        if fruit_investment_round_data:
+            for i in fruit_investment_round_data:
+                # print(i.rounds)
+
+                fruit_investment_win_lose_record_data = FruitInvestmentWinLoseRecord.objects.filter(
+                    user_profile_id=user_profile_id,
+                    rounds=i.rounds,
+                    time__date=today,
+                ).order_by('-id').values(
+                    'id',
+                    "user_profile__fast_name",
+                    "user_profile__last_name",
+                    "user_profile__image",
+                    "user_profile__coin",
+                    "user_profile__diamond",
+                    "user_profile__custom_id",
+                    "amount",
+                    "win_amount",
+                    "fruit_name",
+                    "rounds",
+                    "win_fruit_name",
+
+                )
+
+                if fruit_investment_win_lose_record_data:
+                    fruit_investment_win_lose_record_data_list.append(
+                        list(fruit_investment_win_lose_record_data))
+                    today_total_win_amount.append(
+                        int(fruit_investment_win_lose_record_data[0]['win_amount']))
+
+        # ===============================Weekly==========================
+
+        fruit_investment_round_weekly_data = FruitInvestmentRound.objects.filter(
+            time__gte=weekly,
+            user_profile_id=user_profile_id
+        ).order_by('-id')
+        fruit_investment_win_lose_record_weekly_data_list = []
+        today_total_win_weekly_amount = []
+        if fruit_investment_round_weekly_data:
+            for i in fruit_investment_round_weekly_data:
+                # print(i.rounds)
+
+                fruit_investment_win_lose_record_weekly_data = FruitInvestmentWinLoseRecord.objects.filter(
+                    user_profile_id=user_profile_id,
+                    rounds=i.rounds,
+                    time__gte=weekly,
+                ).order_by('-id').values(
+                    'id',
+                    "user_profile__fast_name",
+                    "user_profile__last_name",
+                    "user_profile__image",
+                    "user_profile__coin",
+                    "user_profile__diamond",
+                    "user_profile__custom_id",
+                    "amount",
+                    "win_amount",
+                    "fruit_name",
+                    "rounds",
+                    "win_fruit_name",
+
+                )
+
+                if fruit_investment_win_lose_record_weekly_data:
+                    fruit_investment_win_lose_record_weekly_data_list.append(
+                        list(fruit_investment_win_lose_record_weekly_data))
+                    today_total_win_weekly_amount.append(
+                        int(fruit_investment_win_lose_record_weekly_data[0]['win_amount']))
+
+        responseData = {
+            'status': 'success',
+            'fruit_investment_win_lose_record_data': fruit_investment_win_lose_record_data_list,
+            'fruit_investment_win_lose_record_weekly_data': fruit_investment_win_lose_record_weekly_data_list,
+            "today_total_win_amount": sum(today_total_win_amount),
+            "today_total_win_amount": sum(today_total_win_weekly_amount),
+
+        }
+        return JsonResponse(responseData, status=HTTP_200_OK)
+
+
+
 
 
 class UserSevenDaysRecordView(APIView):

@@ -15,12 +15,23 @@ urlpatterns = [
          name='AllJoinedRoomsView'),
         path('MyRoomsView/', MyRoomsView.as_view(),
          name='MyRoomsView'),
-        path('RakingTodayView/', RakingTodayView.as_view(),
-         name='RakingTodayView'),
+        path('RakingTodayForFruitsLoopView/', RakingTodayForFruitsLoopView.as_view(),
+         name='RakingTodayForFruitsLoopView'),
+
+
         path('CreateRoomTokenView/', CreateRoomTokenView.as_view(),
          name='CreateRoomTokenView'),
+
+
         path('UserRecordView/', UserRecordView.as_view(),
          name='UserRecordView'),
+
+        path('UserRecordForFruitsLoopView/', UserRecordView.as_view(),
+         name='UserRecordForFruitsLoopView'),
+
+
+
+
         path('UserReceiveGiftsView/', UserReceiveGiftsView.as_view(),
          name='UserReceiveGiftsView'),
         path('VIPView/', VIPView.as_view(),

@@ -293,4 +293,4 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
-    'https://django-back-end-a72e31ec344c.herokuapp.com']
+    'https://febb-160-238-0-241.ngrok-free.app']
