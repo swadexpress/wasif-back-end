@@ -176,6 +176,8 @@ DATABASES = {
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://192.168.0.135:3000",
+    "http://192.168.0.135:3001",
     "https://orbitplugcom.netlify.app",
     "http://127.0.0.1:8080",
     "https://orbitplug.netlify.app",

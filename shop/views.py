@@ -346,6 +346,7 @@ class AdminAllOrderView(APIView):
             'user_id',
             # 'item_id',
             'user__email',
+            'items__item__title',
 
 
         ).order_by('-id')
@@ -509,6 +510,7 @@ class UplodedProductUpdates(ListAPIView):
                 updateImage = i["image"]
         is_product_images= ProductImages.objects.filter(product_id =productId)
         is_product_images.delete()
+        
         for i in images:
             updateImage = ''
             if (i['images']):

@@ -293,6 +293,15 @@ class FruitInvestment(models.Model):
     profile_data = models.CharField(
         max_length=20000, blank=True, default=None, null=True)
     
+class RocketCrashInvestment(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='rocket_crash_investment_user_profile')
+
+    investment_and_profile_data = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+
+    
 class FruitLoopInvestment(models.Model):
 
     user_profile = models.ForeignKey(

@@ -48,9 +48,11 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 
 from rest_framework import filters
-cloudinary.config(cloud_name='swadexpress',
-                  api_key='357258774133196',
-                  api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
+cloudinary.config(cloud_name='dnmovjjir',
+                  api_key='816177748347142',
+                  api_secret='Fa2i1yRb0_LK6UlyM5YsjvCQq6w'
+                  
+                  )
 
 # push_service = FCMNotification(api_key="AAAAE7z-Af4:APA91bHW9tBpU4835tbUqRiC9-tZh0LCq29UPwSFf3CxIJsXHY8r2airzRBU4y26gLOkgXBnEHf-6Lmgt9ao674yx7rs6LzHQkOOg3epYshxyud3GuQLv_bFn32foLIt0iNTyCcFKV1A")
 
@@ -1962,10 +1964,6 @@ class UpdateProfileCoverImagesView(APIView):
         # MyUserId = request.data.getlist('MyUserId', None)
         MyUserId = request.data['MyUserId']
 
-        cloudinary.config(cloud_name='swadexpress',
-                          api_key='357258774133196',
-                          api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
-
         if images:
             for image in images:
                 image_url = cloudinary.uploader.upload(image)
@@ -1992,11 +1990,6 @@ class UpdateProfileImagesView(APIView):
 
         MyUserId = request.data['MyUserId']
 
-        print(MyUserId, 'asdfjaskldfjal')
-
-        cloudinary.config(cloud_name='swadexpress',
-                          api_key='357258774133196',
-                          api_secret='DcCF1TZG2yXPOLlY0tr3Ok2yzug')
 
         if images:
             for image in images:

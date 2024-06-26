@@ -132,7 +132,12 @@ urlpatterns = [
          AddressUpdateView.as_view(), name='address-update'),
     path('addresses/<pk>/delete/',
          AddressDeleteView.as_view(), name='address-delete'),
+
+         
     path('products/', ItemListView.as_view(), name='product-list'),
+
+
+
     path('products/<pk>/', ItemDetailView.as_view(), name='product-detail'),
     path('orderdetail/<pk>/', UserOrderDetailView.as_view(), name='order-detail'),
     path('add-to-cart/', AddToCartView.as_view(), name='add-to-cart'),

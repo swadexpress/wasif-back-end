@@ -35,6 +35,135 @@ def remove_duplicates(data):
     return filter_win_fruits_data
 
 
+class RocketCrashConsumer(WebsocketConsumer):
+    def connect(self):
+        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_group_name = f"chat_{self.room_name}"
+
+        # Join room group
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name, self.channel_name
+        )
+
+        self.accept()
+
+    def disconnect(self, close_code):
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name, self.channel_name
+        )
+
+    # Receive message from WebSocket
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        status = text_data_json["status"]
+        if (status == 'InvestAddAndRemove'):
+            user_profile_data = text_data_json["user_profile_data"]
+            minus_profile_amount = text_data_json["minus_profile_amount"]
+
+            print (user_profile_data,'minus_profile_amount')
+
+            if (user_profile_data):
+                RocketCrashInvestment.objects.filter(
+                    user_profile_id=user_profile_data['id'],
+                ).delete()
+
+                RocketCrashInvestment.objects.create(
+                    user_profile_id=user_profile_data['id'],
+                    investment_and_profile_data=json.dumps(user_profile_data),
+                )
+            else:
+                RocketCrashInvestment.objects.filter(
+                    user_profile_id=user_profile_data['id'],
+                ).delete()
+            profile_data = Profile.objects.filter(
+                user_id=user_profile_data['user'])
+            profile_data.update(
+                coin=float(profile_data[0].coin) - minus_profile_amount
+            )
+
+            gift_receive_user_profile_data = serializers.serialize(
+                "json", profile_data)
+            gift_receive_user_profile_id = [
+                i['pk'] for i in json.loads(gift_receive_user_profile_data)]
+            gift_receive_user_profile_data = [
+                i['fields'] for i in json.loads(gift_receive_user_profile_data)]
+            gift_receive_user_profile_data[0]['id'] = gift_receive_user_profile_id[0]
+            gift_receive_user_profile_data = list(
+                gift_receive_user_profile_data)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "room_sit_join_data": text_data_json,
+                    "user_profile_data": gift_receive_user_profile_data,
+                }
+            )
+
+        if (status == 'InvesRocketCrashGameWinAndLoss'):
+            user_profile_data = text_data_json["user_profile_data"]
+            win_status = text_data_json["win_status"]
+            rocket_crash_amount_2X_timer = text_data_json["rocket_crash_amount_2X_timer"]
+
+            profile_data = Profile.objects.filter(
+                user_id=user_profile_data['user'])
+
+            if(win_status == 'Win'):
+                profile_data.update(
+                    coin=float(profile_data[0].coin) + float(rocket_crash_amount_2X_timer) 
+                )
+
+            # elif (win_status == 'Win'):
+            #     profile_data.update(
+            #         coin=float(profile_data[0].coin) + float(rocket_crash_amount_2X_timer) 
+            #     )
+
+
+
+
+            gift_receive_user_profile_data = serializers.serialize(
+                "json", profile_data)
+            gift_receive_user_profile_id = [
+                i['pk'] for i in json.loads(gift_receive_user_profile_data)]
+            gift_receive_user_profile_data = [
+                i['fields'] for i in json.loads(gift_receive_user_profile_data)]
+            gift_receive_user_profile_data[0]['id'] = gift_receive_user_profile_id[0]
+            gift_receive_user_profile_data = list(
+                gift_receive_user_profile_data)
+            
+
+            RocketCrashInvestment.objects.filter(
+                user_profile_id=user_profile_data['id'],
+            ).delete()
+
+            # print(gift_receive_user_profile_data,'gift_receive_user_profile_data')
+
+
+
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "status": status,
+                    "user_profile_data": gift_receive_user_profile_data,
+                }
+            )
+
+
+
+
+
+    def chat_message(self, event):
+        message = event
+        # print(event)
+
+        # Send message to WebSocket
+        self.send(text_data=json.dumps(event))
+
+
 class FruitLoopgameConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
@@ -522,6 +651,9 @@ class FruitLoopgameConsumer(WebsocketConsumer):
 
         # Send message to WebSocket
         self.send(text_data=json.dumps(event))
+
+
+
 
 class FruitgameConsumer(WebsocketConsumer):
     def connect(self):
