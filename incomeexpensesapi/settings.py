@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'social_auth',
     'cloudinary',
 
+
 ]
 
 
@@ -105,7 +106,8 @@ cloudinary.config(
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS':  [os.path.join(BASE_DIR,'templates')],
+        
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -114,6 +116,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+
         },
     },
 ]
@@ -276,6 +279,8 @@ CKEDITOR_IMAGE_BACKEND = "pillow"
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': None,
+        'versionCheck': False
+
     },
 }
 

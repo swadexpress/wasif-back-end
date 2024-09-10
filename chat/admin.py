@@ -16,6 +16,12 @@ admin.site.register(FruitInvestmentWinLoseRecord)
 admin.site.register(FruitLoopInvestmentWinLoseRecord)
 admin.site.register(FruitInvestmentRound)
 admin.site.register(FruitLoopInvestmentRound)
+admin.site.register(SlotMachineGameInvestmentWinRanking)
+admin.site.register(SlotMachinetGameWinLoseRecord)
+admin.site.register(Slot777MachineGameInvestmentWinRanking)
+admin.site.register(Slot777MachinetGameWinLoseRecord)
+admin.site.register(MultipleSpinGameInvestmentWinRanking)
+admin.site.register(MultipleSpinGameWinLoseRecord)
 
 
 

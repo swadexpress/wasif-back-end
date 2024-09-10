@@ -293,6 +293,10 @@ class FruitInvestment(models.Model):
     profile_data = models.CharField(
         max_length=20000, blank=True, default=None, null=True)
     
+
+
+
+
 class RocketCrashInvestment(models.Model):
 
     user_profile = models.ForeignKey(
@@ -329,6 +333,30 @@ class FruitLoopInvestmentWinRanking(models.Model):
     win_amount = models.FloatField(
         max_length=200, blank=True, default=0.0, null=True)
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class SlotMachineGameInvestmentWinRanking(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='slot_machine_investment_amount_user_profile')
+    win_amount = models.FloatField(
+        max_length=200, blank=True, default=0.0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class Slot777MachineGameInvestmentWinRanking(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='slot_777_machine_investment_amount_user_profile')
+    win_amount = models.FloatField(
+        max_length=200, blank=True, default=0.0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class MultipleSpinGameInvestmentWinRanking(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='multiple_spine_investment_amount_user_profile')
+    win_amount = models.FloatField(
+        max_length=200, blank=True, default=0.0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+
+
 class FruitInvestmentWinLoseRecord(models.Model):
 
     user_profile = models.ForeignKey(
@@ -346,21 +374,64 @@ class FruitInvestmentWinLoseRecord(models.Model):
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 
-class FruitLoopInvestmentWinLoseRecord(models.Model):
+class SlotMachinetGameWinLoseRecord(models.Model):
 
     user_profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_win_or_lose_user_profile')
+        Profile, on_delete=models.CASCADE, related_name='slot_machine_game_investment_win_or_lose_user_profile')
     amount = models.FloatField(
          blank=True, default=0.0, null=True)
     win_amount = models.FloatField(
          blank=True, default=0.0, null=True)
     rounds = models.IntegerField(
          blank=True, default=0, null=True)
-    win_fruit_name = models.CharField(
-        max_length=200, blank=True, default='', null=True)
-    fruit_name = models.CharField(
-        max_length=200, blank=True, default='', null=True)
+
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+    def __str__(self):
+        return self.user_profile.custom_id
+class Slot777MachinetGameWinLoseRecord(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='slot_777_machine_game_investment_win_or_lose_user_profile')
+    amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    win_amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+    def __str__(self):
+        return self.user_profile.custom_id
+class MultipleSpinGameWinLoseRecord(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='multiple_spine_game_investment_win_or_lose_user_profile')
+    amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    win_amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+    def __str__(self):
+        return self.user_profile.custom_id
+
+class FruitLoopInvestmentWinLoseRecord(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_win_or_lose_user_profile')
+    # amount = models.FloatField(
+    #      blank=True, default=0.0, null=True)
+    # win_amount = models.FloatField(
+    #      blank=True, default=0.0, null=True)
+    # rounds = models.IntegerField(
+    #      blank=True, default=0, null=True)
+    # win_fruit_name = models.CharField(
+    #     max_length=200, blank=True, default='', null=True)
+    # fruit_name = models.CharField(
+    #     max_length=200, blank=True, default='', null=True)
+    # time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 
 
