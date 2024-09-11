@@ -317,9 +317,26 @@ class FruitLoopInvestment(models.Model):
     profile_data = models.CharField(
         max_length=20000, blank=True, default=None, null=True)
     
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 
-    # time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+class DragonvsTigerGameInvestment(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='dragon_vs_tiger_game_investment_user_profile')
+
+    investment = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+
+    profile_data = models.CharField(
+        max_length=20000, blank=True, default=None, null=True)
+    
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+
+
+
+
 
 class FruitInvestmentWinRanking(models.Model):
     user_profile = models.ForeignKey(
@@ -330,6 +347,12 @@ class FruitInvestmentWinRanking(models.Model):
 class FruitLoopInvestmentWinRanking(models.Model):
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_amount_user_profile')
+    win_amount = models.FloatField(
+        max_length=200, blank=True, default=0.0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+class DragonvsTigerGameInvestmentWinRanking(models.Model):
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='dragon_vs_tiger_investment_amount_user_profile')
     win_amount = models.FloatField(
         max_length=200, blank=True, default=0.0, null=True)
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
@@ -361,6 +384,22 @@ class FruitInvestmentWinLoseRecord(models.Model):
 
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_investment_win_or_lose_user_profile')
+    amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    win_amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+    win_fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
+    fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class DragonvsTigerGameInvestmentWinLoseRecord(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='dragon_vs_tiger_win_or_lose_user_profile')
     amount = models.FloatField(
          blank=True, default=0.0, null=True)
     win_amount = models.FloatField(
@@ -421,17 +460,17 @@ class FruitLoopInvestmentWinLoseRecord(models.Model):
 
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_win_or_lose_user_profile')
-    # amount = models.FloatField(
-    #      blank=True, default=0.0, null=True)
-    # win_amount = models.FloatField(
-    #      blank=True, default=0.0, null=True)
-    # rounds = models.IntegerField(
-    #      blank=True, default=0, null=True)
-    # win_fruit_name = models.CharField(
-    #     max_length=200, blank=True, default='', null=True)
-    # fruit_name = models.CharField(
-    #     max_length=200, blank=True, default='', null=True)
-    # time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+    amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    win_amount = models.FloatField(
+         blank=True, default=0.0, null=True)
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+    win_fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
+    fruit_name = models.CharField(
+        max_length=200, blank=True, default='', null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 
 
@@ -446,6 +485,14 @@ class FruitLoopInvestmentRound(models.Model):
 
     user_profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='fruit_loop_investment_record_user_profile')
+    rounds = models.IntegerField(
+         blank=True, default=0, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class DragonvsTigerGameInvestmentRound(models.Model):
+
+    user_profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='dragon_vs_tiger_investment_record_user_profile')
     rounds = models.IntegerField(
          blank=True, default=0, null=True)
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
@@ -474,6 +521,13 @@ class FruitInvestmentTimeline(models.Model):
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
 class FruitLoopInvestmentTimeline(models.Model):
+    start_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    end_time = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
+
+class DragonvsTigerGameInvestmentTimeline(models.Model):
     start_time = models.CharField(
         max_length=200, blank=True, default=None, null=True)
     end_time = models.CharField(
