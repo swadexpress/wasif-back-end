@@ -333,6 +333,17 @@ class DragonvsTigerGameInvestment(models.Model):
     
     time = models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)
 
+class DragonvsTigerGameDumyInvestment(models.Model):
+
+
+    name = models.CharField(
+        max_length=20, blank=True, default=None, null=True)
+
+    tiger_amount = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+    dragon_amount = models.CharField(
+        max_length=200, blank=True, default=None, null=True)
+
 
 
 

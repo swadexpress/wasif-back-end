@@ -23,6 +23,7 @@ admin.site.register(Slot777MachinetGameWinLoseRecord)
 admin.site.register(MultipleSpinGameInvestmentWinRanking)
 admin.site.register(MultipleSpinGameWinLoseRecord)
 admin.site.register(DragonvsTigerGameInvestment)
+admin.site.register(DragonvsTigerGameDumyInvestment)
 
 
 

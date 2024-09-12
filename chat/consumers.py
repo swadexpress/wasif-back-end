@@ -117,7 +117,6 @@ class MultipleSpinGame(WebsocketConsumer):
         self.send(text_data=json.dumps(event))
 
 
-
 class Slot777MachineGame(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
@@ -200,9 +199,6 @@ class Slot777MachineGame(WebsocketConsumer):
         self.send(text_data=json.dumps(event))
 
 
-
-
-
 class SlotMachineGame(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
@@ -283,16 +279,6 @@ class SlotMachineGame(WebsocketConsumer):
 
         # Send message to WebSocket
         self.send(text_data=json.dumps(event))
-
-
-
-
-
-
-
-
-
-
 
 
 class RocketCrashConsumer(WebsocketConsumer):
@@ -440,8 +426,6 @@ class FruitLoopgameConsumer(WebsocketConsumer):
             investment_data = text_data_json["investment_data"]
             user_profile_data = text_data_json["user_profile_data"]
             minus_profile_amount = text_data_json["minus_profile_amount"]
-
-
 
             if (user_profile_data):
                 FruitLoopInvestment.objects.filter(
@@ -905,7 +889,7 @@ class FruitLoopgameConsumer(WebsocketConsumer):
 
 
 
-
+# print(,'ppppp')
 class DragonVsTigerGame(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
@@ -929,12 +913,10 @@ class DragonVsTigerGame(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         status = text_data_json["status"]
 
-
         if (status == 'InvestAddAndRemove'):
             investment_data = text_data_json["investment_data"]
             user_profile_data = text_data_json["user_profile_data"]
             minus_profile_amount = text_data_json["minus_profile_amount"]
-            
 
             if (user_profile_data):
                 DragonvsTigerGameInvestment.objects.filter(
@@ -976,8 +958,66 @@ class DragonVsTigerGame(WebsocketConsumer):
                 }
             )
 
+        if (status == 'DumyInvestAddAndRemove'):
 
-            
+            def DumyInvestAddAndRemove():
+
+
+
+
+                name_to_number = random.randint(1, 2)
+                name = 'D'
+                amount = random.randint(111, 9999)
+                amount2 = random.randint(111, 9999)
+
+                if(name_to_number==2):
+                    name = 'T'
+
+                dragon_vs_tiger_game_dumy_tnvestment = DragonvsTigerGameDumyInvestment.objects.filter(name='DragonvsTigerGameDumyInvestment')
+                if dragon_vs_tiger_game_dumy_tnvestment:
+                    if(name=='D'):
+                    
+                        dragon_vs_tiger_game_dumy_tnvestment.update(
+                            dragon_amount = int(dragon_vs_tiger_game_dumy_tnvestment[0].dragon_amount)+amount
+                        )
+                    else:
+
+                        dragon_vs_tiger_game_dumy_tnvestment.update(
+                            tiger_amount = int(dragon_vs_tiger_game_dumy_tnvestment[0].tiger_amount)+amount
+                        )
+                        
+                
+                else:
+                    DragonvsTigerGameDumyInvestment.objects.create(
+                        name='DragonvsTigerGameDumyInvestment',
+                        dragon_amount=amount,
+                        tiger_amount=amount2,
+                    )
+
+
+                print(dragon_vs_tiger_game_dumy_tnvestment,'dragon_vs_tiger_game_dumy_tnvestments')
+
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "chat.message",
+                        "status": status,
+                        "dragon_vs_tiger_game_dumy_tnvestment_data": list(dragon_vs_tiger_game_dumy_tnvestment.values()),
+                    }
+                )
+
+            # DumyInvestAddAndRemove = threading.Timer(
+            #         10.0, DumyInvestAddAndRemove)
+            # DumyInvestAddAndRemove.start()
+
+            DumyInvestAddAndRemove()
+
+
+
+
+
+
+
         elif (status == 'FruitInvestmentTimeline'):
             today = datetime.datetime.today()
             # total_round_count = FruitInvestmentTimeline.objects.filter(
@@ -1182,6 +1222,7 @@ class DragonVsTigerGame(WebsocketConsumer):
 
                     }
                 )
+                
 
 
 
@@ -1198,19 +1239,11 @@ class DragonVsTigerGame(WebsocketConsumer):
                             fruit_name=jj['name'],
                         )
 
-                # DragonvsTigerGameInvestment.objects.all().delete()
+                DragonvsTigerGameInvestment.objects.all().delete()
+                DragonvsTigerGameDumyInvestment.objects.all().delete()
                 FruitInvestmentTimelineSent_timer = threading.Timer(
                     10.0, FruitInvestmentTimelineSent1)
                 FruitInvestmentTimelineSent_timer.start()
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1298,6 +1331,7 @@ class DragonVsTigerGame(WebsocketConsumer):
                         "end_time": is_fruit_investment_timeline_fruit_investment_timeline[0]['end_time'],
                     }
                 )
+                
 
             FruitInvestmentTimelineSent()
 
