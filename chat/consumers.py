@@ -887,8 +887,6 @@ class FruitLoopgameConsumer(WebsocketConsumer):
         # Send message to WebSocket
         self.send(text_data=json.dumps(event))
 
-
-
 # print(,'ppppp')
 class DragonVsTigerGame(WebsocketConsumer):
     def connect(self):
@@ -1345,9 +1343,6 @@ class DragonVsTigerGame(WebsocketConsumer):
         self.send(text_data=json.dumps(event))
 
 
-
-
-
 class SuperLotteryGame(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
@@ -1794,7 +1789,7 @@ class SuperLotteryGame(WebsocketConsumer):
 
                 FruitInvestment.objects.all().delete()
                 FruitInvestmentTimelineSent_timer = threading.Timer(
-                    10.0, FruitInvestmentTimelineSent1)
+                    14.0, FruitInvestmentTimelineSent1)
                 FruitInvestmentTimelineSent_timer.start()
 
             def FruitInvestmentTimelineSent():
@@ -3405,3 +3400,8 @@ class ChatConsumer(WebsocketConsumer):
 
         # Send message to WebSocket
         self.send(text_data=json.dumps(event))
+
+
+
+
+
