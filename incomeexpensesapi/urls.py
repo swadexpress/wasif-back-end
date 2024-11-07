@@ -13,13 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import re_path, include
-from rest_framework import permissions
 # from drf_yasg.views import get_schema_view
 # from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, re_path
+from rest_framework import permissions
+
 # from shop.views import admin_order_pdf
 
 # schema_view = get_schema_view(
@@ -39,20 +40,13 @@ from django.conf.urls.static import static
 urlpatterns = [
     
     re_path('admin/', admin.site.urls),
-    # path('admin/admin_order_pdf/<pk>/', admin_order_pdf, name='admin_order_pdf'),
-    re_path("chat/", include("chat.urls")),
     re_path('home/' , include('home.urls')),
     re_path('auth/', include('authentication.urls')),
-    re_path('shop/', include('shop.urls')),
-    re_path('social_auth/', include(('social_auth.urls', 'social_auth'),
-                                 namespace="social_auth")),
-    # re_path('', schema_view.with_ui('swagger',
     #                              cache_timeout=0), name='schema-swagger-ui'),
     # re_path('api/api.json/', schema_view.without_ui(cache_timeout=0), name='schema-swagger-ui'),
     # re_path('redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
 
 
-    
 ]
 
 

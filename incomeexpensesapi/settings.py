@@ -10,16 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-from pathlib import Path
-import os
 import datetime
+import os
+from pathlib import Path
+
 import cloudinary
-import cloudinary.uploader
 import cloudinary.api
-import dj_database_url
+import cloudinary.uploader
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -42,7 +43,7 @@ AUTH_USER_MODEL = 'authentication.User'
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
+
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,21 +53,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
-    'chat',
-    'fruitgame',
-    # 'drf_yasg',
-    'authentication',
-    'mptt',
     'ckeditor',
-    'django_filters',
-    'shop',
+    'mptt',
     'home',
     'sorl.thumbnail',
-    'social_auth',
     'cloudinary',
-
+    'authentication',
+    
 
 ]
 
@@ -97,17 +91,15 @@ ROOT_URLCONF = 'incomeexpensesapi.urls'
 
 # adding config
 cloudinary.config(
-    cloud_name="swadexpress",
-    api_key="357258774133196",
-    api_secret="DcCF1TZG2yXPOLlY0tr3Ok2yzug"
+    cloud_name="dwths7llt",
+    api_key="229115325844843",
+    api_secret="63PLbpuiklhXaApr7PadCvm_7lI"
 )
-
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':  [os.path.join(BASE_DIR,'templates')],
-        
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,71 +108,16 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-
         },
     },
 ]
 
 WSGI_APPLICATION = 'incomeexpensesapi.wsgi.application'
-# ASGI_APPLICATION = "incomeexpensesapi.asgi.application"
-ASGI_APPLICATION = "incomeexpensesapi.routing.application"
-
-
-# ASGI_APPLICATION = "routing.application"
-
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            # "hosts": ["redis://:kawsarkhan12345@172.20.10.4:6379/0"],
-            "hosts": ["redis://:kawsarkhan12345@192.168.0.135:6379"],
-            #   "hosts": ["redis://:kawsarkhan12345@1430-160-238-0-240.ngrok-free.app"],
-            "symmetric_encryption_keys": ["sys_admin_config_836"],
-        },
-    },
-}
-
-
-# Database
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'peacegarden',
-#         'USER': 'postgres',
-#         'PASSWORD': 'kawsarkhan12345',
-#         # 'HOST': '192.168.0.214',
-#         # 'HOST': '172.20.10.14',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-
-
-#     }
-# }
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
-# DATABASES = {
-#     'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
-
-# }
-
 
 # CORS WHITELIST
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://localhost:3001",
-    "http://192.168.0.135:3000",
-    "http://192.168.0.135:3001",
     "https://orbitplugcom.netlify.app",
     "http://127.0.0.1:8080",
     "https://orbitplug.netlify.app",
@@ -190,7 +127,9 @@ CORS_ORIGIN_WHITELIST = [
     "https://orbitplug.com",
     "https://orbitplug-admin.netlify.app",
     "https://shopping-cartsx.netlify.app",
-    "https://6f3f-37-111-245-59.ngrok-free.app",
+    "https://porichoy-admin-panel.netlify.app",
+    "http://192.168.0.135:3000",
+    'https://zaraoptics.com'
 
 
 
@@ -199,6 +138,23 @@ CORS_ORIGIN_WHITELIST = [
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https://\w+\.netlify\.app$",
 ]
+
+
+# Database
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+# DATABASES = {
+#     'default': dj_database_url.parse('postgres://peacegarden_user:YiQxjJagNlxbXFCYRH8OvwEQirnwPBTc@dpg-cgkm798rddleudvd2e0g-a.singapore-postgres.render.com/peacegarden')
+
+# }
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -279,8 +235,6 @@ CKEDITOR_IMAGE_BACKEND = "pillow"
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': None,
-        'versionCheck': False
-
     },
 }
 
@@ -300,4 +254,10 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
-    'https://febb-160-238-0-241.ngrok-free.app']
+    'https://zaraoptics.xyz',
+    "https://b4d6-160-238-0-242.ngrok-free.app"
+    "http://192.168.0.135:8000"
+
+
+
+]

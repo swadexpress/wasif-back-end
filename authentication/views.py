@@ -1,31 +1,34 @@
-from django.utils.crypto import get_random_string
+import os
 import random
-from django.shortcuts import render
-from rest_framework import generics, status, views, permissions
-from .serializers import RegisterSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, LoginSerializer, LogoutSerializer
+
+import jwt
+from authentication.models import *
+from django.conf import settings
+from django.contrib.auth import *
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponsePermanentRedirect
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils.crypto import get_random_string
+from django.utils.encoding import (DjangoUnicodeDecodeError, force_str,
+                                   smart_bytes, smart_str)
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User,OTPToken
-from .utils import Util
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
-import jwt
-from django.conf import settings
+
+from .models import OTPToken, User
 # from drf_yasg.utils import swagger_auto_schema
 # from drf_yasg import openapi
 from .renderers import UserRenderer
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
+from .serializers import (EmailVerificationSerializer, LoginSerializer,
+                          LogoutSerializer, RegisterSerializer,
+                          ResetPasswordEmailRequestSerializer,
+                          SetNewPasswordSerializer)
 from .utils import Util
-from django.shortcuts import redirect
-from django.http import HttpResponsePermanentRedirect
-import os
-from authentication.models import *
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from shop.models import ShippingAddress
+
+
 class CustomRedirect(HttpResponsePermanentRedirect):
 
     allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
@@ -49,8 +52,7 @@ class RegisterView(generics.GenericAPIView):
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        data = UserProfile()
-        shipping_address_data = ShippingAddress()
+        data = Profile()
         email = user['email']
         password = user['password']
         user = authenticate(email=email, password=password)
@@ -59,8 +61,7 @@ class RegisterView(generics.GenericAPIView):
         data.user_id = current_user.id
         data.image = "images/users/user.png"
         data.save()
-        shipping_address_data.user_id =current_user.id
-        shipping_address_data.save()
+
         user_data = serializer.data
         user = User.objects.get(email=user_data['email'])
         token = RefreshToken.for_user(user).access_token
